@@ -13,7 +13,7 @@ authors = [
 ]
 license = { file = "LICENSE.txt" }
 classifiers = [
-    "License :: OSI Approved :: Apache License",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3.7",
 ]
 keywords = ["data", "validation", "quality"]
