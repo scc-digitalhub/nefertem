@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nefertem"
+version = "1.0.0"
+description = "Python data validation library"
+readme = "README.md"
+authors = [
+    { name = "Fondazione Bruno Kessler", email = "dslab@fbk.eu" },
+    { name = "Matteo Martini", email = "mmartini@fbk.eu" }
+]
+license = { file = "LICENSE.txt" }
+classifiers = [
+    "License :: OSI Approved :: Apache License",
+    "Programming Language :: Python :: 3.7",
+]
+keywords = ["data", "validation", "quality"]
+dependencies = [
+    "azure-storage-blob==12.11.0",
+    "boto3==1.22.8",
+    "botocore==1.25.8",
+    "frictionless==4.40.5",
+    "psycopg2-binary==2.9.3",
+    "pyarrow==11.0.0",
+    "pydantic==1.10.7",
+    "pyodbc==4.0.32",
+    "requests==2.28.2",
+    "SQLAlchemy==1.4.36",
+    "pandas==1.3.5"
+]
+
+requires-python = ">=3.7"
+
+[project.optional-dependencies]
+all = [
+    "duckdb==0.7.1",
+    "pandas-profiling==3.6.6",
+    "ydata-profiling==4.1.2",
+    "great-expectations==0.16.5",
+    "polars==0.16.18",
+    "connectorx==0.3.1",
+    "evidently==0.4.0",
+
+]
+duckdb = [
+    "duckdb==0.7.1",
+
+]
+pandas-profiling = [
+    "pandas-profiling==3.6.6",
+
+]
+ydata-profiling = [
+    "ydata-profiling==4.1.2",
+
+]
+great-expectations = [
+    "great-expectations==0.16.5",
+
+]
+evidently = [
+    "evidently==0.4.0",
+
+]
+dev = [
+    "black",
+    "pytest",
+    "moto==4.1.14"
+]
+docs = [
+    "Sphinx==5.3.0",
+    "pydata-sphinx-theme==0.13.3",
+    "autodoc-pydantic==1.8.0",
+    "numpydoc==1.5.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/scc-digitalhub/nefertem"

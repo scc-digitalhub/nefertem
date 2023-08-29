@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Constraints &#8212; nefertem  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/constraints';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inference" href="inference.html" />
+    <link rel="prev" title="Validation" href="validation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">nefertem  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="scenarios.html">
+                        Nefertem usability scenarios
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="workflow.html">
+                        Nefertem Workflow
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="installation.html">
+                        Installation and requirements
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="client.html">
+                        Client
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="stores.html">
+                        Stores
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="authentication.html">
+                        Authentication
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="dataresource.html">
+                        Data Resource
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="run.html">
+                        Run
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="metadata.html">
+                        Metadata
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="validation.html">
+                        Validation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Constraints
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="inference.html">
+                        Inference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="profiling.html">
+                        Profiling
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/client.html">
+                        Client
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/configs.html">
+                        Configurations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/run.html">
+                        Run methods
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/utilities.html">
+                        Utilities
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="scenarios.html">
+                        Nefertem usability scenarios
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="workflow.html">
+                        Nefertem Workflow
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="installation.html">
+                        Installation and requirements
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="client.html">
+                        Client
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="stores.html">
+                        Stores
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="authentication.html">
+                        Authentication
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="dataresource.html">
+                        Data Resource
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="run.html">
+                        Run
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="metadata.html">
+                        Metadata
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="validation.html">
+                        Validation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Constraints
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="inference.html">
+                        Inference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="profiling.html">
+                        Profiling
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/client.html">
+                        Client
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/configs.html">
+                        Configurations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/run.html">
+                        Run methods
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../apis/utilities.html">
+                        Utilities
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Constraints</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="constraints">
+<h1>Constraints<a class="headerlink" href="#constraints" title="Permalink to this heading">#</a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">Constraint</span></code> is a rule that resource must fit to be considered valid.
+You can define as many <code class="docutils literal notranslate"><span class="pre">Constraint</span></code> as you want, and <em>nefertem</em> will pass them to the desired framework of validation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Constraints</span></code> share the following parameters</p>
+<ul class="simple">
+<li><p><em>name</em>, identifier for the constraint</p></li>
+<li><p><em>title</em>, optional, human readable version of the identifier</p></li>
+<li><p><em>resources</em>, targeted LIST of resources</p></li>
+<li><p><em>weight</em>, optional, importance of an eventual error</p></li>
+</ul>
+<section id="constraint-types">
+<h2>Constraint types<a class="headerlink" href="#constraint-types" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#frictionless">Frictionless</a></p></li>
+<li><p><a class="reference internal" href="#frictionless-schema">Frictionless schema</a></p></li>
+<li><p><a class="reference internal" href="#duckdb">DuckDB</a></p></li>
+<li><p><a class="reference internal" href="#sqlalchemy">SQLAlchemy</a></p></li>
+<li><p><a class="reference internal" href="#great-expectations">Great Expectations</a></p></li>
+</ul>
+</section>
+<section id="frictionless">
+<h2>Frictionless<a class="headerlink" href="#frictionless" title="Permalink to this heading">#</a></h2>
+<p>The parameters to define a <code class="docutils literal notranslate"><span class="pre">ConstraintFrictionless</span></code> are the following:</p>
+<ul class="simple">
+<li><p><em>field</em>, specified targeted field</p></li>
+<li><p><em>fieldType</em>, specified targeted field type</p></li>
+<li><p><em>constraint</em>, frictionless constraint</p>
+<ul>
+<li><p><em>format</em></p></li>
+<li><p><em>type</em></p></li>
+<li><p><em>required</em></p></li>
+<li><p><em>unique</em></p></li>
+<li><p><em>minLength</em></p></li>
+<li><p><em>maxLength</em></p></li>
+<li><p><em>minimum</em></p></li>
+<li><p><em>maximum</em></p></li>
+<li><p><em>pattern</em></p></li>
+<li><p><em>enum</em></p></li>
+</ul>
+</li>
+<li><p><em>value</em>, value expeted</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nefertem</span> <span class="k">as</span> <span class="nn">nt</span>
+
+<span class="c1"># Artifact Store</span>
+<span class="n">STORE_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">StoreConfig</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="n">uri</span><span class="o">=</span><span class="s2">&quot;./ntruns&quot;</span><span class="p">,</span>
+                                <span class="n">isDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Data Resource</span>
+<span class="n">RES_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">DataResource</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;path-to-data&quot;</span><span class="p">,</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-resource&quot;</span><span class="p">,</span>
+                               <span class="n">store</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Example constraint. We expect that the values of the</span>
+<span class="c1">#  specified field have a maximum lenght of 11 characters.</span>
+<span class="n">CONSTRAINT_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintFrictionless</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example frictionless constraint&quot;</span><span class="p">,</span>
+                                          <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                          <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example-resource&quot;</span><span class="p">],</span>
+                                          <span class="n">field</span><span class="o">=</span><span class="s2">&quot;field-to-validate&quot;</span><span class="p">,</span>
+                                          <span class="n">fieldType</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                                          <span class="n">constraint</span><span class="o">=</span><span class="s2">&quot;maxLength&quot;</span><span class="p">,</span>
+                                          <span class="n">value</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+                                          <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="frictionless-schema">
+<h2>Frictionless schema<a class="headerlink" href="#frictionless-schema" title="Permalink to this heading">#</a></h2>
+<p>The parameters to define a <code class="docutils literal notranslate"><span class="pre">ConstraintFullFrictionless</span></code> are the following:</p>
+<ul class="simple">
+<li><p><em>schema</em>, a dictionary (or a frictionless <code class="docutils literal notranslate"><span class="pre">Schema</span></code>), formatted as <code class="docutils literal notranslate"><span class="pre">frictionless</span> <span class="pre">Schema</span></code>.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nefertem</span> <span class="k">as</span> <span class="nn">nt</span>
+
+<span class="c1"># Artifact Store</span>
+<span class="n">STORE_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">StoreConfig</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="n">uri</span><span class="o">=</span><span class="s2">&quot;./ntruns&quot;</span><span class="p">,</span>
+                                <span class="n">isDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Data Resource</span>
+<span class="n">RES_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">DataResource</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;path-to-data&quot;</span><span class="p">,</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-resource&quot;</span><span class="p">,</span>
+                               <span class="n">store</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+
+<span class="n">SCHEMA_01</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;col1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;col2&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;col3&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1"># Example constraint. We will pass to a validator a full frictionless schema.</span>
+<span class="n">CONSTRAINT_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintFullFrictionless</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example frictionless_schema constraint&quot;</span><span class="p">,</span>
+                                              <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                              <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example-resource&quot;</span><span class="p">],</span>
+                                              <span class="n">tableSchema</span><span class="o">=</span><span class="n">SCHEMA_01</span><span class="p">,</span>
+                                              <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="duckdb">
+<h2>DuckDB<a class="headerlink" href="#duckdb" title="Permalink to this heading">#</a></h2>
+<p>The parameters to define a <code class="docutils literal notranslate"><span class="pre">ConstraintDuckDB</span></code> are the following:</p>
+<ul class="simple">
+<li><p><em>query</em>, an SQL query that will be executed on the resources</p>
+<ul>
+<li><p>Please note that the query require some precautions</p>
+<ul>
+<li><p>When you select from a resource, the resource must be written lowercase</p></li>
+<li><p>The name of the resource where you select from must be in the list of resources passed to the constraint</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><em>expect</em>, expected tipology of result</p>
+<ul>
+<li><p><em>empty</em> (only for <em>check = rows</em>)</p></li>
+<li><p><em>non-empty</em> (only for <em>check = rows</em>)</p></li>
+<li><p><em>exact</em></p></li>
+<li><p><em>range</em></p></li>
+<li><p><em>minimum</em></p></li>
+<li><p><em>maximum</em></p></li>
+</ul>
+</li>
+<li><p><em>value</em>, value expected</p>
+<ul>
+<li><p>Please note that when <em>expect</em> is equals to <em>range</em>, this parameter accepts a string formatted as follows</p>
+<ul>
+<li><p>“(num1, num2)” upper exclusive, lower exclusive</p></li>
+<li><p>“(num1, num2]” upper exclusive, lower inclusive</p></li>
+<li><p>“[num1, num2)” upper inclusive, lower exclusive</p></li>
+<li><p>“[num1, num2]” upper inclusive, lower inclusive</p></li>
+</ul>
+</li>
+<li><p><em>minimum</em> and <em>maximum</em> are inclusive</p></li>
+</ul>
+</li>
+<li><p><em>check</em>, tipology of result to evaluate</p>
+<ul>
+<li><p><em>rows</em> check number of rows</p></li>
+<li><p><em>value</em> check a single value, e.g. a <em>select count(*)</em>. If a query result in more than one column, the evaluator will take into account only the first column in the first row</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nefertem</span> <span class="k">as</span> <span class="nn">nt</span>
+
+<span class="c1"># Artifact Store</span>
+<span class="n">STORE_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">StoreConfig</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="n">uri</span><span class="o">=</span><span class="s2">&quot;./ntruns&quot;</span><span class="p">,</span>
+                                <span class="n">isDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Data Resource</span>
+<span class="n">RES_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">DataResource</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;path-to-data&quot;</span><span class="p">,</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example_resource&quot;</span><span class="p">,</span>
+                               <span class="n">store</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># EXAMPLE CONSTRAINTS</span>
+
+<span class="c1"># Empty/non-empty table. The evaluation is allowed when check is &quot;rows&quot;</span>
+
+<span class="c1"># Expecting empty table as result of the validation query</span>
+<span class="n">CONSTRAINT_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select * from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;empty&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Expecting non-empty table as result of the validation query</span>
+<span class="n">CONSTRAINT_02</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select * from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;non-empty&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Exact value</span>
+
+<span class="c1"># Expecting a table with 10 rows</span>
+<span class="n">CONSTRAINT_03</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select field from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Expecting a table with 10 as result of the count</span>
+<span class="n">CONSTRAINT_04</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select count(field) from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Minimum/maximum (both check are inclusive of the value)</span>
+
+<span class="c1"># Expecting a table with number of rows &gt;= 10</span>
+<span class="n">CONSTRAINT_05</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select field from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;minimum&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Expecting a table with result of count &lt;= 10</span>
+<span class="n">CONSTRAINT_06</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select count(field) from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Range (value expect a string of parentheses and number)</span>
+
+<span class="c1"># Expecting a table with number of rows &gt; 10 and &lt;= 15</span>
+<span class="n">CONSTRAINT_07</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select field from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;range&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="s2">&quot;(10,15]&quot;</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Expecting a table with resulting value &gt;= 10.87 and &lt; 15.63</span>
+<span class="n">CONSTRAINT_08</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example duckdb constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select mean(field) from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="s2">&quot;[10.87,15.63)&quot;</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sqlalchemy">
+<h2>SQLAlchemy<a class="headerlink" href="#sqlalchemy" title="Permalink to this heading">#</a></h2>
+<p>The parameters to define a <code class="docutils literal notranslate"><span class="pre">ConstraintSqlAlchemy</span></code> are the following:</p>
+<ul class="simple">
+<li><p><em>query</em>, an SQL query that will be executed on the database</p></li>
+<li><p><em>expect</em>, expected tipology of result</p>
+<ul>
+<li><p><em>empty</em> (only for <em>check = rows</em>)</p></li>
+<li><p><em>non-empty</em> (only for <em>check = rows</em>)</p></li>
+<li><p><em>exact</em></p></li>
+<li><p><em>range</em></p></li>
+<li><p><em>minimum</em></p></li>
+<li><p><em>maximum</em></p></li>
+</ul>
+</li>
+<li><p><em>value</em>, value expected</p>
+<ul>
+<li><p>Please note that when <em>expect</em> is equals to <em>range</em>, this parameter accepts a string formatted as follows</p>
+<ul>
+<li><p>“(num1, num2)” upper exclusive, lower exclusive</p></li>
+<li><p>“(num1, num2]” upper exclusive, lower inclusive</p></li>
+<li><p>“[num1, num2)” upper inclusive, lower exclusive</p></li>
+<li><p>“[num1, num2]” upper inclusive, lower inclusive</p></li>
+</ul>
+</li>
+<li><p><em>minimum</em> and <em>maximum</em> are inclusive</p></li>
+</ul>
+</li>
+<li><p><em>check</em>, tipology of result to evaluate</p>
+<ul>
+<li><p><em>rows</em> check number of rows</p></li>
+<li><p><em>value</em> check a single value, e.g. a <em>select count(*)</em>. If a query result in more than one column, the evaluator will take into account only the first column in the first row</p></li>
+</ul>
+</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nefertem</span> <span class="k">as</span> <span class="nn">nt</span>
+
+<span class="c1"># Artifact Store</span>
+<span class="n">CONFIG_SQL_01</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;connection_string&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;postgresql://user:password@host:port/database&quot;</span>
+<span class="p">}</span>
+<span class="n">STORE_SQL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">StoreConfig</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+                              <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;sql&quot;</span><span class="p">,</span>
+                              <span class="n">uri</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;sql://database&quot;</span><span class="p">,</span>
+                              <span class="n">config</span><span class="o">=</span><span class="n">CONFIG_SQL_01</span><span class="p">)</span>
+<span class="c1"># Data Resource</span>
+<span class="n">RES_SQL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">DataResource</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;sql://schema.table&quot;</span><span class="p">,</span>
+                             <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example_resource&quot;</span><span class="p">,</span>
+                             <span class="n">store</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">)</span>
+
+<span class="c1"># EXAMPLE CONSTRAINTS</span>
+
+<span class="c1"># The sqlalchemy constraints are basically the same as duckdb ones</span>
+
+<span class="c1"># Expecting empty table as result of the validation query</span>
+<span class="n">CONSTRAINT_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintDuckDB</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example sqlalchemy constraint&quot;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                    <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;select * from example_resource&quot;</span><span class="p">,</span>
+                                    <span class="n">expect</span><span class="o">=</span><span class="s2">&quot;empty&quot;</span><span class="p">,</span>
+                                    <span class="n">check</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span>
+                                    <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="great-expectations">
+<h2>Great Expectations<a class="headerlink" href="#great-expectations" title="Permalink to this heading">#</a></h2>
+<p>The parameters to define a <code class="docutils literal notranslate"><span class="pre">ConstraintGreatExpectations</span></code> are the following:</p>
+<ul class="simple">
+<li><p><em>expectation</em>, expectation to apply on a resource</p></li>
+<li><p><em>expectation_args</em>, arguments for the expectation</p></li>
+</ul>
+<p>Note that for the moment the execution plugins require the presence of a user initialized <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">context</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nefertem</span> <span class="k">as</span> <span class="nn">nt</span>
+
+<span class="c1"># Artifact Store</span>
+<span class="n">STORE_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">StoreConfig</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+                                <span class="n">uri</span><span class="o">=</span><span class="s2">&quot;./ntruns&quot;</span><span class="p">,</span>
+                                <span class="n">isDefault</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Data Resource</span>
+<span class="n">RES_LOCAL_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">DataResource</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;path-to-data&quot;</span><span class="p">,</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example_resource&quot;</span><span class="p">,</span>
+                               <span class="n">store</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+
+<span class="c1"># EXAMPLE CONSTRAINTS</span>
+
+<span class="c1"># Expecting maximum column value to be between 10 and 50</span>
+<span class="n">CONSTRAINT_01</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">ConstraintGreatExpectations</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Example great expectations constraint&quot;</span><span class="p">,</span>
+                                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example-const&quot;</span><span class="p">,</span>
+                                               <span class="n">resources</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;example_resource&quot;</span><span class="p">],</span>
+                                               <span class="n">expectation</span><span class="o">=</span><span class="s2">&quot;expect_column_max_to_be_between&quot;</span><span class="p">,</span>
+                                               <span class="n">expectation_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;min_value&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;max_value&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="s2">&quot;target-column&quot;</span><span class="p">},</span>
+                                               <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="validation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Validation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="inference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Inference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constraint-types">Constraint types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frictionless">Frictionless</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frictionless-schema">Frictionless schema</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#duckdb">DuckDB</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqlalchemy">SQLAlchemy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#great-expectations">Great Expectations</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../_sources/docs/constraints.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022, FBK.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
