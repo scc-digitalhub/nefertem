@@ -9,7 +9,7 @@ from nefertem.plugins.utils.plugin_utils import Result
 from nefertem.run.run import Run
 from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
 from nefertem.utils.commons import (
-    MT_DJ_REPORT,
+    MT_NT_REPORT,
     OPERATION_INFERENCE,
     OPERATION_PROFILING,
     OPERATION_VALIDATION,
@@ -24,14 +24,14 @@ from nefertem.utils.exceptions import RunError
 class TestRun:
     def test_log_run(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_DJ_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
 
     def test_log_env(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_DJ_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
@@ -41,7 +41,7 @@ class TestRun:
 
     def test_log_metadata(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_DJ_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'

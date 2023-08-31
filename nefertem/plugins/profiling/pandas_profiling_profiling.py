@@ -2,15 +2,14 @@
 Pandas profiling implementation of profiling plugin.
 """
 import json
-from typing import List
+from typing import List, Optional
 
 import pandas_profiling
 from pandas_profiling import ProfileReport
 
 
 from nefertem.metadata.nefertem_reports import NefertemProfile
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import (
     LIBRARY_PANDAS_PROFILING,
@@ -94,6 +93,7 @@ class ProfilePluginPandasProfiling(Profiling):
             # Get fields, stats and duration
             fields = args.get("variables", {})
             stats = args.get("table", {})
+            # TODO metrics overall and by field
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = {}
@@ -143,17 +143,21 @@ class ProfilePluginPandasProfiling(Profiling):
         return pandas_profiling.__version__
 
 
-class ProfileBuilderPandasProfiling(PluginBuilder):
+class ProfileBuilderPandasProfiling(ProfilingPluginBuilder):
     """
     Profile plugin builder.
     """
 
     def build(
-        self, resources: List["DataResource"]
+        self, 
+        resources: List["DataResource"],
+        metrics: Optional[List] = None
     ) -> List[ProfilePluginPandasProfiling]:
         """
-        Build a plugin.
+        Build a plugin. Metrics are not supported
         """
+        if metrics is not None and len(metrics) > 0:
+            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)
@@ -163,6 +167,10 @@ class ProfileBuilderPandasProfiling(PluginBuilder):
             plugin.setup(data_reader, resource, self.exec_args)
             plugins.append(plugin)
         return plugins
+
+    @staticmethod
+    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+        ...
 
     def destroy(self) -> None:
         """

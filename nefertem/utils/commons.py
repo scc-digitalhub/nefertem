@@ -107,27 +107,27 @@ CONSTRAINT_SQL_CHECK_ROWS: str = "rows"
 # API endpoints
 API_BASE: str = "/api/project/"
 API_RUN_METADATA: str = "/run-metadata"
-API_DJ_REPORT: str = "/short-report"
-API_DJ_SCHEMA: str = "/short-schema"
-API_DJ_PROFILE: str = "/data-profile"
+API_NT_REPORT: str = "/short-report"
+API_NT_SCHEMA: str = "/short-schema"
+API_NT_PROFILE: str = "/data-profile"
 API_ARTIFACT_METADATA: str = "/artifact-metadata"
 API_RUN_ENV: str = "/run-environment"
 
 
 # Filenames metadata
 FN_RUN_METADATA: str = "run_metadata.json"
-FN_DJ_REPORT: str = "report_{}.json"
-FN_DJ_SCHEMA: str = "schema_{}.json"
-FN_DJ_PROFILE: str = "profile_{}.json"
+FN_NT_REPORT: str = "report_{}.json"
+FN_NT_SCHEMA: str = "schema_{}.json"
+FN_NT_PROFILE: str = "profile_{}.json"
 FN_ARTIFACT_METADATA: str = "artifact_metadata_{}.json"
 FN_RUN_ENV: str = "run_env.json"
 
 
 # Metadata type
 MT_RUN_METADATA: str = "run"
-MT_DJ_REPORT: str = "report"
-MT_DJ_SCHEMA: str = "schema"
-MT_DJ_PROFILE: str = "profile"
+MT_NT_REPORT: str = "report"
+MT_NT_SCHEMA: str = "schema"
+MT_NT_PROFILE: str = "profile"
 MT_ARTIFACT_METADATA: str = "artifact"
 MT_RUN_ENV: str = "run_env"
 

@@ -2,14 +2,13 @@
 Pandas profiling implementation of profiling plugin.
 """
 import json
-from typing import List
+from typing import List, Optional
 
 import ydata_profiling
 from ydata_profiling import ProfileReport
 
 from nefertem.metadata.nefertem_reports import NefertemProfile
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import (
     LIBRARY_YDATA_PROFILING,
@@ -93,6 +92,7 @@ class ProfilePluginYdataProfiling(Profiling):
             # Get fields, stats and duration
             fields = args.get("variables", {})
             stats = args.get("table", {})
+            # TODO metrics overall and by field
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = {}
@@ -142,17 +142,21 @@ class ProfilePluginYdataProfiling(Profiling):
         return ydata_profiling.__version__
 
 
-class ProfileBuilderYdataProfiling(PluginBuilder):
+class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
     """
     Profile plugin builder.
     """
 
     def build(
-        self, resources: List["DataResource"]
+        self, 
+        resources: List["DataResource"],
+        metrics: Optional[List] = None
     ) -> List[ProfilePluginYdataProfiling]:
         """
         Build a plugin.
         """
+        if metrics is not None and len(metrics) > 0:
+            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)
@@ -163,6 +167,10 @@ class ProfileBuilderYdataProfiling(PluginBuilder):
             plugins.append(plugin)
         return plugins
 
+    @staticmethod
+    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+        ...
+        
     def destroy(self) -> None:
         """
         Destory plugins.

@@ -28,16 +28,16 @@ class LocalMetadataStore(MetadataStore):
         super().__init__(name, store_type, metadata_uri, config)
         self._filenames = {
             self._RUN_METADATA: cfg.FN_RUN_METADATA,
-            self._DJ_REPORT: cfg.FN_DJ_REPORT,
-            self._DJ_SCHEMA: cfg.FN_DJ_SCHEMA,
-            self._DJ_PROFILE: cfg.FN_DJ_PROFILE,
+            self._NT_REPORT: cfg.FN_NT_REPORT,
+            self._NT_SCHEMA: cfg.FN_NT_SCHEMA,
+            self._NT_PROFILE: cfg.FN_NT_PROFILE,
             self._ARTIFACT_METADATA: cfg.FN_ARTIFACT_METADATA,
             self._RUN_ENV: cfg.FN_RUN_ENV,
         }
         self._cnt = {
-            self._DJ_REPORT: 0,
-            self._DJ_SCHEMA: 0,
-            self._DJ_PROFILE: 0,
+            self._NT_REPORT: 0,
+            self._NT_SCHEMA: 0,
+            self._NT_PROFILE: 0,
             self._ARTIFACT_METADATA: 0,
         }
 

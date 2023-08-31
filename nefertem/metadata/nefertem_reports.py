@@ -1,8 +1,8 @@
 """
 Nefertem base report module.
 """
-from dataclasses import dataclass
-
+from dataclasses import dataclass, field
+from typing import Optional
 
 @dataclass
 class NefertemBaseReport:
@@ -45,11 +45,14 @@ class NefertemProfile(NefertemBaseReport):
         Descriptors of data stats.
     fields : dict
         Descriptors of data fields.
+    metrics : dict
+        Descriptors of metrics.
 
     """
 
     stats: dict
     fields: dict
+    metrics: Optional[dict] = field(default_factory=dict)
 
 
 @dataclass

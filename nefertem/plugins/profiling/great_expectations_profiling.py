@@ -2,7 +2,7 @@
 GreatExpectations implementation of profiling plugin.
 """
 from copy import deepcopy
-from typing import List
+from typing import List, Optional
 
 import great_expectations as ge
 from great_expectations.core.expectation_suite import ExpectationSuite
@@ -11,8 +11,7 @@ from great_expectations.profile.user_configurable_profiler import (
 )
 
 from nefertem.metadata.nefertem_reports import NefertemProfile
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.great_expectations_utils import (
     get_great_expectations_validator,
 )
@@ -109,17 +108,21 @@ class ProfilePluginGreatExpectations(Profiling):
         return ge.__version__
 
 
-class ProfileBuilderGreatExpectations(PluginBuilder):
+class ProfileBuilderGreatExpectations(ProfilingPluginBuilder):
     """
     Profile plugin builder.
     """
 
     def build(
-        self, resources: List["DataResource"]
+        self, 
+        resources: List["DataResource"],
+        metrics: Optional[List] = None
     ) -> List[ProfilePluginGreatExpectations]:
         """
-        Build a plugin.
+        Build a plugin. Metrics are not supported
         """
+        if metrics is not None and len(metrics) > 0:
+            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)
@@ -129,6 +132,10 @@ class ProfileBuilderGreatExpectations(PluginBuilder):
             plugin.setup(data_reader, resource, self.exec_args)
             plugins.append(plugin)
         return plugins
+
+    @staticmethod
+    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+        ...
 
     def destroy(self) -> None:
         ...

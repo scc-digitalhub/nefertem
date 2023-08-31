@@ -29,12 +29,12 @@ class Inference(Plugin, metaclass=ABCMeta):
         self.logger.info(f"Execute inference - {plugin}")
         lib_result = self.infer()
         self.logger.info(f"Render report - {plugin}")
-        dj_result = self.render_nefertem(lib_result)
+        nt_result = self.render_nefertem(lib_result)
         self.logger.info(f"Render artifact - {plugin}")
         render_result = self.render_artifact(lib_result)
         return {
             RESULT_WRAPPED: lib_result,
-            RESULT_NEFERTEM: dj_result,
+            RESULT_NEFERTEM: nt_result,
             RESULT_RENDERED: render_result,
             RESULT_LIBRARY: self.get_library(),
         }

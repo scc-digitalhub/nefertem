@@ -20,6 +20,8 @@ Constraint types
 * `DuckDB`_
 * `SQLAlchemy`_
 * `Great Expectations`_
+* `Evidently`_
+
 
 
 Frictionless
@@ -354,4 +356,50 @@ Note that for the moment the execution plugins require the presence of a user in
                                                   resources=["example_resource"],
                                                   expectation="expect_column_max_to_be_between",
                                                   expectation_args={"min_value": 10, "max_value": 50, "column": "target-column"},
+                                                  weight=5)
+
+
+Evidently
+------------------
+
+The parameters to define a ``ConstraintEvidently`` are the following:
+
+* *resource*, name of the resource to validate.
+* *reference_resource*, name of the resource to use as a reference dataset for comparison-based tests (e.g., drift detection).
+* *tests*, list of test specifications to apply. Each test is defined with the test name (*test* parameter) and the dictionary of optional 
+  test parameters to consider (*values*).
+
+Note that for the moment the execution plugins require the presence of a user initialized ``Data context``.
+
+.. code-block:: python
+
+   import nefertem as nt
+
+   # Artifact Store
+   STORE_LOCAL_01 = nt.StoreConfig(name="local",
+                                   type="local",
+                                   uri="./ntruns",
+                                   isDefault=True)
+
+   # Data Resource
+   RES_LOCAL_01 = nt.DataResource(path="path-to-data",
+                                  name="example_resource",
+                                  store="local")
+
+  # Data Resource
+   RES_LOCAL_02 = nt.DataResource(path="path-to-ref-data",
+                                  name="reference_resource",
+                                  store="local")
+
+   # EXAMPLE CONSTRAINTS
+
+   # Expecting maximum column value to be between 10 and 50
+   CONSTRAINT_01 = nt.ConstraintEvidently(title="Example Evidently constraint",
+                                                  name="const-evidently-01",
+                                                  resource="example_resource",
+                                                  reference_resource="reference_resource",
+                                                  tests=[EvidentlyElement(
+                                                    test="evidently.test_preset.DataQualityTestPreset",
+                                                    values={"columns": ["col1", "col2", "col3"]},
+                                                  )],
                                                   weight=5)
