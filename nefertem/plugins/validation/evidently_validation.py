@@ -68,7 +68,7 @@ class ValidationPluginEvidently(Validation):
         """
         res = []
         for test in self.constraint.tests:
-            check = test.test
+            check = test.type
             module_name, class_name = check.rsplit(".", 1)
             _class = getattr(importlib.import_module(module_name), class_name)
             if test.values:
@@ -112,7 +112,7 @@ class ValidationPluginEvidently(Validation):
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
         """
-        Return a dummy report to be persisted as artifact.
+        Return an Evidently report to be persisted as artifact.
         """
         artifacts = []
         if result.artifact is None:
@@ -140,7 +140,7 @@ class ValidationPluginEvidently(Validation):
 
 class ValidationBuilderEvidently(ValidationPluginBuilder):
     """
-    Dummy validation plugin builder.
+    Evidently validation plugin builder.
     """
 
     def build(

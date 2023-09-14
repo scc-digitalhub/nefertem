@@ -366,10 +366,10 @@ The parameters to define a ``ConstraintEvidently`` are the following:
 
 * *resource*, name of the resource to validate.
 * *reference_resource*, name of the resource to use as a reference dataset for comparison-based tests (e.g., drift detection).
-* *tests*, list of test specifications to apply. Each test is defined with the test name (*test* parameter) and the dictionary of optional 
+* *tests*, list of test specifications to apply. Each test is defined with the test name (*type* parameter) and the dictionary of optional 
   test parameters to consider (*values*).
 
-Note that for the moment the execution plugins require the presence of a user initialized ``Data context``.
+Note that for the moment the execution plugins require the presence of a user-initialized ``Data context``.
 
 .. code-block:: python
 
@@ -399,7 +399,7 @@ Note that for the moment the execution plugins require the presence of a user in
                                                   resource="example_resource",
                                                   reference_resource="reference_resource",
                                                   tests=[EvidentlyElement(
-                                                    test="evidently.test_preset.DataQualityTestPreset",
+                                                    type="evidently.test_preset.DataQualityTestPreset",
                                                     values={"columns": ["col1", "col2", "col3"]},
                                                   )],
                                                   weight=5)

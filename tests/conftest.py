@@ -21,6 +21,7 @@ from nefertem.utils.config import (
     ConstraintGreatExpectations,
     ConstraintSqlAlchemy,
     ConstraintEvidently,
+    MetricEvidently,
     EvidentlyElement,
     DataResource,
     RunConfig,
@@ -383,11 +384,29 @@ CONST_EVIDENTLY_01 = ConstraintEvidently(
     reference_resource="res_test_01",
     tests=[
         EvidentlyElement(
-            test="evidently.test_preset.DataQualityTestPreset",
+            type="evidently.test_preset.DataQualityTestPreset",
             values={"columns": ["col1", "col2", "col3"]},
         )
     ],
-    check="evidently.test_preset.DataQualityTestPreset",
+    weight=5,
+)
+
+# ----------------
+# METRICS
+# ----------------
+
+METRIC_EVIDENTLY_01 = MetricEvidently(
+    name="metric-evidently-01",
+    title="Test evidently metric",
+    resources=["res_test_01"],
+    resource="res_test_01",
+    reference_resource="res_test_01",
+    metrics=[
+        EvidentlyElement(
+            type="evidently.metric_preset.DataQualityPreset",
+            values={"columns": ["col1", "col2", "col3"]},
+        )
+    ],
     weight=5,
 )
 
@@ -413,6 +432,12 @@ def plugin_builder_val_args(resource, constraint, error_report):
 def plugin_builder_non_val_args(resource):
     resources = listify(resource)
     return [resources]
+
+@pytest.fixture
+def plugin_builder_metric_val_args(resource, metric):
+    resources = listify(resource)
+    metrics = listify(metric)
+    return [resources, metrics]
 
 
 # ----------------

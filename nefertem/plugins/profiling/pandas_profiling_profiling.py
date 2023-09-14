@@ -8,7 +8,7 @@ import pandas_profiling
 from pandas_profiling import ProfileReport
 
 
-from nefertem.metadata.nefertem_reports import NefertemProfile
+from nefertem.metadata.nefertem_reports import NefertemProfile, NefertemProfileMetric
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import (
@@ -34,6 +34,53 @@ PROFILE_FIELDS = [
     "count",
     "memory_size",
 ]
+PROFILE_DATASET_METRICS = [
+    "n",
+    "n_var",
+    "memory_size",
+    "record_size",
+    "n_cells_missing",
+    "n_vars_with_missing",
+    "n_vars_all_missing",
+    "p_cells_missing",
+    "n_duplicates",
+    "p_duplicates"
+]
+PROFILE_FIELD_METRICS = [
+    "n_distinct",
+    "p_distinct",
+    "is_unique",
+    "n_unique",
+    "p_unique",
+    "type",
+    "hashable",
+    "n_missing",
+    "n",
+    "p_missing",
+    "count",
+    "memory_size",
+    "n_negative",
+    "p_negative",
+    "n_infinite",
+    "n_zeros",
+    "mean",
+    "std",
+    "variance",
+    "min",
+    "max",
+    "kurtosis",
+    "skewness",
+    "sum",
+    "mad",
+    "chi_squared_statistic",
+    "chi_squared_pvalue",
+    "range",
+    "iqr",
+    "cv",
+    "p_zeros",
+    "p_infinite"
+]
+
 
 
 class ProfilePluginPandasProfiling(Profiling):
@@ -93,16 +140,42 @@ class ProfilePluginPandasProfiling(Profiling):
             # Get fields, stats and duration
             fields = args.get("variables", {})
             stats = args.get("table", {})
-            # TODO metrics overall and by field
+            metrics, field_metrics = self._extract_metrics(args)
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = {}
             stats = {}
+            metrics = []
+            field_metrics = {}
+
 
         return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), duration, stats, fields
+            self.get_lib_name(), self.get_lib_version(), duration, stats, fields, metrics, field_metrics
         )
 
+    def _extract_metrics(self, args: dict) -> (list, dict):
+        metrics = []
+        field_metrics = {}
+        table = args.get("table", {})
+        var = args.get("variables", {})
+
+        for m in PROFILE_DATASET_METRICS:
+            metrics.append(
+                NefertemProfileMetric(
+                    m, m, "ydata_profiling", None, table[m]
+                ) 
+            )
+        for key in var:
+            field_metrics[key] = []
+            for m in PROFILE_FIELD_METRICS:
+                v = var.get(key, {}).get(m, None)
+                if v is not None:
+                    field_metrics[key].append(
+                        NefertemProfileMetric(
+                            m, m, "ydata_profiling", None, v
+                        ) 
+                    )
+        return (metrics, field_metrics)
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
         """

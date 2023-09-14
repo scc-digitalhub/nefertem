@@ -14,7 +14,8 @@ class TestNefertemReports:
             "duration": 1.0,
             "stats": {},
             "fields": {},
-            "metrics": {}
+            "metrics": [],
+            "field_metrics": {}
         }
         assert data.to_dict() == expected_data
 

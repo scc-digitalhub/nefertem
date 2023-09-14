@@ -25,7 +25,7 @@ Run methods
 Execution methods
 ^^^^^^^^^^^^^^^^^
 
-Execution method tell plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of ``Constraint`` to validate.
+Execution method tells plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of ``Constraint`` to validate.
 
 * ``run.validate()``, execute both framework validation and nefertem report parsing
 * ``run.validate_wrapper()``, execute only framework validation, return a specific framework artifact

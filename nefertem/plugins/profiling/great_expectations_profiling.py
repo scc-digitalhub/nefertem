@@ -65,6 +65,8 @@ class ProfilePluginGreatExpectations(Profiling):
         """
         exec_err = result.errors
         duration = result.duration
+        metrics = []
+        field_metrics = {}
 
         if exec_err is None:
             res = deepcopy(result.artifact).to_json_dict()
@@ -76,7 +78,7 @@ class ProfilePluginGreatExpectations(Profiling):
             stats = {}
 
         return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), duration, stats, fields
+            self.get_lib_name(), self.get_lib_version(), duration, stats, fields, metrics, field_metrics
         )
 
     @exec_decorator

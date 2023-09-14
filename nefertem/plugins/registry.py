@@ -4,6 +4,7 @@ PluginBuilder registry.
 # Dummy imports
 from nefertem.plugins.inference.dummy_inference import InferenceBuilderDummy
 from nefertem.plugins.profiling.dummy_profiling import ProfileBuilderDummy
+from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently
 from nefertem.plugins.validation.dummy_validation import ValidationBuilderDummy
 from nefertem.utils.commons import (
     LIBRARY_DUMMY,
@@ -117,13 +118,18 @@ try:
 except ImportError:
     ...
 
+# evidently imports
 try:
     from nefertem.plugins.validation.evidently_validation import (
         ValidationBuilderEvidently,
     )
+    from nefertem.plugins.profiling.evidently_profiling import (
+        ProfileBuilderEvidently,
+    )
     from nefertem.utils.commons import LIBRARY_EVIDENTLY
 
     REGISTRY[OPERATION_VALIDATION][LIBRARY_EVIDENTLY] = ValidationBuilderEvidently
+    REGISTRY[OPERATION_PROFILING][LIBRARY_EVIDENTLY] = ProfileBuilderEvidently
 
 except ImportError:
     ...
