@@ -1,14 +1,13 @@
 """
 Frictionless implementation of profiling plugin.
 """
-from typing import List
+from typing import List, Optional
 
 import frictionless
 from frictionless import Resource
 
 from nefertem.metadata.nefertem_reports import NefertemProfile
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import LIBRARY_FRICTIONLESS, BASE_FILE_READER
 from nefertem.utils.io_utils import write_bytesio
@@ -94,15 +93,20 @@ class ProfilePluginFrictionless(Profiling):
         return frictionless.__version__
 
 
-class ProfileBuilderFrictionless(PluginBuilder):
+class ProfileBuilderFrictionless(ProfilingPluginBuilder):
     """
     Profile plugin builder.
     """
 
-    def build(self, resources: List["DataResource"]) -> List[ProfilePluginFrictionless]:
+    def build(
+            self, 
+            resources: List["DataResource"],
+            metrics: Optional[List] = None) -> List[ProfilePluginFrictionless]:
         """
-        Build a plugin.
+        Build a plugin. Metrics are not supported
         """
+        if metrics is not None and len(metrics) > 0:
+            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)
@@ -112,6 +116,12 @@ class ProfileBuilderFrictionless(PluginBuilder):
             plugin.setup(data_reader, resource, self.exec_args)
             plugins.append(plugin)
         return plugins
+
+    @staticmethod
+    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+        """
+        Filter metric by library.
+        """
 
     def destroy(self) -> None:
         """

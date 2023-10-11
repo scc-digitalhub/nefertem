@@ -27,9 +27,9 @@ class MetadataStore(metaclass=ABCMeta):
     """
 
     _RUN_METADATA = cfg.MT_RUN_METADATA
-    _DJ_REPORT = cfg.MT_DJ_REPORT
-    _DJ_SCHEMA = cfg.MT_DJ_SCHEMA
-    _DJ_PROFILE = cfg.MT_DJ_PROFILE
+    _NT_REPORT = cfg.MT_NT_REPORT
+    _NT_SCHEMA = cfg.MT_NT_SCHEMA
+    _NT_PROFILE = cfg.MT_NT_PROFILE
     _ARTIFACT_METADATA = cfg.MT_ARTIFACT_METADATA
     _RUN_ENV = cfg.MT_RUN_ENV
 

@@ -2,7 +2,7 @@
 Run handler module.
 """
 import concurrent.futures
-from typing import Any, List
+from typing import Any, List, Optional
 
 from nefertem.data_reader.utils import build_reader
 from nefertem.plugins.plugin_factory import builder_factory
@@ -134,18 +134,20 @@ class RunHandler:
     def profile(
         self,
         resources: List["DataResource"],
+        metrics: Optional[List] = None,
         parallel: bool = False,
         num_worker: int = 10,
     ) -> None:
         """
         Wrapper for plugins profile methods.
         """
+        metrics = listify(metrics)
         builders = builder_factory(
             self._config.profiling,
             OPERATION_PROFILING,
             self._store_handler.get_all_art_stores(),
         )
-        plugins = self._create_plugins(builders, resources)
+        plugins = self._create_plugins(builders, resources, metrics)
         self._scheduler(plugins, OPERATION_PROFILING, parallel, num_worker)
         self._destroy_builders(builders)
 

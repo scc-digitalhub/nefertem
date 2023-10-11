@@ -12,7 +12,7 @@ An user initially configures Reosurces, Stores and Run operations:
 
 .. code-block:: python
 
-    import datajuge as nt
+    import nefertem as nt
 
     # Metadata Store
     METADATA_STORE = nt.StoreConfig(title="Local Metadata Store",

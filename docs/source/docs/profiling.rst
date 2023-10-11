@@ -2,14 +2,10 @@
 Profiling
 =========
 
-The profiling is the process where a framework try to profile a ``DataResource``.
-
-Supported libraries
--------------------
-
-* `Frictionless`_
-* `Pandas Profiling`_
-* `Great Expectation`_
+The profiling is the process where a framework try to profile a ``DataResource`` 
+optionally in accordance to a given ``Metric`` model specification. If 
+``Metric`` model is not specified, the profiling evaluates built-in set of properties
+and metrics.
 
 
 Run methods
@@ -32,11 +28,11 @@ Run methods
 Execution methods
 ^^^^^^^^^^^^^^^^^
 
-Execution method tell plugings to execute profiling over a resource. All this methods accept specific framework arguments as argument.
+Execution method tells plugings to execute profiling over a resource. All this methods accept specific framework arguments as argument and optionally a list of ``Metric`` models to evaluate.
 
 * ``run.profile()``, execute both framework profiling and nefertem profile parsing
 * ``run.profile_wrapper()``, execute only framework profiling, return a specific framework artifact
-* ``run.profile_nefertem()``, execute both framework profiling and nefertem profile parsing, return a ``NefertemProfile``
+* ``run.profile_nefertem()``, execute both framework profiling and nefertem profile parsing, return a ``NefertemProfile``. ``NefertemProfile`` object contains *metrics* list with results of the the evaluated metrics and *field_metrics* dictionary containing the list of metric results for each field (if applicable). 
 
 Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -44,6 +40,13 @@ Data and metadata persistence
 * ``run.log_profile()``, log ``NefertemProfile`` into the ``MetadataStore``
 * ``run.profile()``, persist artifact into the default ``ArtifactStore``
 
+Supported libraries
+-------------------
+
+* `Frictionless`_
+* `Pandas Profiling`_
+* `Great Expectation`_
+* `Evidently` _
 
 Frictionless
 ------------
@@ -80,7 +83,8 @@ Pandas Profiling
 Great Expectation
 -----------------
 
-The ``great_expectations`` validator executes an expectation specified in a *constraint* on a ``DataResource``.
+The ``great_expectations`` profiler executes a profiling operation on a specified ``DataResource``
+using validator profling model.
 
 .. code-block:: python
 
@@ -88,6 +92,21 @@ The ``great_expectations`` validator executes an expectation specified in a *con
        "library": "great_expectations",
 
        # There are no suitable execution arguments for the great_expectations validator
+       "execArgs": {}
+
+   }
+
+Evidently
+^^^^^^^^^^^^^^^^^^
+
+The ``evidently`` profiler executes a report evaluation given a specified *metric* model on a ``DataResource``.
+
+.. code-block:: python
+
+   run_config = {
+       "library": "evidently",
+
+       # There are no suitable execution arguments for the evidently validator
        "execArgs": {}
 
    }

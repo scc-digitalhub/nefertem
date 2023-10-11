@@ -2,14 +2,13 @@
 Pandas profiling implementation of profiling plugin.
 """
 import json
-from typing import List
+from typing import List, Optional
 
 import ydata_profiling
 from ydata_profiling import ProfileReport
 
-from nefertem.metadata.nefertem_reports import NefertemProfile
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.metadata.nefertem_reports import NefertemProfile, NefertemProfileMetric
+from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import (
     LIBRARY_YDATA_PROFILING,
@@ -34,7 +33,52 @@ PROFILE_FIELDS = [
     "count",
     "memory_size",
 ]
-
+PROFILE_DATASET_METRICS = [
+    "n",
+    "n_var",
+    "memory_size",
+    "record_size",
+    "n_cells_missing",
+    "n_vars_with_missing",
+    "n_vars_all_missing",
+    "p_cells_missing",
+    "n_duplicates",
+    "p_duplicates"
+]
+PROFILE_FIELD_METRICS = [
+    "n_distinct",
+    "p_distinct",
+    "is_unique",
+    "n_unique",
+    "p_unique",
+    "type",
+    "hashable",
+    "n_missing",
+    "n",
+    "p_missing",
+    "count",
+    "memory_size",
+    "n_negative",
+    "p_negative",
+    "n_infinite",
+    "n_zeros",
+    "mean",
+    "std",
+    "variance",
+    "min",
+    "max",
+    "kurtosis",
+    "skewness",
+    "sum",
+    "mad",
+    "chi_squared_statistic",
+    "chi_squared_pvalue",
+    "range",
+    "iqr",
+    "cv",
+    "p_zeros",
+    "p_infinite"
+]
 
 class ProfilePluginYdataProfiling(Profiling):
     """
@@ -93,14 +137,41 @@ class ProfilePluginYdataProfiling(Profiling):
             # Get fields, stats and duration
             fields = args.get("variables", {})
             stats = args.get("table", {})
+            metrics, field_metrics = self._extract_metrics(args)
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = {}
             stats = {}
+            metrics = []
+            field_metrics = {}
 
         return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), duration, stats, fields
+            self.get_lib_name(), self.get_lib_version(), duration, stats, fields, metrics, field_metrics
         )
+
+    def _extract_metrics(self, args) -> (list, dict):
+        metrics = []
+        field_metrics = {}
+        table = args.get("table", {})
+        var = args.get("variables", {})
+
+        for m in PROFILE_DATASET_METRICS:
+            metrics.append(
+                NefertemProfileMetric(
+                    m, m, "ydata_profiling", None, table[m]
+                ) 
+            )
+        for key in var:
+            field_metrics[key] = []
+            for m in PROFILE_FIELD_METRICS:
+                v = var.get(key, {}).get(m, None)
+                if v is not None:
+                    field_metrics[key].append(
+                        NefertemProfileMetric(
+                            m, m, "ydata_profiling", None, v
+                        ) 
+                    )
+        return (metrics, field_metrics)
 
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
@@ -127,6 +198,7 @@ class ProfilePluginYdataProfiling(Profiling):
 
         return artifacts
 
+
     @staticmethod
     def get_lib_name() -> str:
         """
@@ -142,17 +214,21 @@ class ProfilePluginYdataProfiling(Profiling):
         return ydata_profiling.__version__
 
 
-class ProfileBuilderYdataProfiling(PluginBuilder):
+class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
     """
     Profile plugin builder.
     """
 
     def build(
-        self, resources: List["DataResource"]
+        self, 
+        resources: List["DataResource"],
+        metrics: Optional[List] = None
     ) -> List[ProfilePluginYdataProfiling]:
         """
         Build a plugin.
         """
+        if metrics is not None and len(metrics) > 0:
+            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)
@@ -163,6 +239,10 @@ class ProfileBuilderYdataProfiling(PluginBuilder):
             plugins.append(plugin)
         return plugins
 
+    @staticmethod
+    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+        ...
+        
     def destroy(self) -> None:
         """
         Destory plugins.

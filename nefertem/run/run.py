@@ -9,9 +9,9 @@ from nefertem.metadata.env_log import EnvLog
 from nefertem.utils.commons import (
     NEFERTEM_VERSION,
     MT_ARTIFACT_METADATA,
-    MT_DJ_PROFILE,
-    MT_DJ_REPORT,
-    MT_DJ_SCHEMA,
+    MT_NT_PROFILE,
+    MT_NT_REPORT,
+    MT_NT_SCHEMA,
     MT_RUN_ENV,
     MT_RUN_METADATA,
     SCHEME_DUMMY,
@@ -250,7 +250,7 @@ class Run:
         return self._run_handler.get_nefertem_schema()
 
     def infer(
-        self, parallel: bool = False, num_worker: int = 10, only_dj: bool = False
+        self, parallel: bool = False, num_worker: int = 10, only_nt: bool = False
     ) -> Any:
         """
         Execute schema inference on resources.
@@ -261,7 +261,7 @@ class Run:
             Flag to execute operation in parallel, by default False
         num_worker : int, optional
             Number of workers to execute operation in parallel, by default 10
-        only_dj : bool, optional
+        only_nt : bool, optional
             Flag to return only the Nefertem report, by default False
 
         Returns
@@ -271,10 +271,10 @@ class Run:
             corresponding list of framework results.
         """
         schema = self.infer_wrapper(parallel, num_worker)
-        schema_dj = self.infer_nefertem(parallel, num_worker)
-        if only_dj:
-            return None, schema_dj
-        return schema, schema_dj
+        schema_nt = self.infer_nefertem(parallel, num_worker)
+        if only_nt:
+            return None, schema_nt
+        return schema, schema_nt
 
     def log_schema(self) -> None:
         """
@@ -284,7 +284,7 @@ class Run:
         objects = self._run_handler.get_nefertem_schema()
         for obj in objects:
             metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, MT_DJ_SCHEMA)
+            self._log_metadata(metadata, MT_NT_SCHEMA)
 
     def persist_schema(self) -> None:
         """
@@ -381,7 +381,7 @@ class Run:
         error_report: Optional[str] = "partial",
         parallel: Optional[bool] = False,
         num_worker: Optional[int] = 10,
-        only_dj: Optional[bool] = False,
+        only_nt: Optional[bool] = False,
     ) -> Any:
         """
         Execute validation on resources.
@@ -400,7 +400,7 @@ class Run:
             Flag to execute operation in parallel, by default False
         num_worker : int, optional
             Number of workers to execute operation in parallel, by default 10
-        only_dj : bool, optional
+        only_nt : bool, optional
             Flag to return only the Nefertem report, by default False
 
         Returns
@@ -411,12 +411,12 @@ class Run:
 
         """
         report = self.validate_wrapper(constraints, error_report, parallel, num_worker)
-        report_dj = self.validate_nefertem(
+        report_nt = self.validate_nefertem(
             constraints, error_report, parallel, num_worker
         )
-        if only_dj:
-            return None, report_dj
-        return report, report_dj
+        if only_nt:
+            return None, report_nt
+        return report, report_nt
 
     def log_report(self) -> None:
         """
@@ -426,7 +426,7 @@ class Run:
         objects = self._run_handler.get_nefertem_report()
         for obj in objects:
             metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, MT_DJ_REPORT)
+            self._log_metadata(metadata, MT_NT_REPORT)
 
     def persist_report(self) -> None:
         """
@@ -439,13 +439,18 @@ class Run:
     # Profiling
 
     def profile_wrapper(
-        self, parallel: bool = False, num_worker: int = 10
+        self, 
+        metrics: Optional[List] = None,
+        parallel: bool = False, 
+        num_worker: int = 10
     ) -> List[Any]:
         """
         Execute profiling on resources with profiling frameworks.
 
         Parameters
         ----------
+        metrics: List["Metric"]
+            Optional list of metrics to evaluate over resources.
         parallel : bool, optional
             Flag to execute operation in parallel, by default False
         num_worker : int, optional
@@ -461,17 +466,22 @@ class Run:
         if profiles:
             return profiles
 
-        self._run_handler.profile(self.run_info.resources, parallel, num_worker)
+        self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
         return self._run_handler.get_artifact_profile()
 
     def profile_nefertem(
-        self, parallel: bool = False, num_worker: int = 10
+        self, 
+        metrics: Optional[List] = None,
+        parallel: bool = False, 
+        num_worker: int = 10
     ) -> List["NefertemProfile"]:
         """
         Execute profiling on resources with Nefertem.
 
         Parameters
         ----------
+        metrics: List["Metric"]
+            Optional list of metrics to evaluate over resources.
         parallel : bool, optional
             Flag to execute operation in parallel, by default False
         num_worker : int, optional
@@ -487,22 +497,28 @@ class Run:
         if profiles:
             return profiles
 
-        self._run_handler.profile(self.run_info.resources, parallel, num_worker)
+        self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
         return self._run_handler.get_nefertem_profile()
 
     def profile(
-        self, parallel: bool = False, num_worker: int = 10, only_dj: bool = False
+        self, 
+        metrics: Optional[List] = None,
+        parallel: bool = False, 
+        num_worker: int = 10, 
+        only_nt: bool = False
     ) -> Any:
         """
         Execute profiling on resources.
 
         Parameters
         ----------
+        metrics: List["Metric"]
+            Optional list of metrics to evaluate over resources.
         parallel : bool, optional
             Flag to execute operation in parallel, by default False
         num_worker : int, optional
             Number of workers to execute operation in parallel, by default 10
-        only_dj : bool, optional
+        only_nt : bool, optional
             Flag to return only the Nefertem report, by default False
 
         Returns
@@ -512,11 +528,11 @@ class Run:
             corresponding list of framework results.
 
         """
-        profile = self.profile_wrapper(parallel, num_worker)
-        profile_dj = self.profile_nefertem(parallel, num_worker)
-        if only_dj:
-            return None, profile_dj
-        return profile, profile_dj
+        profile = self.profile_wrapper(metrics, parallel, num_worker)
+        profile_nt = self.profile_nefertem(metrics, parallel, num_worker)
+        if only_nt:
+            return None, profile_nt
+        return profile, profile_nt
 
     def log_profile(self) -> None:
         """
@@ -526,7 +542,7 @@ class Run:
         objects = self._run_handler.get_nefertem_profile()
         for obj in objects:
             metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, MT_DJ_PROFILE)
+            self._log_metadata(metadata, MT_NT_PROFILE)
 
     def persist_profile(self) -> None:
         """

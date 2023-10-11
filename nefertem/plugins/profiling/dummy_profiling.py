@@ -5,8 +5,7 @@ Dummy implementation of profiling plugin.
 from typing import List
 
 from nefertem.metadata.nefertem_reports import NefertemProfile
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import GENERIC_DUMMY, LIBRARY_DUMMY
 
@@ -67,7 +66,7 @@ class ProfilePluginDummy(Profiling):
         return LIBRARY_DUMMY
 
 
-class ProfileBuilderDummy(PluginBuilder):
+class ProfileBuilderDummy(ProfilingPluginBuilder):
     """
     Profile plugin builder.
     """
@@ -77,6 +76,10 @@ class ProfileBuilderDummy(PluginBuilder):
         Build a plugin.
         """
         return [ProfilePluginDummy()]
+
+    @staticmethod
+    def _filter_metrics(*args) -> None:
+        ...
 
     def destroy(self) -> None:
         ...

@@ -25,7 +25,7 @@ Run methods
 Execution methods
 ^^^^^^^^^^^^^^^^^
 
-Execution method tell plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of ``Constraint`` to validate.
+Execution method tells plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of ``Constraint`` to validate.
 
 * ``run.validate()``, execute both framework validation and nefertem report parsing
 * ``run.validate_wrapper()``, execute only framework validation, return a specific framework artifact
@@ -45,6 +45,7 @@ Supported libraries
 * `DuckDB`_
 * `SQLAlchemy`_
 * `Great Expectations`_
+* `Evidently`_
 
 
 Frictionless
@@ -105,6 +106,21 @@ The ``great_expectations`` validator executes an expectation specified in a *con
        "library": "great_expectations",
 
        # There are no suitable execution arguments for the great_expectations validator
+       "execArgs": {}
+
+   }
+
+Evidently
+^^^^^^^^^^^^^^^^^^
+
+The ``evidently`` validator executes a test suite specified in a *constraint* on a ``DataResource``.
+
+.. code-block:: python
+
+   run_config = {
+       "library": "evidently",
+
+       # There are no suitable execution arguments for the evidently validator
        "execArgs": {}
 
    }

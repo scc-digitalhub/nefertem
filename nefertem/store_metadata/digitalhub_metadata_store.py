@@ -36,18 +36,18 @@ class DigitalHubMetadataStore(MetadataStore):
         # To memorize runs present in the backend
         self._key_vault = {
             self._RUN_METADATA: [],
-            self._DJ_REPORT: [],
-            self._DJ_SCHEMA: [],
-            self._DJ_PROFILE: [],
+            self._NT_REPORT: [],
+            self._NT_SCHEMA: [],
+            self._NT_PROFILE: [],
             self._ARTIFACT_METADATA: [],
             self._RUN_ENV: [],
         }
         # API endpoints
         self._endpoints = {
             self._RUN_METADATA: cfg.API_RUN_METADATA,
-            self._DJ_REPORT: cfg.API_DJ_REPORT,
-            self._DJ_SCHEMA: cfg.API_DJ_SCHEMA,
-            self._DJ_PROFILE: cfg.API_DJ_PROFILE,
+            self._NT_REPORT: cfg.API_NT_REPORT,
+            self._NT_SCHEMA: cfg.API_NT_SCHEMA,
+            self._NT_PROFILE: cfg.API_NT_PROFILE,
             self._ARTIFACT_METADATA: cfg.API_ARTIFACT_METADATA,
             self._RUN_ENV: cfg.API_RUN_ENV,
         }
