@@ -6,7 +6,7 @@ from typing import List
 import frictionless
 from frictionless.schema import Schema
 
-from nefertem.metadata.nefertem_reports import NefertemSchema
+from nefertem.metadata.reports.schema import NefertemSchema
 from nefertem.plugins.base_plugin import PluginBuilder
 from nefertem.plugins.inference.inference_plugin import Inference
 from nefertem.plugins.utils.plugin_utils import exec_decorator
@@ -23,9 +23,7 @@ class InferencePluginFrictionless(Inference):
         self.resource = None
         self.exec_multiprocess = True
 
-    def setup(
-        self, data_reader: "FileReader", resource: "DataResource", exec_args: dict
-    ) -> None:
+    def setup(self, data_reader: "FileReader", resource: "DataResource", exec_args: dict) -> None:
         """
         Set plugin resource.
         """
@@ -54,15 +52,16 @@ class InferencePluginFrictionless(Inference):
 
         if exec_err is None:
             inferred_fields = result.artifact.get("fields", [])
-            func = lambda x: self._get_fields(x.get("name", ""), x.get("type", ""))
+
+            def func(x):
+                return self._get_fields(x.get("name", ""), x.get("type", ""))
+
             fields = [func(field) for field in inferred_fields]
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = []
 
-        return NefertemSchema(
-            self.get_lib_name(), self.get_lib_version(), duration, fields
-        )
+        return NefertemSchema(self.get_lib_name(), self.get_lib_version(), duration, fields)
 
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
@@ -98,9 +97,7 @@ class InferenceBuilderFrictionless(PluginBuilder):
     Inference plugin builder.
     """
 
-    def build(
-        self, resources: List["DataResource"]
-    ) -> List[InferencePluginFrictionless]:
+    def build(self, resources: List["DataResource"]) -> List[InferencePluginFrictionless]:
         """
         Build a plugin.
         """

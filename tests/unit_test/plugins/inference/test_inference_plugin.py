@@ -1,13 +1,6 @@
-import pytest
-
-from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
-from nefertem.utils.commons import (
-    RESULT_NEFERTEM,
-    RESULT_LIBRARY,
-    RESULT_RENDERED,
-    RESULT_WRAPPED,
-)
 from nefertem.plugins.inference.inference_plugin import Inference
+from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
+from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 
 class SamplePlugin(Inference):

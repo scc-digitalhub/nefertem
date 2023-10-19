@@ -5,14 +5,8 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
-from nefertem.utils.file_utils import (
-    check_dir,
-    check_path,
-    copy_file,
-    get_path,
-    make_dir,
-)
+from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.utils.file_utils import check_dir, check_path, copy_file, get_path, make_dir
 from nefertem.utils.io_utils import write_json, write_object
 
 
@@ -62,9 +56,7 @@ class LocalArtifactStore(ArtifactStore):
             write_object(src, dst)
 
         else:
-            raise NotImplementedError(
-                "Invalid object type located at src, it could not be persisted."
-            )
+            raise NotImplementedError("Invalid object type located at src, it could not be persisted.")
 
     def _get_and_register_artifact(self, src: str, fetch_mode: str) -> str:
         """
@@ -100,9 +92,7 @@ class LocalArtifactStore(ArtifactStore):
             return src
 
         if fetch_mode == self.BUFFER:
-            raise NotImplementedError(
-                "File fetch using buffers is not yet implemented."
-            )
+            raise NotImplementedError("File fetch using buffers is not yet implemented.")
 
     def _check_access_to_storage(self, dst: str, write: bool = False) -> None:
         """

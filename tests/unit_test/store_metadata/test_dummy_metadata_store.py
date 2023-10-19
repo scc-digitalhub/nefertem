@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.store_metadata.dummy_metadata_store import DummyMetadataStore
+from nefertem.stores.metadata.dummy_metadata_store import DummyMetadataStore
 
 
 class TestDummyMetadataStore:

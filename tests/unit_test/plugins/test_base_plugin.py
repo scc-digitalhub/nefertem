@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 
+from nefertem.models.data_resource import DataResource
 from nefertem.plugins.base_plugin import Plugin, PluginBuilder
-from nefertem.utils.config import DataResource
 from nefertem.utils.exceptions import StoreError
 
 

@@ -1,8 +1,3 @@
-import pytest
-
-from nefertem.store_artifact.sql_artifact_store import SQLArtifactStore
-
-
 class TestSQLArtifactStore:
     def test_persist_artifact(self):
         ...

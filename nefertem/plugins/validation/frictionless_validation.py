@@ -7,18 +7,11 @@ import frictionless
 from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
 
-from nefertem.metadata.nefertem_reports import NefertemReport
-from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import (
-    Validation,
-    ValidationPluginBuilder,
-)
+from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.frictionless_utils import custom_frictionless_detector
-from nefertem.utils.commons import (
-    CONSTRAINT_FRICTIONLESS_SCHEMA,
-    LIBRARY_FRICTIONLESS,
-    BASE_FILE_READER,
-)
+from nefertem.plugins.utils.plugin_utils import exec_decorator
+from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
+from nefertem.utils.commons import BASE_FILE_READER, CONSTRAINT_FRICTIONLESS_SCHEMA, LIBRARY_FRICTIONLESS
 
 
 class ValidationPluginFrictionless(Validation):
@@ -56,9 +49,7 @@ class ValidationPluginFrictionless(Validation):
         """
         data = self.data_reader.fetch_data(self.resource.path)
         schema = self._rebuild_constraints(data)
-        res = Resource(
-            path=data, schema=schema, detector=custom_frictionless_detector
-        ).validate(**self.exec_args)
+        res = Resource(path=data, schema=schema, detector=custom_frictionless_detector).validate(**self.exec_args)
         return Report(res.to_dict())
 
     def _rebuild_constraints(self, data_path: str) -> Schema:
@@ -100,11 +91,7 @@ class ValidationPluginFrictionless(Validation):
             schema = Schema.describe(path=data_path)
             if not schema:
                 return {"fields": []}
-            return {
-                "fields": [
-                    {"name": field["name"], "type": "any"} for field in schema["fields"]
-                ]
-            }
+            return {"fields": [{"name": field["name"], "type": "any"} for field in schema["fields"]]}
         except FrictionlessException as fex:
             raise fex
 
@@ -121,10 +108,7 @@ class ValidationPluginFrictionless(Validation):
         if exec_err is None:
             valid = result.artifact.get("valid")
             if not valid:
-                errors_list = [
-                    self._render_error_type(err[0])
-                    for err in result.artifact.flatten(spec=["code"])
-                ]
+                errors_list = [self._render_error_type(err[0]) for err in result.artifact.flatten(spec=["code"])]
                 total_count = len(errors_list)
                 parsed_error_list = self._parse_error_report(errors_list)
                 errors = self._get_errors(total_count, parsed_error_list)
@@ -194,9 +178,7 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
                     store = self._get_resource_store(resource)
                     data_reader = self._get_data_reader(BASE_FILE_READER, store)
                     plugin = ValidationPluginFrictionless()
-                    plugin.setup(
-                        data_reader, resource, const, error_report, self.exec_args
-                    )
+                    plugin.setup(data_reader, resource, const, error_report, self.exec_args)
                     plugins.append(plugin)
 
         return plugins
@@ -208,11 +190,7 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
         """
         Filter out ConstraintFrictionless and ConstraintFullFrictionless.
         """
-        return [
-            const
-            for const in constraints
-            if const.type in (LIBRARY_FRICTIONLESS, CONSTRAINT_FRICTIONLESS_SCHEMA)
-        ]
+        return [const for const in constraints if const.type in (LIBRARY_FRICTIONLESS, CONSTRAINT_FRICTIONLESS_SCHEMA)]
 
     def destroy(self) -> None:
         """

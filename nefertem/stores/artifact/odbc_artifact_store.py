@@ -8,7 +8,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pyodbc
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.artifact_store import ArtifactStore
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import check_make_dir, get_path
 from nefertem.utils.uri_utils import get_uri_netloc
@@ -22,9 +22,7 @@ class ODBCArtifactStore(ArtifactStore):
 
     """
 
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Method to persist an artifact.
         """
@@ -99,9 +97,7 @@ class ODBCArtifactStore(ArtifactStore):
             try:
                 return connection.execute(f"SELECT * FROM {table_full_name}")
             except Exception as ex:
-                raise StoreError(
-                    f"Something wrong with data fetching. Arguments: {str(ex.args)}"
-                )
+                raise StoreError(f"Something wrong with data fetching. Arguments: {str(ex.args)}")
         raise StoreError("Something wrong with resource name.")
 
     def _store_data(self, obj: Any, key: str) -> str:

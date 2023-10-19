@@ -3,22 +3,8 @@ from pathlib import Path
 import pytest
 
 from nefertem.client.store_handler import StoreHandler
-from nefertem.plugins.base_plugin import Plugin
-from nefertem.plugins.plugin_factory import builder_factory
-from nefertem.plugins.utils.plugin_utils import Result
-from nefertem.run.run import Run
 from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
-from nefertem.utils.commons import (
-    MT_NT_REPORT,
-    OPERATION_INFERENCE,
-    OPERATION_PROFILING,
-    OPERATION_VALIDATION,
-    RESULT_NEFERTEM,
-    RESULT_LIBRARY,
-    RESULT_RENDERED,
-    RESULT_WRAPPED,
-)
-from nefertem.utils.exceptions import RunError
+from nefertem.utils.commons import MT_NT_REPORT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 
 class TestRun:

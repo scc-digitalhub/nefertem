@@ -7,22 +7,12 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from typing import IO, Any
 
-from azure.storage.blob import (
-    BlobSasPermissions,
-    BlobServiceClient,
-    ContainerClient,
-    generate_blob_sas,
-)
+from azure.storage.blob import BlobSasPermissions, BlobServiceClient, ContainerClient, generate_blob_sas
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.artifact_store import ArtifactStore
 from nefertem.utils.file_utils import check_make_dir, check_path, get_path
 from nefertem.utils.io_utils import wrap_string, write_bytes, write_bytesio
-from nefertem.utils.uri_utils import (
-    build_key,
-    get_name_from_uri,
-    get_uri_netloc,
-    get_uri_path,
-)
+from nefertem.utils.uri_utils import build_key, get_name_from_uri, get_uri_netloc, get_uri_path
 
 
 class AzureArtifactStore(ArtifactStore):
@@ -33,9 +23,7 @@ class AzureArtifactStore(ArtifactStore):
 
     """
 
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Persist an artifact.
         """
@@ -141,18 +129,14 @@ class AzureArtifactStore(ArtifactStore):
         return f"{client.primary_endpoint}/{src}?{read_sas_blob}"
 
     @staticmethod
-    def _upload_fileobj(
-        client: ContainerClient, name: str, data: IO, metadata: dict
-    ) -> None:
+    def _upload_fileobj(client: ContainerClient, name: str, data: IO, metadata: dict) -> None:
         """
         Upload fileobj to Azure.
         """
         client.upload_blob(name=name, data=data, metadata=metadata, overwrite=True)
 
     @staticmethod
-    def _upload_file(
-        client: ContainerClient, name: str, path: str, metadata: dict
-    ) -> None:
+    def _upload_file(client: ContainerClient, name: str, path: str, metadata: dict) -> None:
         """
         Upload file to Azure.
         """

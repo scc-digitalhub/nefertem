@@ -2,23 +2,20 @@
 SQLAlchemy implementation of validation plugin.
 """
 from copy import deepcopy
-from typing import List, Any
+from typing import Any, List
 
 import sqlalchemy
 
-from nefertem.metadata.nefertem_reports import NefertemReport
-from nefertem.plugins.utils.plugin_utils import exec_decorator, ValidationReport
+from nefertem.metadata.reports.report import NefertemReport
+from nefertem.plugins.utils.plugin_utils import ValidationReport, exec_decorator
 from nefertem.plugins.utils.sql_checks import evaluate_validity
-from nefertem.plugins.validation.validation_plugin import (
-    Validation,
-    ValidationPluginBuilder,
-)
+from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import (
-    PANDAS_DATAFRAME_SQL_READER,
-    LIBRARY_SQLALCHEMY,
-    STORE_SQL,
     CONSTRAINT_SQL_CHECK_ROWS,
     CONSTRAINT_SQL_CHECK_VALUE,
+    LIBRARY_SQLALCHEMY,
+    PANDAS_DATAFRAME_SQL_READER,
+    STORE_SQL,
 )
 from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list
@@ -54,13 +51,9 @@ class ValidationPluginSqlAlchemy(Validation):
         Validate a Data Resource.
         """
         try:
-            data = self.data_reader.fetch_data(
-                self.constraint.name, self.constraint.query
-            )
+            data = self.data_reader.fetch_data(self.constraint.name, self.constraint.query)
             value = self._filter_result(data)
-            valid, errors = evaluate_validity(
-                value, self.constraint.expect, self.constraint.value
-            )
+            valid, errors = evaluate_validity(value, self.constraint.expect, self.constraint.value)
             result = self._shorten_data(data)
             return ValidationReport(result, valid, errors)
         except Exception as ex:
@@ -158,9 +151,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
 
         f_constraint = self._filter_constraints(constraints)
         f_resources = self._filter_resources(resources, f_constraint)
-        grouped_constraints = self._regroup_constraint_resources(
-            f_constraint, f_resources
-        )
+        grouped_constraints = self._regroup_constraint_resources(f_constraint, f_resources)
 
         plugins = []
         for pack in grouped_constraints:
@@ -180,9 +171,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         """
         self.stores = [store for store in self.stores if store.store_type == STORE_SQL]
         if not self.stores:
-            raise ValidationError(
-                "There must be at least a SQLStore to use sqlalchemy validator."
-            )
+            raise ValidationError("There must be at least a SQLStore to use sqlalchemy validator.")
 
     @staticmethod
     def _filter_constraints(
@@ -199,17 +188,13 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         """
         Filter resources used by validator.
         """
-        res_names = set(
-            flatten_list([deepcopy(const.resources) for const in constraints])
-        )
+        res_names = set(flatten_list([deepcopy(const.resources) for const in constraints]))
         res_to_validate = [res for res in resources if res.name in res_names]
         st_names = [store.name for store in self.stores]
         res_in_db = [res for res in res_to_validate if res.store in st_names]
         return res_in_db
 
-    def _regroup_constraint_resources(
-        self, constraints: List["Constraint"], resources: List["DataResource"]
-    ) -> list:
+    def _regroup_constraint_resources(self, constraints: List["Constraint"], resources: List["DataResource"]) -> list:
         """
         Check univocity of resources location and return connection
         string for db access. Basically, all resources must be in
@@ -222,13 +207,9 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
 
             store_num = len(set(res_stores))
             if store_num > 1:
-                raise ValidationError(
-                    f"Resources for constraint '{const.name}' are not in the same database."
-                )
+                raise ValidationError(f"Resources for constraint '{const.name}' are not in the same database.")
             if store_num == 0:
-                raise ValidationError(
-                    f"No resources for constraint '{const.name}' are in a configured store."
-                )
+                raise ValidationError(f"No resources for constraint '{const.name}' are in a configured store.")
 
             constraint_connection.append(
                 {

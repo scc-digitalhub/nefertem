@@ -6,12 +6,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any
 
 from nefertem.plugins.base_plugin import Plugin
-from nefertem.utils.commons import (
-    RESULT_NEFERTEM,
-    RESULT_LIBRARY,
-    RESULT_RENDERED,
-    RESULT_WRAPPED,
-)
+from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 
 class Inference(Plugin, metaclass=ABCMeta):

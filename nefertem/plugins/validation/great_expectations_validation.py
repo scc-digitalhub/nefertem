@@ -5,23 +5,13 @@ from copy import deepcopy
 from typing import List
 
 import great_expectations as ge
-from great_expectations.core.expectation_validation_result import (
-    ExpectationValidationResult,
-)
+from great_expectations.core.expectation_validation_result import ExpectationValidationResult
 
-from nefertem.metadata.nefertem_reports import NefertemReport
-from nefertem.plugins.utils.great_expectations_utils import (
-    get_great_expectations_validator,
-)
+from nefertem.metadata.reports.report import NefertemReport
+from nefertem.plugins.utils.great_expectations_utils import get_great_expectations_validator
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import (
-    Validation,
-    ValidationPluginBuilder,
-)
-from nefertem.utils.commons import (
-    LIBRARY_GREAT_EXPECTATIONS,
-    PANDAS_DATAFRAME_FILE_READER,
-)
+from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
+from nefertem.utils.commons import LIBRARY_GREAT_EXPECTATIONS, PANDAS_DATAFRAME_FILE_READER
 
 
 class ValidationPluginGreatExpectations(Validation):
@@ -58,9 +48,7 @@ class ValidationPluginGreatExpectations(Validation):
         Validate a Data Resource.
         """
         data = self.data_reader.fetch_data(self.resource.path)
-        validator = get_great_expectations_validator(
-            data, str(self.resource.name), str(self.resource.title)
-        )
+        validator = get_great_expectations_validator(data, str(self.resource.name), str(self.resource.title))
         validation_func = validator.validate_expectation(self.constraint.expectation)
         result = validation_func(**self.constraint.expectation_args)
         return ExpectationValidationResult(**result.to_json_dict())
@@ -86,10 +74,7 @@ class ValidationPluginGreatExpectations(Validation):
                     errors_list = [self._render_error_type("observed-value-error")]
                 elif observed.get("unexpected_count") is not None:
                     total_count = observed.get("unexpected_count")
-                    errors_list = [
-                        self._render_error_type("unexpected-count-error")
-                        for _ in range(total_count)
-                    ]
+                    errors_list = [self._render_error_type("unexpected-count-error") for _ in range(total_count)]
 
                 # AS debug if other type of errors are encountered
                 else:
@@ -161,13 +146,9 @@ class ValidationBuilderGreatExpectations(ValidationPluginBuilder):
             for const in f_constraints:
                 if resource.name in const.resources:
                     store = self._get_resource_store(resource)
-                    data_reader = self._get_data_reader(
-                        PANDAS_DATAFRAME_FILE_READER, store
-                    )
+                    data_reader = self._get_data_reader(PANDAS_DATAFRAME_FILE_READER, store)
                     plugin = ValidationPluginGreatExpectations()
-                    plugin.setup(
-                        data_reader, resource, const, error_report, self.exec_args
-                    )
+                    plugin.setup(data_reader, resource, const, error_report, self.exec_args)
                     plugins.append(plugin)
         return plugins
 
@@ -178,9 +159,7 @@ class ValidationBuilderGreatExpectations(ValidationPluginBuilder):
         """
         Filter out ConstraintGreatExpectations.
         """
-        return [
-            const for const in constraints if const.type == LIBRARY_GREAT_EXPECTATIONS
-        ]
+        return [const for const in constraints if const.type == LIBRARY_GREAT_EXPECTATIONS]
 
     def destroy(self) -> None:
         ...

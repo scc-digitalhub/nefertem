@@ -5,12 +5,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, List
 
 from nefertem.plugins.base_plugin import Plugin, PluginBuilder
-from nefertem.utils.commons import (
-    RESULT_WRAPPED,
-    RESULT_NEFERTEM,
-    RESULT_RENDERED,
-    RESULT_LIBRARY,
-)
+from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 
 class Profiling(Plugin, metaclass=ABCMeta):
@@ -29,7 +24,9 @@ class Profiling(Plugin, metaclass=ABCMeta):
         Method that call specific execution.
         """
         plugin = f"Plugin: {self.lib_name} {self._id};"
-        self.logger.info(f"Execute profiling - {plugin}" + (' Metric: {self.metric.name}' if self.metric is not None else ''))
+        self.logger.info(
+            f"Execute profiling - {plugin}" + (" Metric: {self.metric.name}" if self.metric is not None else "")
+        )
         lib_result = self.profile()
         self.logger.info(f"Render report - {plugin}")
         nt_result = self.render_nefertem(lib_result)
@@ -47,6 +44,7 @@ class Profiling(Plugin, metaclass=ABCMeta):
         """
         Generate a data profile.
         """
+
 
 class ProfilingPluginBuilder(PluginBuilder):
     """

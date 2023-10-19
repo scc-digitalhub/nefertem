@@ -3,15 +3,22 @@ Client module.
 Implementation of a Client object to interact with storages
 and create runs.
 """
+from __future__ import annotations
+
+import typing
+
+from nefertem.models.data_resource import DataResource
+from nefertem.models.store_config import StoreConfig
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.run_config import RunConfig
+    from nefertem.run.run import Run
+
 from typing import List, Optional, Union
 
 from nefertem.client.run_builder import RunBuilder
 from nefertem.client.store_handler import StoreHandler
-from nefertem.utils.commons import (
-    DEFAULT_DIRECTORY,
-    DEFAULT_EXPERIMENT,
-    DEFAULT_PROJECT,
-)
+from nefertem.utils.commons import DEFAULT_DIRECTORY, DEFAULT_EXPERIMENT, DEFAULT_PROJECT
 
 
 class Client:
@@ -47,15 +54,15 @@ class Client:
 
     def __init__(
         self,
-        metadata_store: Optional["StoreConfig"] = None,
-        store: Optional[Union["StoreConfig", List["StoreConfig"]]] = None,
+        metadata_store: Optional[StoreConfig] = None,
+        store: Optional[Union[StoreConfig, List[StoreConfig]]] = None,
         project: Optional[str] = DEFAULT_PROJECT,
         tmp_dir: Optional[str] = DEFAULT_DIRECTORY,
     ) -> None:
         self._store_handler = StoreHandler(metadata_store, store, project, tmp_dir)
         self._run_builder = RunBuilder(self._store_handler)
 
-    def add_store(self, store: "StoreConfig") -> None:
+    def add_store(self, store: StoreConfig) -> None:
         """
         Add a new store to the client internal registry.
 
@@ -96,6 +103,4 @@ class Client:
         Run
             Run object.
         """
-        return self._run_builder.create_run(
-            resources, run_config, experiment, run_id, overwrite
-        )
+        return self._run_builder.create_run(resources, run_config, experiment, run_id, overwrite)

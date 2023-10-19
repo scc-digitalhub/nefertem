@@ -1,11 +1,7 @@
 import pytest
-from frictionless import Detector
 
-from nefertem.utils.config import ConstraintFrictionless
-from nefertem.plugins.utils.frictionless_utils import (
-    frictionless_schema_converter,
-    describe_resource,
-)
+from nefertem.models.constraints.frictionless import ConstraintFrictionless
+from nefertem.plugins.utils.frictionless_utils import describe_resource, frictionless_schema_converter
 
 
 def test_frictionless_schema_converter():

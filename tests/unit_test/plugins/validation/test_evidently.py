@@ -1,27 +1,16 @@
 import evidently
-from evidently.test_suite import TestSuite
 import pytest
+from evidently.test_suite import TestSuite
 
-from nefertem.plugins.validation.evidently_validation import (
-    ValidationBuilderEvidently,
-    ValidationPluginEvidently,
-)
-from nefertem.utils.commons import (
-    LIBRARY_EVIDENTLY,
-    OPERATION_VALIDATION,
-    PANDAS_DATAFRAME_FILE_READER,
-)
-from tests.conftest import (
-    CONST_EVIDENTLY_01,
-    mock_c_evidently,
-    mock_c_generic,
-)
+from nefertem.plugins.validation.evidently_validation import ValidationBuilderEvidently, ValidationPluginEvidently
+from nefertem.utils.commons import LIBRARY_EVIDENTLY, OPERATION_VALIDATION, PANDAS_DATAFRAME_FILE_READER
+from tests.conftest import CONST_EVIDENTLY_01, mock_c_evidently, mock_c_generic
 from tests.unit_test.plugins.utils_plugin_tests import (
-    correct_setup,
     correct_execute,
     correct_plugin_build,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,

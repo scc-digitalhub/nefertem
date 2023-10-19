@@ -3,6 +3,7 @@ from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
 
 from nefertem.utils.io_utils import (
+    BytesIOWrapper,
     wrap_bytes,
     wrap_string,
     write_bytes,
@@ -11,7 +12,6 @@ from nefertem.utils.io_utils import (
     write_object,
     write_stringio,
     write_text,
-    BytesIOWrapper,
 )
 
 FILE_TXT = "test.txt"

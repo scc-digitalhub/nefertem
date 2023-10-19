@@ -1,6 +1,6 @@
 import re
 
-from nefertem.utils.utils import flatten_list, get_time, listify, get_uiid
+from nefertem.utils.utils import flatten_list, get_time, get_uiid, listify
 
 
 class TestUtils:

@@ -7,13 +7,13 @@ from typing import Any, List, Optional
 from nefertem.metadata.blob_log import BlobLog
 from nefertem.metadata.env_log import EnvLog
 from nefertem.utils.commons import (
-    NEFERTEM_VERSION,
     MT_ARTIFACT_METADATA,
     MT_NT_PROFILE,
     MT_NT_REPORT,
     MT_NT_SCHEMA,
     MT_RUN_ENV,
     MT_RUN_METADATA,
+    NEFERTEM_VERSION,
     SCHEME_DUMMY,
     STATUS_ERROR,
     STATUS_FINISHED,
@@ -71,9 +71,7 @@ class Run:
 
     # Constructor
 
-    def __init__(
-        self, run_info: "RunInfo", run_handler: "RunHandler", overwrite: bool
-    ) -> None:
+    def __init__(self, run_info: "RunInfo", run_handler: "RunHandler", overwrite: bool) -> None:
         self.run_info = run_info
         self._run_handler = run_handler
         self._overwrite = overwrite
@@ -114,9 +112,7 @@ class Run:
         """
         Log generic metadata.
         """
-        self._run_handler.log_metadata(
-            metadata, self.run_info.run_metadata_uri, src_type, self._overwrite
-        )
+        self._run_handler.log_metadata(metadata, self.run_info.run_metadata_uri, src_type, self._overwrite)
 
     def _get_artifact_metadata(self, uri: str, name: str) -> dict:
         """
@@ -172,9 +168,7 @@ class Run:
         self._check_artifacts_uri()
         if metadata is None:
             metadata = {}
-        self._run_handler.persist_artifact(
-            src, self.run_info.run_artifacts_uri, src_name=src_name, metadata=metadata
-        )
+        self._run_handler.persist_artifact(src, self.run_info.run_artifacts_uri, src_name=src_name, metadata=metadata)
         self._log_artifact(src_name)
 
     def _check_metadata_uri(self) -> None:
@@ -223,9 +217,7 @@ class Run:
         self._run_handler.infer(self.run_info.resources, parallel, num_worker)
         return self._run_handler.get_artifact_schema()
 
-    def infer_nefertem(
-        self, parallel: bool = False, num_worker: int = 10
-    ) -> List["NefertemSchema"]:
+    def infer_nefertem(self, parallel: bool = False, num_worker: int = 10) -> List["NefertemSchema"]:
         """
         Execute schema inference on resources with Nefertem.
 
@@ -249,9 +241,7 @@ class Run:
         self._run_handler.infer(self.run_info.resources, parallel, num_worker)
         return self._run_handler.get_nefertem_schema()
 
-    def infer(
-        self, parallel: bool = False, num_worker: int = 10, only_nt: bool = False
-    ) -> Any:
+    def infer(self, parallel: bool = False, num_worker: int = 10, only_nt: bool = False) -> Any:
         """
         Execute schema inference on resources.
 
@@ -330,9 +320,7 @@ class Run:
         if reports:
             return reports
 
-        self._run_handler.validate(
-            self.run_info.resources, constraints, error_report, parallel, num_worker
-        )
+        self._run_handler.validate(self.run_info.resources, constraints, error_report, parallel, num_worker)
         return self._run_handler.get_artifact_report()
 
     def validate_nefertem(
@@ -370,9 +358,7 @@ class Run:
         if reports:
             return reports
 
-        self._run_handler.validate(
-            self.run_info.resources, constraints, error_report, parallel, num_worker
-        )
+        self._run_handler.validate(self.run_info.resources, constraints, error_report, parallel, num_worker)
         return self._run_handler.get_nefertem_report()
 
     def validate(
@@ -411,9 +397,7 @@ class Run:
 
         """
         report = self.validate_wrapper(constraints, error_report, parallel, num_worker)
-        report_nt = self.validate_nefertem(
-            constraints, error_report, parallel, num_worker
-        )
+        report_nt = self.validate_nefertem(constraints, error_report, parallel, num_worker)
         if only_nt:
             return None, report_nt
         return report, report_nt
@@ -439,10 +423,7 @@ class Run:
     # Profiling
 
     def profile_wrapper(
-        self, 
-        metrics: Optional[List] = None,
-        parallel: bool = False, 
-        num_worker: int = 10
+        self, metrics: Optional[List] = None, parallel: bool = False, num_worker: int = 10
     ) -> List[Any]:
         """
         Execute profiling on resources with profiling frameworks.
@@ -470,10 +451,7 @@ class Run:
         return self._run_handler.get_artifact_profile()
 
     def profile_nefertem(
-        self, 
-        metrics: Optional[List] = None,
-        parallel: bool = False, 
-        num_worker: int = 10
+        self, metrics: Optional[List] = None, parallel: bool = False, num_worker: int = 10
     ) -> List["NefertemProfile"]:
         """
         Execute profiling on resources with Nefertem.
@@ -501,11 +479,7 @@ class Run:
         return self._run_handler.get_nefertem_profile()
 
     def profile(
-        self, 
-        metrics: Optional[List] = None,
-        parallel: bool = False, 
-        num_worker: int = 10, 
-        only_nt: bool = False
+        self, metrics: Optional[List] = None, parallel: bool = False, num_worker: int = 10, only_nt: bool = False
     ) -> Any:
         """
         Execute profiling on resources.
@@ -567,9 +541,7 @@ class Run:
 
         """
         self._check_artifacts_uri()
-        self._run_handler.persist_data(
-            self.run_info.resources, self.run_info.run_artifacts_uri
-        )
+        self._run_handler.persist_data(self.run_info.resources, self.run_info.run_artifacts_uri)
 
     # Context manager
 

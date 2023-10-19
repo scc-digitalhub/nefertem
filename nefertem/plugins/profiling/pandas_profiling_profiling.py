@@ -7,16 +7,11 @@ from typing import List, Optional
 import pandas_profiling
 from pandas_profiling import ProfileReport
 
-
-from nefertem.metadata.nefertem_reports import NefertemProfile, NefertemProfileMetric
+from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import (
-    LIBRARY_PANDAS_PROFILING,
-    PANDAS_DATAFRAME_FILE_READER,
-)
+from nefertem.utils.commons import LIBRARY_PANDAS_PROFILING, PANDAS_DATAFRAME_FILE_READER
 from nefertem.utils.io_utils import write_bytesio
-
 
 # Columns/fields to parse from profile
 PROFILE_COLUMNS = ["analysis", "table", "variables"]
@@ -44,7 +39,7 @@ PROFILE_DATASET_METRICS = [
     "n_vars_all_missing",
     "p_cells_missing",
     "n_duplicates",
-    "p_duplicates"
+    "p_duplicates",
 ]
 PROFILE_FIELD_METRICS = [
     "n_distinct",
@@ -78,9 +73,8 @@ PROFILE_FIELD_METRICS = [
     "iqr",
     "cv",
     "p_zeros",
-    "p_infinite"
+    "p_infinite",
 ]
-
 
 
 class ProfilePluginPandasProfiling(Profiling):
@@ -148,7 +142,6 @@ class ProfilePluginPandasProfiling(Profiling):
             metrics = []
             field_metrics = {}
 
-
         return NefertemProfile(
             self.get_lib_name(), self.get_lib_version(), duration, stats, fields, metrics, field_metrics
         )
@@ -160,22 +153,15 @@ class ProfilePluginPandasProfiling(Profiling):
         var = args.get("variables", {})
 
         for m in PROFILE_DATASET_METRICS:
-            metrics.append(
-                NefertemProfileMetric(
-                    m, m, "ydata_profiling", None, table[m]
-                ) 
-            )
+            metrics.append(NefertemProfileMetric(m, m, "ydata_profiling", None, table[m]))
         for key in var:
             field_metrics[key] = []
             for m in PROFILE_FIELD_METRICS:
                 v = var.get(key, {}).get(m, None)
                 if v is not None:
-                    field_metrics[key].append(
-                        NefertemProfileMetric(
-                            m, m, "ydata_profiling", None, v
-                        ) 
-                    )
+                    field_metrics[key].append(NefertemProfileMetric(m, m, "ydata_profiling", None, v))
         return (metrics, field_metrics)
+
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
         """
@@ -222,9 +208,7 @@ class ProfileBuilderPandasProfiling(ProfilingPluginBuilder):
     """
 
     def build(
-        self, 
-        resources: List["DataResource"],
-        metrics: Optional[List] = None
+        self, resources: List["DataResource"], metrics: Optional[List] = None
     ) -> List[ProfilePluginPandasProfiling]:
         """
         Build a plugin. Metrics are not supported

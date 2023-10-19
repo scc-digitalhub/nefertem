@@ -1,28 +1,18 @@
 import io
-import pytest
 
-from evidently.report import Report
 import evidently
+import pytest
+from evidently.report import Report
 
-from nefertem.plugins.profiling.evidently_profiling import (
-    ProfileBuilderEvidently,
-    ProfilePluginEvidently,
-)
-from nefertem.utils.commons import (
-    LIBRARY_EVIDENTLY,
-    OPERATION_PROFILING,
-    PANDAS_DATAFRAME_FILE_READER,
-)
-from tests.conftest import (
-    METRIC_EVIDENTLY_01
-)
-
+from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently, ProfilePluginEvidently
+from nefertem.utils.commons import LIBRARY_EVIDENTLY, OPERATION_PROFILING, PANDAS_DATAFRAME_FILE_READER
+from tests.conftest import METRIC_EVIDENTLY_01
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -118,6 +108,7 @@ def resource(local_resource):
 @pytest.fixture
 def data_reader():
     return PANDAS_DATAFRAME_FILE_READER
+
 
 @pytest.fixture(params=[METRIC_EVIDENTLY_01])
 def metric(request):

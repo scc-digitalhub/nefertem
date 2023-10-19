@@ -1,7 +1,7 @@
 import pytest
 
+from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
 from nefertem.utils.commons import STATUS_ERROR, STATUS_FINISHED
-from nefertem.plugins.utils.plugin_utils import exec_decorator, Result
 
 
 @pytest.fixture(

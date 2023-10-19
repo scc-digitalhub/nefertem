@@ -6,7 +6,6 @@ from nefertem.plugins.utils.sql_checks import (
     evaluate_range,
     evaluate_validity,
 )
-
 from nefertem.utils.commons import (
     CONSTRAINT_SQL_EMPTY,
     CONSTRAINT_SQL_EXACT,

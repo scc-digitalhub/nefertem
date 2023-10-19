@@ -4,7 +4,7 @@ Dummy implementation of inference plugin.
 # pylint: disable=unused-argument
 from typing import List
 
-from nefertem.metadata.nefertem_reports import NefertemSchema
+from nefertem.metadata.reports.schema import NefertemSchema
 from nefertem.plugins.base_plugin import PluginBuilder
 from nefertem.plugins.inference.inference_plugin import Inference
 from nefertem.plugins.utils.plugin_utils import exec_decorator

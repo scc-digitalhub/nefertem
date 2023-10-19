@@ -11,16 +11,11 @@ import boto3
 import botocore.client
 from botocore.exceptions import ClientError
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.artifact_store import ArtifactStore
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import check_make_dir, check_path, get_path
 from nefertem.utils.io_utils import wrap_string, write_bytes, write_bytesio
-from nefertem.utils.uri_utils import (
-    build_key,
-    get_name_from_uri,
-    get_uri_netloc,
-    get_uri_path,
-)
+from nefertem.utils.uri_utils import build_key, get_name_from_uri, get_uri_netloc, get_uri_path
 
 S3Client = Type["botocore.client.S3"]
 
@@ -33,9 +28,7 @@ class S3ArtifactStore(ArtifactStore):
 
     """
 
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Persist an artifact on S3 based storage.
 
@@ -208,9 +201,7 @@ class S3ArtifactStore(ArtifactStore):
         )
 
     @staticmethod
-    def _upload_file(
-        client: S3Client, bucket: str, src: str, key: str, metadata: dict
-    ) -> None:
+    def _upload_file(client: S3Client, bucket: str, src: str, key: str, metadata: dict) -> None:
         """
         Upload file to S3.
 
@@ -235,9 +226,7 @@ class S3ArtifactStore(ArtifactStore):
         client.upload_file(Filename=src, Bucket=bucket, Key=key, ExtraArgs=ex_args)
 
     @staticmethod
-    def _upload_fileobj(
-        client: S3Client, bucket: str, obj: IO, key: str, metadata: dict
-    ) -> None:
+    def _upload_fileobj(client: S3Client, bucket: str, obj: IO, key: str, metadata: dict) -> None:
         """
         Upload a file object to S3.
 

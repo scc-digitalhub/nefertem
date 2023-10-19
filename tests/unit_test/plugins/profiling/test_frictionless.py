@@ -4,21 +4,14 @@ import frictionless
 import pytest
 from frictionless.resource import Resource
 
-from nefertem.plugins.profiling.frictionless_profiling import (
-    ProfileBuilderFrictionless,
-    ProfilePluginFrictionless,
-)
-from nefertem.utils.commons import (
-    BASE_FILE_READER,
-    LIBRARY_FRICTIONLESS,
-    OPERATION_PROFILING,
-)
+from nefertem.plugins.profiling.frictionless_profiling import ProfileBuilderFrictionless, ProfilePluginFrictionless
+from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS, OPERATION_PROFILING
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,

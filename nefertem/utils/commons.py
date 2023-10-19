@@ -3,7 +3,6 @@ Module for common terms definition.
 """
 from typing import List
 
-
 # Nefertem version
 NEFERTEM_VERSION: str = ""
 

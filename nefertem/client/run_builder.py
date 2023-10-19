@@ -3,11 +3,12 @@ RunBuilder module.
 """
 from typing import List, Optional, Union
 
+from nefertem.models.data_resource import DataResource
+from nefertem.models.run_config import RunConfig
 from nefertem.run.run import Run
 from nefertem.run.run_handler import RunHandler
 from nefertem.run.run_info import RunInfo
 from nefertem.utils.commons import DEFAULT_EXPERIMENT
-from nefertem.utils.config import DataResource, RunConfig
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.utils import get_uiid, listify
 
@@ -76,8 +77,6 @@ class RunBuilder:
         run_art_uri = self._get_art_uri(experiment, run_id)
 
         run_handler = RunHandler(run_config, self._store_handler)
-        run_info = RunInfo(
-            experiment, resources, run_id, run_config, run_md_uri, run_art_uri
-        )
+        run_info = RunInfo(experiment, resources, run_id, run_config, run_md_uri, run_art_uri)
         run = Run(run_info, run_handler, overwrite)
         return run

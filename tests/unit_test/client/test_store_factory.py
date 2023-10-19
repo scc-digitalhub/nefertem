@@ -2,11 +2,10 @@ import os
 
 import pytest
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
-from nefertem.store_metadata.metadata_store import MetadataStore
-from nefertem.utils.config import StoreConfig
+from nefertem.models.store_config import StoreConfig
+from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.metadata.metadata_store import MetadataStore
 from nefertem.utils.uri_utils import get_uri_scheme
-
 
 PROJ = "test"
 
@@ -39,8 +38,8 @@ class TestStoreBuilder:
         assert resolved_uris[0] == f"http://localhost:5000/api/project/{PROJ}"
         assert resolved_uris[1] == f"https://test.com/api/project/{PROJ}"
         assert resolved_uris[2] == f"{os.getcwd()}/test/metadata"
-        assert resolved_uris[3] == f"/test/test/metadata"
-        assert resolved_uris[4] == f"/test/metadata"
+        assert resolved_uris[3] == "/test/test/metadata"
+        assert resolved_uris[4] == "/test/metadata"
 
         with pytest.raises(NotImplementedError):
             uri = "fail://test"

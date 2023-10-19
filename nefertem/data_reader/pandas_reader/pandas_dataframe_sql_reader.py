@@ -33,9 +33,7 @@ class PandasDataFrameSQLReader(NativeReader):
         try:
             return create_engine(conn_str)
         except Exception as ex:
-            raise StoreError(
-                f"Something wrong with connection string. Arguments: {str(ex.args)}"
-            )
+            raise StoreError(f"Something wrong with connection string. Arguments: {str(ex.args)}")
 
     def _read_df_from_db(self, conn_str: str, query: str) -> pd.DataFrame:
         """
@@ -45,9 +43,7 @@ class PandasDataFrameSQLReader(NativeReader):
         try:
             return pd.read_sql(query, engine)
         except Exception as ex:
-            raise StoreError(
-                f"Unable to read data from query: {query}. Arguments: {str(ex.args)}"
-            )
+            raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
         finally:
             engine.dispose()
 

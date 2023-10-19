@@ -2,6 +2,7 @@
 PolarsDataFrameReader module.
 """
 from typing import Any
+
 import polars as pl
 
 from nefertem.data_reader.base_reader.base_native_reader import NativeReader
@@ -30,9 +31,7 @@ class PolarsDataFrameSQLReader(NativeReader):
         try:
             return pl.read_database(query, conn_str)
         except Exception as ex:
-            raise StoreError(
-                f"Unable to read data from query: {query}. Arguments: {str(ex.args)}"
-            )
+            raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
 
     @staticmethod
     def return_head(df: pl.DataFrame) -> dict:

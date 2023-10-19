@@ -1,8 +1,3 @@
-import pytest
-
-from nefertem.store_artifact.odbc_artifact_store import ODBCArtifactStore
-
-
 class TestODBCArtifactStore:
     def test_persist_artifact(self):
         ...

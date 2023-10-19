@@ -1,14 +1,7 @@
 import pytest
 
-from nefertem.plugins.validation.dummy_validation import (
-    ValidationBuilderDummy,
-    ValidationPluginDummy,
-)
-from nefertem.utils.commons import (
-    LIBRARY_DUMMY,
-    OPERATION_VALIDATION,
-    BASE_FILE_READER,
-)
+from nefertem.plugins.validation.dummy_validation import ValidationBuilderDummy, ValidationPluginDummy
+from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_DUMMY, OPERATION_VALIDATION
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,

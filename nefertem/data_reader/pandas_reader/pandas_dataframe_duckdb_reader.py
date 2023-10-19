@@ -33,9 +33,7 @@ class PandasDataFrameDuckDBReader(NativeReader):
             conn.execute(query)
             return conn.fetchdf()
         except Exception as ex:
-            raise StoreError(
-                f"Unable to read data from query: {query}. Arguments: {str(ex.args)}"
-            )
+            raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
 
     @staticmethod
     def return_head(df: pd.DataFrame) -> dict:

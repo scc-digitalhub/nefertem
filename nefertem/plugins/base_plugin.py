@@ -6,8 +6,8 @@ from copy import deepcopy
 from typing import Any, List
 
 from nefertem.data_reader.utils import build_reader
+from nefertem.models.data_resource import DataResource
 from nefertem.plugins.utils.plugin_utils import RenderTuple
-from nefertem.utils.config import DataResource
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_uiid

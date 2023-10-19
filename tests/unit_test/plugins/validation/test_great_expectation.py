@@ -1,29 +1,19 @@
 import great_expectations
 import pytest
-from great_expectations.core.expectation_validation_result import (
-    ExpectationValidationResult,
-)
+from great_expectations.core.expectation_validation_result import ExpectationValidationResult
 
 from nefertem.plugins.validation.great_expectations_validation import (
     ValidationBuilderGreatExpectations,
     ValidationPluginGreatExpectations,
 )
-from nefertem.utils.commons import (
-    LIBRARY_GREAT_EXPECTATIONS,
-    OPERATION_VALIDATION,
-    PANDAS_DATAFRAME_FILE_READER,
-)
-from tests.conftest import (
-    CONST_GE_01,
-    mock_c_gex,
-    mock_c_generic,
-)
+from nefertem.utils.commons import LIBRARY_GREAT_EXPECTATIONS, OPERATION_VALIDATION, PANDAS_DATAFRAME_FILE_READER
+from tests.conftest import CONST_GE_01, mock_c_generic, mock_c_gex
 from tests.unit_test.plugins.utils_plugin_tests import (
-    correct_setup,
     correct_execute,
     correct_plugin_build,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,

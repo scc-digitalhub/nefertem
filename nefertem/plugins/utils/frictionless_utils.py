@@ -3,12 +3,10 @@ Frictionless utils module.
 """
 from typing import List, Union
 
-from nefertem.utils.config import ConstraintFrictionless
+from nefertem.models.constraints.frictionless import ConstraintFrictionless
 
 
-def frictionless_schema_converter(
-    schema: Union[dict, "Schema"], resource_name: str
-) -> List[ConstraintFrictionless]:
+def frictionless_schema_converter(schema: Union[dict, "Schema"], resource_name: str) -> List[ConstraintFrictionless]:
     """
     Convert a frictionless schema in a list of ConstraintFrictionless.
 
@@ -83,8 +81,7 @@ def frictionless_schema_converter(
     return constraints
 
 
-from frictionless import Resource, Detector
-
+from frictionless import Detector, Resource
 
 # With bigger buffer/sample we should avoid error encoding detection
 custom_frictionless_detector = Detector(buffer_size=20000, sample_size=1250)
@@ -94,7 +91,5 @@ def describe_resource(pth: str) -> dict:
     """
     Describe a resource using frictionless.
     """
-    desc = Resource.describe(
-        source=pth, expand=True, detector=custom_frictionless_detector
-    )
+    desc = Resource.describe(source=pth, expand=True, detector=custom_frictionless_detector)
     return desc.to_dict()

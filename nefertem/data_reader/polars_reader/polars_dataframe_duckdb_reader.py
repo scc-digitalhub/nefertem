@@ -31,6 +31,4 @@ class PolarsDataFrameDuckDBReader(NativeReader):
             conn = duckdb.connect(database=src, read_only=True)
             return conn.sql(query).pl()
         except Exception as ex:
-            raise StoreError(
-                f"Unable to read data from query: {query}. Arguments: {str(ex.args)}"
-            )
+            raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")

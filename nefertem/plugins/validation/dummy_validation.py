@@ -5,18 +5,12 @@ Dummy implementation of validation plugin.
 from collections import namedtuple
 from typing import List
 
-from nefertem.metadata.nefertem_reports import NefertemReport
+from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import (
-    Validation,
-    ValidationPluginBuilder,
-)
+from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import GENERIC_DUMMY, LIBRARY_DUMMY
 
-
-DummyConstraint = namedtuple(
-    "DummyConstraint", ["name", "resources"], defaults=["", [""]]
-)
+DummyConstraint = namedtuple("DummyConstraint", ["name", "resources"], defaults=["", [""]])
 
 
 class ValidationPluginDummy(Validation):
@@ -43,9 +37,7 @@ class ValidationPluginDummy(Validation):
         """
         Return a NefertemReport.
         """
-        return NefertemReport(
-            self.get_lib_name(), self.get_lib_version(), 0.0, {}, True, {}
-        )
+        return NefertemReport(self.get_lib_name(), self.get_lib_version(), 0.0, {}, True, {})
 
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:

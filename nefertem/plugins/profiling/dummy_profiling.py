@@ -4,7 +4,7 @@ Dummy implementation of profiling plugin.
 # pylint: disable=unused-argument
 from typing import List
 
-from nefertem.metadata.nefertem_reports import NefertemProfile
+from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import GENERIC_DUMMY, LIBRARY_DUMMY
@@ -33,9 +33,7 @@ class ProfilePluginDummy(Profiling):
         """
         Return a NefertemProfile.
         """
-        return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), 0.0, {}, {}
-        )
+        return NefertemProfile(self.get_lib_name(), self.get_lib_version(), 0.0, {}, {})
 
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:

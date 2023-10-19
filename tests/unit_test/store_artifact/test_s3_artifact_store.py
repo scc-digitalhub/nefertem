@@ -3,11 +3,7 @@ from pathlib import Path
 import pytest
 from botocore.exceptions import ClientError
 
-from nefertem.utils.commons import (
-    DATAREADER_BUFFER,
-    DATAREADER_FILE,
-    DATAREADER_NATIVE,
-)
+from nefertem.utils.commons import DATAREADER_BUFFER, DATAREADER_FILE, DATAREADER_NATIVE
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import build_key, get_name_from_uri
@@ -15,9 +11,7 @@ from tests.conftest import S3_BUCKET, S3_FILENAME, TEST_FILENAME
 
 
 class TestS3ArtifactStore:
-    def test_persist_artifact(
-        self, store, temp_file, stringio, bytesio, dictionary, s3
-    ):
+    def test_persist_artifact(self, store, temp_file, stringio, bytesio, dictionary, s3):
         dst = "artifact/test/test/"
         src_name = "persist.txt"
         key = build_key(dst, src_name)
@@ -85,9 +79,7 @@ class TestS3ArtifactStore:
         with pytest.raises(StoreError):
             store._check_access_to_storage(client, "non-existent-bucket")
 
-    @pytest.mark.parametrize(
-        "key", [("artifact/test/persist.txt"), ("/test/test/persist.txt")]
-    )
+    @pytest.mark.parametrize("key", [("artifact/test/persist.txt"), ("/test/test/persist.txt")])
     def test_get_presigned_url(self, store, client, key):
         url = store._get_presigned_url(client, S3_BUCKET, key)
         if key.startswith("/"):

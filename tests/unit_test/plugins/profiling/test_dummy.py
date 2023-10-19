@@ -1,10 +1,7 @@
 import pytest
 
-from nefertem.plugins.profiling.dummy_profiling import (
-    ProfileBuilderDummy,
-    ProfilePluginDummy,
-)
-from nefertem.utils.commons import LIBRARY_DUMMY, OPERATION_PROFILING, BASE_FILE_READER
+from nefertem.plugins.profiling.dummy_profiling import ProfileBuilderDummy, ProfilePluginDummy
+from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_DUMMY, OPERATION_PROFILING
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,

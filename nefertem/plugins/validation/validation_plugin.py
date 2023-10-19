@@ -5,12 +5,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, List
 
 from nefertem.plugins.base_plugin import Plugin, PluginBuilder
-from nefertem.utils.commons import (
-    RESULT_NEFERTEM,
-    RESULT_LIBRARY,
-    RESULT_RENDERED,
-    RESULT_WRAPPED,
-)
+from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 
 class Validation(Plugin, metaclass=ABCMeta):

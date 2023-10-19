@@ -37,7 +37,5 @@ class TestRunBuilder:
 
 @pytest.fixture()
 def builder(local_md_store_cfg, local_store_cfg):
-    store_handler = StoreHandler(
-        metadata_store=local_md_store_cfg, store=local_store_cfg
-    )
+    store_handler = StoreHandler(metadata_store=local_md_store_cfg, store=local_store_cfg)
     return RunBuilder(store_handler)

@@ -4,11 +4,7 @@ Abstract class for artifact store.
 from abc import ABCMeta, abstractmethod
 from typing import IO, Any, Optional, Union
 
-from nefertem.utils.commons import (
-    DATAREADER_BUFFER,
-    DATAREADER_FILE,
-    DATAREADER_NATIVE,
-)
+from nefertem.utils.commons import DATAREADER_BUFFER, DATAREADER_FILE, DATAREADER_NATIVE
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.uri_utils import rebuild_uri
 
@@ -88,9 +84,7 @@ class ArtifactStore(metaclass=ABCMeta):
         self.logger = LOGGER
 
     @abstractmethod
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Method to persist an artifact.
         """
@@ -99,25 +93,19 @@ class ArtifactStore(metaclass=ABCMeta):
         """
         Return the temporary path where a resource it is stored.
         """
-        return self._get_resource(
-            f"{src}_{self.FILE}"
-        ) or self._get_and_register_artifact(src, self.FILE)
+        return self._get_resource(f"{src}_{self.FILE}") or self._get_and_register_artifact(src, self.FILE)
 
     def fetch_native(self, src: str) -> str:
         """
         Return a native format path for a resource.
         """
-        return self._get_resource(
-            f"{src}_{self.NATIVE}"
-        ) or self._get_and_register_artifact(src, self.NATIVE)
+        return self._get_resource(f"{src}_{self.NATIVE}") or self._get_and_register_artifact(src, self.NATIVE)
 
     def fetch_buffer(self, src: str) -> IO:
         """
         Return a buffered resource.
         """
-        return self._get_resource(
-            f"{src}_{self.BUFFER}"
-        ) or self._get_and_register_artifact(src, self.BUFFER)
+        return self._get_resource(f"{src}_{self.BUFFER}") or self._get_and_register_artifact(src, self.BUFFER)
 
     @abstractmethod
     def _get_and_register_artifact(self, src: str, fetch_mode: str) -> str:

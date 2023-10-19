@@ -10,7 +10,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.engine.cursor import CursorResult
 from sqlalchemy.exc import SQLAlchemyError
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.artifact_store import ArtifactStore
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import check_make_dir, get_path
 from nefertem.utils.uri_utils import get_uri_netloc
@@ -24,9 +24,7 @@ class SQLArtifactStore(ArtifactStore):
 
     """
 
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Method to persist an artifact.
         """
@@ -82,9 +80,7 @@ class SQLArtifactStore(ArtifactStore):
         try:
             return create_engine(connection_string, future=True)
         except Exception as ex:
-            raise StoreError(
-                f"Something wrong with connection string. Arguments: {str(ex.args)}"
-            )
+            raise StoreError(f"Something wrong with connection string. Arguments: {str(ex.args)}")
 
     @staticmethod
     def _get_table_name(uri: str) -> str:
@@ -102,9 +98,7 @@ class SQLArtifactStore(ArtifactStore):
         name = get_uri_netloc(uri)
         return name.split(".")[0]
 
-    def _get_data(
-        self, engine: Engine, table_name: str, schema: Optional[str] = None
-    ) -> CursorResult:
+    def _get_data(self, engine: Engine, table_name: str, schema: Optional[str] = None) -> CursorResult:
         """
         Return a table from a db.
         """

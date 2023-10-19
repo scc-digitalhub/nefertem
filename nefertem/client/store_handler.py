@@ -9,7 +9,6 @@ from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import clean_all
 from nefertem.utils.utils import listify
 
-
 STORE_TYPE_ARTIFACT = "artifact_store"
 DEFAULT_STORE = "default_store"
 STORE_TYPE_METADATA = "metadata_store"
@@ -32,9 +31,7 @@ class StoreRegistry:
         self.registry[DEFAULT_STORE] = None
         self.registry[STORE_TYPE_METADATA] = None
 
-    def register(
-        self, new_store: Union["ArtifactStore", "MetadataStore"], store_type: str
-    ) -> None:
+    def register(self, new_store: Union["ArtifactStore", "MetadataStore"], store_type: str) -> None:
         """
         Register a new store.
         """
@@ -67,9 +64,7 @@ class StoreRegistry:
 
         raise StoreError("Invalid store type.")
 
-    def get_all_stores(
-        self, store_type: str
-    ) -> Union["ArtifactStore", List["ArtifactStore"], "MetadataStore"]:
+    def get_all_stores(self, store_type: str) -> Union["ArtifactStore", List["ArtifactStore"], "MetadataStore"]:
         """
         Return all stores by type.
         """

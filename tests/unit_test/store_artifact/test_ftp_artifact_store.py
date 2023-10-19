@@ -1,7 +1,3 @@
-import pytest
-from nefertem.store_artifact.ftp_artifact_store import FTPArtifactStore
-
-
 class TestFTPArtifactStore:
     def test_persist_artifact(self):
         ...

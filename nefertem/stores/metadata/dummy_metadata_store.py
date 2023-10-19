@@ -1,7 +1,7 @@
 """
 Implementation of Dummy metadata store.
 """
-from nefertem.store_metadata.metadata_store import MetadataStore
+from nefertem.stores.metadata.metadata_store import MetadataStore
 
 
 class DummyMetadataStore(MetadataStore):

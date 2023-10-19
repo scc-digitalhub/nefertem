@@ -1,23 +1,9 @@
-from unittest.mock import MagicMock
-
+from nefertem.metadata.reports.profile import NefertemProfile
+from nefertem.metadata.reports.report import NefertemReport
+from nefertem.metadata.reports.schema import NefertemSchema
 from nefertem.plugins.base_plugin import Plugin
 from nefertem.plugins.utils.plugin_utils import RenderTuple, Result
-from nefertem.metadata.nefertem_reports import (
-    NefertemSchema,
-    NefertemProfile,
-    NefertemReport,
-)
-from nefertem.utils.commons import (
-    OPERATION_INFERENCE,
-    OPERATION_PROFILING,
-    OPERATION_VALIDATION,
-    LIBRARY_DUCKDB,
-    LIBRARY_FRICTIONLESS,
-    LIBRARY_GREAT_EXPECTATIONS,
-    LIBRARY_SQLALCHEMY,
-    CONSTRAINT_FRICTIONLESS_SCHEMA,
-)
-from tests.conftest import mock_object_factory
+from nefertem.utils.commons import OPERATION_INFERENCE, OPERATION_PROFILING, OPERATION_VALIDATION
 
 
 def correct_setup(plg):

@@ -6,10 +6,10 @@ from typing import List, Optional
 import frictionless
 from frictionless import Resource
 
-from nefertem.metadata.nefertem_reports import NefertemProfile
+from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import LIBRARY_FRICTIONLESS, BASE_FILE_READER
+from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS
 from nefertem.utils.io_utils import write_bytesio
 
 
@@ -23,9 +23,7 @@ class ProfilePluginFrictionless(Profiling):
         self.resource = None
         self.exec_multiprocess = True
 
-    def setup(
-        self, data_reader: "FileReader", resource: "DataResource", exec_args: dict
-    ) -> None:
+    def setup(self, data_reader: "FileReader", resource: "DataResource", exec_args: dict) -> None:
         """
         Set plugin resource.
         """
@@ -60,9 +58,7 @@ class ProfilePluginFrictionless(Profiling):
             fields = {}
             stats = {}
 
-        return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), duration, stats, fields
-        )
+        return NefertemProfile(self.get_lib_name(), self.get_lib_version(), duration, stats, fields)
 
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
@@ -98,10 +94,7 @@ class ProfileBuilderFrictionless(ProfilingPluginBuilder):
     Profile plugin builder.
     """
 
-    def build(
-            self, 
-            resources: List["DataResource"],
-            metrics: Optional[List] = None) -> List[ProfilePluginFrictionless]:
+    def build(self, resources: List["DataResource"], metrics: Optional[List] = None) -> List[ProfilePluginFrictionless]:
         """
         Build a plugin. Metrics are not supported
         """

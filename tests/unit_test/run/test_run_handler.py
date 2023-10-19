@@ -12,8 +12,8 @@ from nefertem.utils.commons import (
     OPERATION_INFERENCE,
     OPERATION_PROFILING,
     OPERATION_VALIDATION,
-    RESULT_NEFERTEM,
     RESULT_LIBRARY,
+    RESULT_NEFERTEM,
     RESULT_RENDERED,
     RESULT_WRAPPED,
 )
@@ -66,9 +66,7 @@ class TestRunHandler:
         for i, j in zip(cfg, ops):
             builders = builder_factory(i, j, stores)
             if j == OPERATION_VALIDATION:
-                plugins = handler._create_plugins(
-                    builders, [local_resource], [CONST_FRICT_01], "full"
-                )
+                plugins = handler._create_plugins(builders, [local_resource], [CONST_FRICT_01], "full")
             else:
                 plugins = handler._create_plugins(builders, [local_resource])
             assert isinstance(plugins, list)

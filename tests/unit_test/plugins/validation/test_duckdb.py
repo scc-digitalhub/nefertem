@@ -5,30 +5,27 @@ import duckdb
 import pytest
 
 from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.duckdb_validation import (
-    ValidationBuilderDuckDB,
-    ValidationPluginDuckDB,
-)
+from nefertem.plugins.validation.duckdb_validation import ValidationBuilderDuckDB, ValidationPluginDuckDB
 from nefertem.utils.commons import (
+    DEFAULT_DIRECTORY,
     LIBRARY_DUCKDB,
     OPERATION_VALIDATION,
     PANDAS_DATAFRAME_DUCKDB_READER,
-    DEFAULT_DIRECTORY,
 )
 from tests.conftest import (
     CONST_DUCKDB_01,
     mock_c_duckdb,
     mock_c_generic,
-    mock_r_generic,
     mock_c_to_fail,
+    mock_r_generic,
     mock_r_to_fail,
 )
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,

@@ -12,21 +12,16 @@ from moto import mock_s3
 
 from nefertem.client.store_factory import StoreBuilder
 from nefertem.data_reader.utils import build_reader
+from nefertem.models.constraints.duckdb import ConstraintDuckDB
+from nefertem.models.constraints.evidently import ConstraintEvidently, EvidentlyElement, MetricEvidently
+from nefertem.models.constraints.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
+from nefertem.models.constraints.great_expectations import ConstraintGreatExpectations
+from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
+from nefertem.models.data_resource import DataResource
+from nefertem.models.run_config import RunConfig
+from nefertem.models.store_config import StoreConfig
 from nefertem.plugins.utils.plugin_utils import Result
 from nefertem.utils.commons import *
-from nefertem.utils.config import (
-    ConstraintDuckDB,
-    ConstraintFrictionless,
-    ConstraintFullFrictionless,
-    ConstraintGreatExpectations,
-    ConstraintSqlAlchemy,
-    ConstraintEvidently,
-    MetricEvidently,
-    EvidentlyElement,
-    DataResource,
-    RunConfig,
-    StoreConfig,
-)
 from nefertem.utils.utils import listify
 
 ##############################
@@ -81,9 +76,7 @@ def sqlitedb(temp_folder, data_path_csv):
     with open(data_path_csv, "r") as fin:
         dr = csv.DictReader(fin)
         to_db = [(i["col1"], i["col2"], i["col3"], i["col4"]) for i in dr]
-    cur.executemany(
-        "INSERT INTO test (col1, col2, col3, col4) VALUES (?, ?, ?, ?);", to_db
-    )
+    cur.executemany("INSERT INTO test (col1, col2, col3, col4) VALUES (?, ?, ?, ?);", to_db)
     con.commit()
     con.close()
     return f"sqlite:///{tmp}"
@@ -112,9 +105,7 @@ def s3(aws_credentials):
     with mock_s3():
         client = boto3.client("s3", region_name="us-east-1")
         client.create_bucket(Bucket=S3_BUCKET)
-        client.upload_file(
-            "tests/synthetic_data/test_csv_file.csv", S3_BUCKET, S3_FILENAME
-        )
+        client.upload_file("tests/synthetic_data/test_csv_file.csv", S3_BUCKET, S3_FILENAME)
         yield client
 
 
@@ -292,9 +283,7 @@ def local_resource(data_path_csv):
 
 @pytest.fixture
 def local_resource_no_temp():
-    return DataResource(
-        path="tests/synthetic_data/test_csv_file.csv", name="res_test_01", store="local"
-    )
+    return DataResource(path="tests/synthetic_data/test_csv_file.csv", name="res_test_01", store="local")
 
 
 @pytest.fixture
@@ -432,6 +421,7 @@ def plugin_builder_val_args(resource, constraint, error_report):
 def plugin_builder_non_val_args(resource):
     resources = listify(resource)
     return [resources]
+
 
 @pytest.fixture
 def plugin_builder_metric_val_args(resource, metric):

@@ -11,24 +11,18 @@ from nefertem.plugins.validation.frictionless_validation import (
     ValidationPluginFrictionless,
 )
 from nefertem.utils.commons import (
-    LIBRARY_FRICTIONLESS,
-    CONSTRAINT_FRICTIONLESS_SCHEMA,
-    OPERATION_VALIDATION,
     BASE_FILE_READER,
+    CONSTRAINT_FRICTIONLESS_SCHEMA,
+    LIBRARY_FRICTIONLESS,
+    OPERATION_VALIDATION,
 )
-from tests.conftest import (
-    CONST_FRICT_01,
-    CONST_FRICT_FULL_01,
-    mock_c_frict,
-    mock_c_frict_full,
-    mock_c_generic,
-)
+from tests.conftest import CONST_FRICT_01, CONST_FRICT_FULL_01, mock_c_frict, mock_c_frict_full, mock_c_generic
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,

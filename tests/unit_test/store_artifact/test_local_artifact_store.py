@@ -1,17 +1,11 @@
 import pytest
 
-from nefertem.utils.commons import (
-    DATAREADER_BUFFER,
-    DATAREADER_FILE,
-    DATAREADER_NATIVE,
-)
+from nefertem.utils.commons import DATAREADER_BUFFER, DATAREADER_FILE, DATAREADER_NATIVE
 from tests.conftest import TEST_FILENAME
 
 
 class TestLocalArtifactStore:
-    def test_persist_artifact(
-        self, store, temp_file, stringio, bytesio, dictionary, temp_folder
-    ):
+    def test_persist_artifact(self, store, temp_file, stringio, bytesio, dictionary, temp_folder):
         src_name = "persist.txt"
         pth = temp_folder / src_name
 
@@ -61,9 +55,7 @@ class TestLocalArtifactStore:
             (TEST_FILENAME, DATAREADER_BUFFER, None, True),
         ],
     )
-    def test_get_and_register_artifact(
-        self, store, src, fetch_mode, expected, not_implemented
-    ):
+    def test_get_and_register_artifact(self, store, src, fetch_mode, expected, not_implemented):
         if not_implemented:
             with pytest.raises(NotImplementedError):
                 store._get_and_register_artifact(src, fetch_mode)

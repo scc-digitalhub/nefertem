@@ -6,20 +6,13 @@ from typing import List, Optional
 
 import great_expectations as ge
 from great_expectations.core.expectation_suite import ExpectationSuite
-from great_expectations.profile.user_configurable_profiler import (
-    UserConfigurableProfiler,
-)
+from great_expectations.profile.user_configurable_profiler import UserConfigurableProfiler
 
-from nefertem.metadata.nefertem_reports import NefertemProfile
+from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
-from nefertem.plugins.utils.great_expectations_utils import (
-    get_great_expectations_validator,
-)
+from nefertem.plugins.utils.great_expectations_utils import get_great_expectations_validator
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import (
-    LIBRARY_GREAT_EXPECTATIONS,
-    PANDAS_DATAFRAME_FILE_READER,
-)
+from nefertem.utils.commons import LIBRARY_GREAT_EXPECTATIONS, PANDAS_DATAFRAME_FILE_READER
 
 
 class ProfilePluginGreatExpectations(Profiling):
@@ -51,9 +44,7 @@ class ProfilePluginGreatExpectations(Profiling):
         Profile a Data Resource.
         """
         data = self.data_reader.fetch_data(self.resource.path)
-        validator = get_great_expectations_validator(
-            data, str(self.resource.name), str(self.resource.title)
-        )
+        validator = get_great_expectations_validator(data, str(self.resource.name), str(self.resource.title))
         profiler = UserConfigurableProfiler(profile_dataset=validator)
         result = profiler.build_suite()
         return ExpectationSuite(**result.to_json_dict())
@@ -116,9 +107,7 @@ class ProfileBuilderGreatExpectations(ProfilingPluginBuilder):
     """
 
     def build(
-        self, 
-        resources: List["DataResource"],
-        metrics: Optional[List] = None
+        self, resources: List["DataResource"], metrics: Optional[List] = None
     ) -> List[ProfilePluginGreatExpectations]:
         """
         Build a plugin. Metrics are not supported

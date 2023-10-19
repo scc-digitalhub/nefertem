@@ -1,8 +1,3 @@
-import pytest
-
-from nefertem.store_artifact.http_artifact_store import HTTPArtifactStore
-
-
 class TestHTTPArtifactStore:
     def test_persist_artifact(self):
         ...

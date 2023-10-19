@@ -1,8 +1,3 @@
-import pytest
-
-from nefertem.store_metadata.local_metadata_store import LocalMetadataStore
-
-
 class TestLocalMetadataStore:
     def test_init_run(self):
         ...

@@ -3,10 +3,10 @@ Implementation of local metadata store.
 """
 from typing import Optional
 
-from nefertem.store_metadata.metadata_store import MetadataStore
+from nefertem.stores.metadata.metadata_store import MetadataStore
 from nefertem.utils import commons as cfg
 from nefertem.utils.exceptions import RunError
-from nefertem.utils.file_utils import check_dir, get_path, make_dir, clean_all
+from nefertem.utils.file_utils import check_dir, clean_all, get_path, make_dir
 from nefertem.utils.io_utils import write_json
 
 
@@ -50,9 +50,7 @@ class LocalMetadataStore(MetadataStore):
         uri = self.get_run_metadata_uri(exp_name, run_id)
         self._check_dst_folder(uri, overwrite, init=True)
 
-    def log_metadata(
-        self, metadata: dict, dst: str, src_type: str, overwrite: bool
-    ) -> None:
+    def log_metadata(self, metadata: dict, dst: str, src_type: str, overwrite: bool) -> None:
         """
         Method that log metadata.
         """
@@ -61,9 +59,7 @@ class LocalMetadataStore(MetadataStore):
         write_json(metadata, dst)
 
     @staticmethod
-    def _check_dst_folder(
-        dst: str, overwrite: bool, init: Optional[bool] = False
-    ) -> None:
+    def _check_dst_folder(dst: str, overwrite: bool, init: Optional[bool] = False) -> None:
         """
         Check if run folder already exist, otherwise it creates it.
         """
@@ -76,9 +72,7 @@ class LocalMetadataStore(MetadataStore):
         else:
             make_dir(dst)
 
-    def _build_source_destination(
-        self, dst: str, src_type: str, key: Optional[str] = None
-    ) -> str:
+    def _build_source_destination(self, dst: str, src_type: str, key: Optional[str] = None) -> str:
         """
         Return source path based on input source type.
         """

@@ -1,22 +1,18 @@
-import pytest
 import great_expectations as ge
+import pytest
 from great_expectations.core.expectation_suite import ExpectationSuite
 
 from nefertem.plugins.profiling.great_expectations_profiling import (
     ProfileBuilderGreatExpectations,
     ProfilePluginGreatExpectations,
 )
-from nefertem.utils.commons import (
-    LIBRARY_GREAT_EXPECTATIONS,
-    OPERATION_PROFILING,
-    PANDAS_DATAFRAME_FILE_READER,
-)
+from nefertem.utils.commons import LIBRARY_GREAT_EXPECTATIONS, OPERATION_PROFILING, PANDAS_DATAFRAME_FILE_READER
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -56,9 +52,7 @@ class TestProfilePluginGreatExpectations:
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_profile.format(
-            f"{LIBRARY_GREAT_EXPECTATIONS}.json"
-        )
+        filename = setted_plugin._fn_profile.format(f"{LIBRARY_GREAT_EXPECTATIONS}.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, dict)
         assert output.artifact[0].filename == filename

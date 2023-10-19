@@ -1,23 +1,19 @@
 """
 Evidently implementation of profiling plugin.
 """
-import json
-from typing import List, Optional
-
 import importlib
+from typing import List, Optional
 
 import evidently
 from evidently.report import Report
 
-from nefertem.metadata.nefertem_reports import NefertemProfile, NefertemProfileMetric
+from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
+from nefertem.models.constraints.evidently import Metric, MetricEvidently
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import (
-    LIBRARY_EVIDENTLY,
-    BASE_FILE_READER
-)
+from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_EVIDENTLY
 from nefertem.utils.io_utils import write_bytesio
-from nefertem.utils.config import Metric, MetricEvidently
+
 
 class ProfilePluginEvidently(Profiling):
     """
@@ -80,7 +76,7 @@ class ProfilePluginEvidently(Profiling):
             else:
                 res.append(_class())
         return res
-    
+
     @exec_decorator
     def render_nefertem(self, result: "Result") -> NefertemProfile:
         """
@@ -104,23 +100,14 @@ class ProfilePluginEvidently(Profiling):
                     field = value.get("column_name")
                     list = field_metrics.get(field, [])
                     del value["column_name"]
-                    list.append(
-                        NefertemProfileMetric(
-                            metric_name, metric_name, "evidently", None, value
-                        )
-                    )
+                    list.append(NefertemProfileMetric(metric_name, metric_name, "evidently", None, value))
                     field_metrics[field] = list
                 else:
-                    res_metrics.append(
-                        NefertemProfileMetric(
-                            metric_name, metric_name, "evidently", None, value
-                        )
-                    )
+                    res_metrics.append(NefertemProfileMetric(metric_name, metric_name, "evidently", None, value))
 
         return NefertemProfile(
             self.get_lib_name(), self.get_lib_version(), duration, stats, fields, res_metrics, field_metrics
         )
-
 
     @exec_decorator
     def render_artifact(self, result: "Result") -> List[tuple]:
@@ -134,7 +121,7 @@ class ProfilePluginEvidently(Profiling):
             artifacts.append(self.get_render_tuple(_object, filename))
         else:
             # string_html = result.artifact.to_html()
-        #     strio_html = write_bytesio(string_html)
+            #     strio_html = write_bytesio(string_html)
             html_filename = self._fn_profile.format(f"{LIBRARY_EVIDENTLY}.html")
             string_html = result.artifact.get_html()
             strio_html = write_bytesio(string_html)
@@ -147,7 +134,6 @@ class ProfilePluginEvidently(Profiling):
             artifacts.append(self.get_render_tuple(strio_json, json_filename))
 
         return artifacts
-
 
     @staticmethod
     def get_lib_name() -> str:
@@ -169,11 +155,7 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
     Evidently profile plugin builder.
     """
 
-    def build(
-        self, 
-        resources: List["DataResource"],
-        metrics: Optional[List] = None
-    ) -> List[ProfilePluginEvidently]:
+    def build(self, resources: List["DataResource"], metrics: Optional[List] = None) -> List[ProfilePluginEvidently]:
         """
         Build a plugin for every metric element.
         """
@@ -199,13 +181,7 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
 
             if curr_resource is not None:
                 plugin = ProfilePluginEvidently()
-                plugin.setup(
-                    data_reader, 
-                    resource, 
-                    metric,
-                    self.exec_args,
-                    ref_data_reader,
-                    ref_resource)
+                plugin.setup(data_reader, resource, metric, self.exec_args, ref_data_reader, ref_resource)
                 plugins.append(plugin)
 
         return plugins
@@ -215,9 +191,10 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
         """
         Filter out MetricEvidently.
         """
-        if metrics is None: return []
+        if metrics is None:
+            return []
         return [m for m in metrics if m.type == LIBRARY_EVIDENTLY]
-        
+
     def destroy(self) -> None:
         """
         Destory plugins.

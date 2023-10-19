@@ -6,7 +6,7 @@ from typing import Any
 import requests
 from requests.models import HTTPError
 
-from nefertem.store_artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.artifact_store import ArtifactStore
 from nefertem.utils.file_utils import check_make_dir, get_path
 from nefertem.utils.io_utils import write_bytes
 from nefertem.utils.uri_utils import get_name_from_uri, rebuild_uri
@@ -20,9 +20,7 @@ class HTTPArtifactStore(ArtifactStore):
 
     """
 
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Persist an artifact.
         """
@@ -70,9 +68,7 @@ class HTTPArtifactStore(ArtifactStore):
         try:
             response = requests.head(url, timeout=60)
             if not response.ok:
-                raise HTTPError(
-                    f"Something wrong, response code {response.status_code} for url {url}."
-                )
+                raise HTTPError(f"Something wrong, response code {response.status_code} for url {url}.")
         except Exception as ex:
             raise ex
 

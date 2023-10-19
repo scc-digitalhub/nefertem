@@ -1,20 +1,16 @@
 """
 Evidently implementation of validation plugin.
 """
-from typing import List
-
 import importlib
+from typing import List
 
 import evidently
 from evidently.test_suite import TestSuite
 
-from nefertem.metadata.nefertem_reports import NefertemReport
+from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import (
-    Validation,
-    ValidationPluginBuilder,
-)
-from nefertem.utils.commons import LIBRARY_EVIDENTLY, BASE_FILE_READER
+from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
+from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_EVIDENTLY
 
 
 class ValidationPluginEvidently(Validation):
@@ -91,9 +87,7 @@ class ValidationPluginEvidently(Validation):
             artifact = result.artifact.as_dict()
             valid = artifact["summary"]["all_passed"]
             if not valid:
-                errors_list = list(
-                    filter(lambda t: t["status"] != "SUCCESS", artifact["tests"])
-                )
+                errors_list = list(filter(lambda t: t["status"] != "SUCCESS", artifact["tests"]))
                 parsed_error_list = self._parse_error_report(errors_list)
                 errors = self._get_errors(len(errors_list), parsed_error_list)
         else:

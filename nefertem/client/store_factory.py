@@ -4,8 +4,9 @@ StoreFactory module.
 from pathlib import Path
 from typing import Union
 
-from nefertem.store_artifact.registry import ART_STORES
-from nefertem.store_metadata.registry import MD_STORES
+from nefertem.models.store_config import StoreConfig
+from nefertem.stores.artifact.registry import ART_STORES
+from nefertem.stores.metadata.registry import MD_STORES
 from nefertem.utils.commons import (
     API_BASE,
     GENERIC_DUMMY,
@@ -19,15 +20,8 @@ from nefertem.utils.commons import (
     SCHEME_SQL,
     STORE_DUMMY,
 )
-from nefertem.utils.config import StoreConfig
 from nefertem.utils.file_utils import get_absolute_path
-from nefertem.utils.uri_utils import (
-    check_url,
-    get_uri_netloc,
-    get_uri_path,
-    get_uri_scheme,
-    rebuild_uri,
-)
+from nefertem.utils.uri_utils import check_url, get_uri_netloc, get_uri_path, get_uri_scheme, rebuild_uri
 from nefertem.utils.utils import get_uiid
 
 
@@ -82,9 +76,7 @@ class StoreBuilder:
         new_uri = self.resolve_artifact_uri(cfg.uri, scheme)
         tmp = str(Path(self.tmp_dir, get_uiid()))
         try:
-            return ART_STORES[cfg.type](
-                cfg.name, cfg.type, new_uri, tmp, cfg.config, cfg.isDefault
-            )
+            return ART_STORES[cfg.type](cfg.name, cfg.type, new_uri, tmp, cfg.config, cfg.isDefault)
         except KeyError:
             raise NotImplementedError
 
@@ -109,9 +101,7 @@ class StoreBuilder:
         config.
         """
         if config is None:
-            return StoreConfig(
-                name=GENERIC_DUMMY, type=STORE_DUMMY, uri=f"{SCHEME_DUMMY}://"
-            )
+            return StoreConfig(name=GENERIC_DUMMY, type=STORE_DUMMY, uri=f"{SCHEME_DUMMY}://")
         if not isinstance(config, StoreConfig):
             try:
                 return StoreConfig(**config)

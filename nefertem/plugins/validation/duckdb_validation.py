@@ -5,25 +5,22 @@ DuckDB implementation of validation plugin.
 import shutil
 from copy import deepcopy
 from pathlib import Path
-from typing import List, Any
+from typing import Any, List
 
 import duckdb
 
-from nefertem.metadata.nefertem_reports import NefertemReport
-from nefertem.plugins.utils.plugin_utils import exec_decorator, ValidationReport
+from nefertem.metadata.reports.report import NefertemReport
+from nefertem.plugins.utils.plugin_utils import ValidationReport, exec_decorator
 from nefertem.plugins.utils.sql_checks import evaluate_validity
-from nefertem.plugins.validation.validation_plugin import (
-    Validation,
-    ValidationPluginBuilder,
-)
+from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import (
-    POLARS_DATAFRAME_FILE_READER,
-    PANDAS_DATAFRAME_FILE_READER,
-    PANDAS_DATAFRAME_DUCKDB_READER,
-    DEFAULT_DIRECTORY,
-    LIBRARY_DUCKDB,
     CONSTRAINT_SQL_CHECK_ROWS,
     CONSTRAINT_SQL_CHECK_VALUE,
+    DEFAULT_DIRECTORY,
+    LIBRARY_DUCKDB,
+    PANDAS_DATAFRAME_DUCKDB_READER,
+    PANDAS_DATAFRAME_FILE_READER,
+    POLARS_DATAFRAME_FILE_READER,
 )
 from nefertem.utils.utils import flatten_list, get_uiid, listify
 
@@ -63,9 +60,7 @@ class ValidationPluginDuckDB(Validation):
         try:
             data = self.data_reader.fetch_data(self.db, self.constraint.query)
             value = self._filter_result(data)
-            valid, errors = evaluate_validity(
-                value, self.constraint.expect, self.constraint.value
-            )
+            valid, errors = evaluate_validity(value, self.constraint.expect, self.constraint.value)
             result = self._shorten_data(data)
             return ValidationReport(result, valid, errors)
         except Exception as ex:
@@ -170,9 +165,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         for const in f_constraint:
             data_reader = self._get_data_reader(PANDAS_DATAFRAME_DUCKDB_READER, None)
             plugin = ValidationPluginDuckDB()
-            plugin.setup(
-                data_reader, str(self.tmp_db), const, error_report, self.exec_args
-            )
+            plugin.setup(data_reader, str(self.tmp_db), const, error_report, self.exec_args)
             plugins.append(plugin)
 
         return plugins
@@ -195,15 +188,11 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         return [const for const in constraints if const.type == LIBRARY_DUCKDB]
 
     @staticmethod
-    def _filter_resources(
-        resources: List["DataResource"], constraints: List["Constraint"]
-    ) -> List["DataResource"]:
+    def _filter_resources(resources: List["DataResource"], constraints: List["Constraint"]) -> List["DataResource"]:
         """
         Filter resources used by validator.
         """
-        res_names = set(
-            flatten_list([deepcopy(const.resources) for const in constraints])
-        )
+        res_names = set(flatten_list([deepcopy(const.resources) for const in constraints]))
         return [res for res in resources if res.name in res_names]
 
     def _register_resources(self, resource: "DataResource") -> None:
@@ -212,10 +201,8 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         """
         store = self._get_resource_store(resource)
         data_reader = self._get_reader(store)
-        df = self._get_data(data_reader, listify(resource.path))
-        self.con.execute(
-            f"CREATE TABLE IF NOT EXISTS {resource.name} AS SELECT * FROM df;"
-        )
+        df = self._get_data(data_reader, listify(resource.path)) # noqa pylint: disable=no-member
+        self.con.execute(f"CREATE TABLE IF NOT EXISTS {resource.name} AS SELECT * FROM df;")
 
     def _get_reader(self, store: "ArtifactStore") -> "NativeReader":
         """
@@ -224,7 +211,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         try:
             return self._get_data_reader(POLARS_DATAFRAME_FILE_READER, store)
         except KeyError:
-            self.logger.info(f"Polars not installed, using pandas.")
+            self.logger.info("Polars not installed, using pandas.")
             return self._get_data_reader(PANDAS_DATAFRAME_FILE_READER, store)
 
     @staticmethod

@@ -1,8 +1,6 @@
-from nefertem.metadata.nefertem_reports import (
-    NefertemProfile,
-    NefertemReport,
-    NefertemSchema,
-)
+from nefertem.metadata.reports.profile import NefertemProfile
+from nefertem.metadata.reports.report import NefertemReport
+from nefertem.metadata.reports.schema import NefertemSchema
 
 
 class TestNefertemReports:
@@ -15,7 +13,7 @@ class TestNefertemReports:
             "stats": {},
             "fields": {},
             "metrics": [],
-            "field_metrics": {}
+            "field_metrics": {},
         }
         assert data.to_dict() == expected_data
 

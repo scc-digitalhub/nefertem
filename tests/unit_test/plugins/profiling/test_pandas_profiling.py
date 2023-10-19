@@ -8,20 +8,16 @@ from nefertem.plugins.profiling.pandas_profiling_profiling import (
     ProfileBuilderPandasProfiling,
     ProfilePluginPandasProfiling,
 )
-from nefertem.utils.commons import (
-    LIBRARY_PANDAS_PROFILING,
-    OPERATION_PROFILING,
-    PANDAS_DATAFRAME_FILE_READER,
-)
+from nefertem.utils.commons import LIBRARY_PANDAS_PROFILING, OPERATION_PROFILING, PANDAS_DATAFRAME_FILE_READER
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
-    correct_setup,
 )
 
 

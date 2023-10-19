@@ -11,8 +11,8 @@ from nefertem.utils.commons import (
     OPERATION_INFERENCE,
     OPERATION_PROFILING,
     OPERATION_VALIDATION,
-    RESULT_NEFERTEM,
     RESULT_LIBRARY,
+    RESULT_NEFERTEM,
     RESULT_RENDERED,
     RESULT_WRAPPED,
 )
@@ -127,9 +127,7 @@ class RunHandler:
         if differs from options.
         """
         if error_report not in ("count", "partial", "full"):
-            raise RunError(
-                "Available options for error_report are 'count', 'partial', 'full'."
-            )
+            raise RunError("Available options for error_report are 'count', 'partial', 'full'.")
 
     def profile(
         self,
@@ -158,9 +156,7 @@ class RunHandler:
         """
         return flatten_list([builder.build(*args) for builder in builders])
 
-    def _scheduler(
-        self, plugins: List["Plugin"], ops: str, parallel: bool, num_worker: int
-    ) -> None:
+    def _scheduler(self, plugins: List["Plugin"], ops: str, parallel: bool, num_worker: int) -> None:
         """
         Schedule execution to avoid multiprocessing issues.
         """
@@ -191,9 +187,7 @@ class RunHandler:
             data = self._execute(plugin)
             self._register_results(ops, data)
 
-    def _pool_execute_multiprocess(
-        self, plugins: List["Plugin"], ops: str, num_worker: int
-    ) -> None:
+    def _pool_execute_multiprocess(self, plugins: List["Plugin"], ops: str, num_worker: int) -> None:
         """
         Instantiate a concurrent.future.ProcessPoolExecutor pool to
         execute operations in multiprocessing.
@@ -202,9 +196,7 @@ class RunHandler:
             for data in pool.map(self._execute, plugins):
                 self._register_results(ops, data)
 
-    def _pool_execute_multithread(
-        self, plugins: List["Plugin"], ops: str, num_worker: int
-    ) -> None:
+    def _pool_execute_multithread(self, plugins: List["Plugin"], ops: str, num_worker: int) -> None:
         """
         Instantiate a concurrent.future.ThreadPoolExecutor pool to
         execute operations in multithreading.
@@ -254,89 +246,55 @@ class RunHandler:
         """
         Get a list of schemas produced by inference libraries.
         """
-        return [
-            obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_WRAPPED)
-        ]
+        return [obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_WRAPPED)]
 
     def get_artifact_report(self) -> List[Any]:
         """
         Get a list of reports produced by validation libraries.
         """
-        return [
-            obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_WRAPPED)
-        ]
+        return [obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_WRAPPED)]
 
     def get_artifact_profile(self) -> List[Any]:
         """
         Get a list of profiles produced by profiling libraries.
         """
-        return [
-            obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_WRAPPED)
-        ]
+        return [obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_WRAPPED)]
 
     def get_nefertem_schema(self) -> List["NefertemSchema"]:
         """
         Wrapper for plugins parsing methods.
         """
-        return [
-            obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_NEFERTEM)
-        ]
+        return [obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_NEFERTEM)]
 
     def get_nefertem_report(self) -> List["NefertemReport"]:
         """
         Wrapper for plugins parsing methods.
         """
-        return [
-            obj.artifact
-            for obj in self.get_item(OPERATION_VALIDATION, RESULT_NEFERTEM)
-        ]
+        return [obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_NEFERTEM)]
 
     def get_nefertem_profile(self) -> List["NefertemProfile"]:
         """
         Wrapper for plugins parsing methods.
         """
-        return [
-            obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_NEFERTEM)
-        ]
+        return [obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_NEFERTEM)]
 
     def get_rendered_schema(self) -> List[Any]:
         """
         Get a list of schemas ready to be persisted.
         """
-        return listify(
-            flatten_list(
-                [
-                    obj.artifact
-                    for obj in self.get_item(OPERATION_INFERENCE, RESULT_RENDERED)
-                ]
-            )
-        )
+        return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_RENDERED)]))
 
     def get_rendered_report(self) -> List[Any]:
         """
         Get a list of reports ready to be persisted.
         """
-        return listify(
-            flatten_list(
-                [
-                    obj.artifact
-                    for obj in self.get_item(OPERATION_VALIDATION, RESULT_RENDERED)
-                ]
-            )
-        )
+        return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_RENDERED)]))
 
     def get_rendered_profile(self) -> List[Any]:
         """
         Get a list of profiles ready to be persisted.
         """
-        return listify(
-            flatten_list(
-                [
-                    obj.artifact
-                    for obj in self.get_item(OPERATION_PROFILING, RESULT_RENDERED)
-                ]
-            )
-        )
+        return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_RENDERED)]))
 
     def get_libraries(self) -> List[dict]:
         """
@@ -357,9 +315,7 @@ class RunHandler:
         store = self._store_handler.get_md_store()
         store.log_metadata(src, dst, src_type, overwrite)
 
-    def persist_artifact(
-        self, src: Any, dst: str, src_name: str, metadata: dict
-    ) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
         Method to persist artifacts in the default artifact store.
         """

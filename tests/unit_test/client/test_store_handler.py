@@ -9,10 +9,10 @@ from nefertem.client.store_handler import (
     StoreHandler,
     StoreRegistry,
 )
-from nefertem.store_artifact.artifact_store import ArtifactStore
-from nefertem.store_artifact.dummy_artifact_store import DummyArtifactStore
-from nefertem.store_metadata.dummy_metadata_store import DummyMetadataStore
-from nefertem.store_metadata.metadata_store import MetadataStore
+from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.dummy_artifact_store import DummyArtifactStore
+from nefertem.stores.metadata.dummy_metadata_store import DummyMetadataStore
+from nefertem.stores.metadata.metadata_store import MetadataStore
 from nefertem.utils.commons import GENERIC_DUMMY
 from nefertem.utils.exceptions import StoreError
 
@@ -102,9 +102,7 @@ class TestStoreHandler:
             handler._update_default_store()
 
     def test_get_md_store(self, temp_data):
-        assert isinstance(
-            StoreHandler(tmp_dir=temp_data).get_md_store(), DummyMetadataStore
-        )
+        assert isinstance(StoreHandler(tmp_dir=temp_data).get_md_store(), DummyMetadataStore)
 
     def test_get_art_store(self, temp_data):
         assert isinstance(
@@ -113,9 +111,7 @@ class TestStoreHandler:
         )
 
     def test_get_def_store(self, temp_data):
-        assert isinstance(
-            StoreHandler(tmp_dir=temp_data).get_def_store(), DummyArtifactStore
-        )
+        assert isinstance(StoreHandler(tmp_dir=temp_data).get_def_store(), DummyArtifactStore)
 
     def test_get_all_art_stores(self, temp_data):
         assert isinstance(StoreHandler(tmp_dir=temp_data).get_all_art_stores(), list)

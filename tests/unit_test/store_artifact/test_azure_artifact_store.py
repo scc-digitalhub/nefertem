@@ -1,8 +1,3 @@
-import pytest
-
-from nefertem.store_artifact.azure_artifact_store import AzureArtifactStore
-
-
 class TestAzureArtifactStore:
     def test_persist_artifact(self):
         ...
