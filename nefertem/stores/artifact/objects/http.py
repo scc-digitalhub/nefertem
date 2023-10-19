@@ -6,7 +6,7 @@ from typing import Any
 import requests
 from requests.models import HTTPError
 
-from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.file_utils import check_make_dir, get_path
 from nefertem.utils.io_utils import write_bytes
 from nefertem.utils.uri_utils import get_name_from_uri, rebuild_uri

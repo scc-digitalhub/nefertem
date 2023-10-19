@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.stores.artifact.dummy_artifact_store import DummyArtifactStore
+from nefertem.stores.artifact.objects.dummy import DummyArtifactStore
 
 
 class TestDummyArtifactStore:

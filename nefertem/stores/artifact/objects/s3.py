@@ -11,7 +11,7 @@ import boto3
 import botocore.client
 from botocore.exceptions import ClientError
 
-from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import check_make_dir, check_path, get_path
 from nefertem.utils.io_utils import wrap_string, write_bytes, write_bytesio

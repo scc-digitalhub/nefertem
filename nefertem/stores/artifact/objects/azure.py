@@ -9,7 +9,7 @@ from typing import IO, Any
 
 from azure.storage.blob import BlobSasPermissions, BlobServiceClient, ContainerClient, generate_blob_sas
 
-from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.file_utils import check_make_dir, check_path, get_path
 from nefertem.utils.io_utils import wrap_string, write_bytes, write_bytesio
 from nefertem.utils.uri_utils import build_key, get_name_from_uri, get_uri_netloc, get_uri_path

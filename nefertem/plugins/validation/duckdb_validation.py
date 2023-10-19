@@ -201,7 +201,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         """
         store = self._get_resource_store(resource)
         data_reader = self._get_reader(store)
-        df = self._get_data(data_reader, listify(resource.path)) # noqa pylint: disable=no-member
+        df = self._get_data(data_reader, listify(resource.path))  # noqa pylint: disable=no-member
         self.con.execute(f"CREATE TABLE IF NOT EXISTS {resource.name} AS SELECT * FROM df;")
 
     def _get_reader(self, store: "ArtifactStore") -> "NativeReader":

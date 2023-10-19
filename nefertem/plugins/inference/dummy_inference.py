@@ -8,7 +8,7 @@ from nefertem.metadata.reports.schema import NefertemSchema
 from nefertem.plugins.base_plugin import PluginBuilder
 from nefertem.plugins.inference.inference_plugin import Inference
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import GENERIC_DUMMY, LIBRARY_DUMMY
+from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
 
 
 class InferencePluginDummy(Inference):
@@ -43,7 +43,7 @@ class InferencePluginDummy(Inference):
             _object = {"errors": result.errors}
         else:
             _object = dict(result.artifact)
-        filename = self._fn_schema.format(f"{GENERIC_DUMMY}.json")
+        filename = self._fn_schema.format(f"{DUMMY}.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 

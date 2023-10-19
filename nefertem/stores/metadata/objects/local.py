@@ -3,7 +3,7 @@ Implementation of local metadata store.
 """
 from typing import Optional
 
-from nefertem.stores.metadata.metadata_store import MetadataStore
+from nefertem.stores.metadata.objects.base import MetadataStore
 from nefertem.utils import commons as cfg
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.file_utils import check_dir, clean_all, get_path, make_dir
@@ -62,6 +62,24 @@ class LocalMetadataStore(MetadataStore):
     def _check_dst_folder(dst: str, overwrite: bool, init: Optional[bool] = False) -> None:
         """
         Check if run folder already exist, otherwise it creates it.
+
+        Parameters
+        ----------
+        dst : str
+            Destination path.
+        overwrite : bool
+            Overwrite existing run folder.
+        init : bool
+            Initialize run folder.
+
+        Raises
+        ------
+        RunError
+            If run already exists and init is False.
+
+        Returns
+        -------
+        None
         """
         if check_dir(dst):
             if init and not overwrite:
@@ -72,7 +90,7 @@ class LocalMetadataStore(MetadataStore):
         else:
             make_dir(dst)
 
-    def _build_source_destination(self, dst: str, src_type: str, key: Optional[str] = None) -> str:
+    def _build_source_destination(self, dst: str, src_type: str) -> str:
         """
         Return source path based on input source type.
         """

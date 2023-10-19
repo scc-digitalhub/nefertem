@@ -1,7 +1,6 @@
 """
 Module for common terms definition.
 """
-from typing import List
 
 # Nefertem version
 NEFERTEM_VERSION: str = ""
@@ -33,56 +32,6 @@ PANDAS_DATAFRAME_SQL_READER: str = "PandasDataFrameSQLReader"
 POLARS_DATAFRAME_FILE_READER: str = "PolarsDataFrameFileReader"
 POLARS_DATAFRAME_DUCKDB_READER: str = "PolarsDataFrameDuckDBReader"
 POLARS_DATAFRAME_SQL_READER: str = "PolarsDataFrameSQLReader"
-
-
-# Store types
-STORE_DUMMY: str = "_dummy"
-STORE_LOCAL: str = "local"
-STORE_HTTP: str = "http"
-STORE_FTP: str = "ftp"
-STORE_S3: str = "s3"
-STORE_AZURE: str = "azure"
-STORE_SQL: str = "sql"
-STORE_ODBC: str = "odbc"
-
-
-# Schemes
-SCHEME_LOCAL: List[str] = [
-    "",
-    "file",
-]
-SCHEME_HTTP: List[str] = [
-    "http",
-    "https",
-]
-SCHEME_S3: List[str] = [
-    "s3",
-]
-SCHEME_AZURE: List[str] = [
-    "wasb",
-    "wasbs",
-]
-SCHEME_FTP: List[str] = [
-    "ftp",
-]
-SCHEME_SQL: List[str] = [
-    "sql",
-    "postgresql",
-    "mysql",
-    "mssql",
-    "oracle",
-    "sqlite",
-]
-SCHEME_ODBC: List[str] = [
-    "dremio",
-    "odbc",
-]
-SCHEME_DUCKDB: List[str] = [
-    "duckdb",
-]
-SCHEME_DUMMY: List[str] = [
-    "_dummy",
-]
 
 
 # Constraints
@@ -153,7 +102,7 @@ STATUS_ERROR: str = "error"
 
 
 # Generics
-GENERIC_DUMMY: str = "_dummy"
+DUMMY: str = "_dummy"
 DEFAULT_DIRECTORY: str = "./ntruns/tmp"
 DEFAULT_PROJECT: str = "project"
 DEFAULT_EXPERIMENT: str = "experiment"

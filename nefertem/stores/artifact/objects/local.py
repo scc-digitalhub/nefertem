@@ -5,7 +5,7 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
 
-from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.file_utils import check_dir, check_path, copy_file, get_path, make_dir
 from nefertem.utils.io_utils import write_json, write_object
 

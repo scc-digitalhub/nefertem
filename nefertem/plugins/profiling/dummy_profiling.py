@@ -7,7 +7,7 @@ from typing import List
 from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import GENERIC_DUMMY, LIBRARY_DUMMY
+from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
 
 
 class ProfilePluginDummy(Profiling):
@@ -45,7 +45,7 @@ class ProfilePluginDummy(Profiling):
             _object = {"errors": result.errors}
         else:
             _object = dict(result.artifact)
-        filename = self._fn_profile.format(f"{GENERIC_DUMMY}.json")
+        filename = self._fn_profile.format(f"{DUMMY}.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 

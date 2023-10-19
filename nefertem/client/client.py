@@ -8,7 +8,7 @@ from __future__ import annotations
 import typing
 
 from nefertem.models.data_resource import DataResource
-from nefertem.models.store_config import StoreConfig
+from nefertem.stores.models import StoreConfig
 
 if typing.TYPE_CHECKING:
     from nefertem.models.run_config import RunConfig
@@ -92,11 +92,13 @@ class Client:
         run_config : RunConfig
             RunConfig object.
         experiment : Optional[str], optional
-            Name of the experiment. An experiment is a logical unit for ordering the runs execution, by default "experiment".
+            Name of the experiment. An experiment is a logical unit for ordering the runs execution,
+            by default "experiment".
         run_id : Optional[str], optional
             Optional string parameter for user defined run id, by default None.
         overwrite : Optional[bool], optional
-            If True, the run metadata/artifact can be overwritten by a run with the same id, by default False.
+            If True, the run metadata/artifact can be overwritten by a run with the same id,
+            by default False.
 
         Returns
         -------

@@ -2,6 +2,7 @@
 Metadata module.
 """
 
+
 class Metadata:
     """
     Base class for metadata objects.

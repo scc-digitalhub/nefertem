@@ -1,7 +1,7 @@
 """
 Dummy artifact store module.
 """
-from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
 class DummyArtifactStore(ArtifactStore):

@@ -14,8 +14,7 @@ from nefertem.utils.commons import (
     CONSTRAINT_SQL_CHECK_ROWS,
     CONSTRAINT_SQL_CHECK_VALUE,
     LIBRARY_SQLALCHEMY,
-    PANDAS_DATAFRAME_SQL_READER,
-    STORE_SQL,
+    PANDAS_DATAFRAME_SQL_READER
 )
 from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list
@@ -169,7 +168,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         Filter builder store to keep only SQLStores and set 'native' mode for
         reading data to return a connection string to a db.
         """
-        self.stores = [store for store in self.stores if store.store_type == STORE_SQL]
+        self.stores = [store for store in self.stores if store.store_type == "sql"]
         if not self.stores:
             raise ValidationError("There must be at least a SQLStore to use sqlalchemy validator.")
 

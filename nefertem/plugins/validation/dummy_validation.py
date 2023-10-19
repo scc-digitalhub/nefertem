@@ -8,7 +8,7 @@ from typing import List
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
-from nefertem.utils.commons import GENERIC_DUMMY, LIBRARY_DUMMY
+from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
 
 DummyConstraint = namedtuple("DummyConstraint", ["name", "resources"], defaults=["", [""]])
 
@@ -49,7 +49,7 @@ class ValidationPluginDummy(Validation):
             _object = {"errors": result.errors}
         else:
             _object = dict(result.artifact)
-        filename = self._fn_report.format(f"{GENERIC_DUMMY}.json")
+        filename = self._fn_report.format(f"{DUMMY}.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 

@@ -10,7 +10,6 @@ import duckdb
 import pytest
 from moto import mock_s3
 
-from nefertem.client.store_factory import StoreBuilder
 from nefertem.data_reader.utils import build_reader
 from nefertem.models.constraints.duckdb import ConstraintDuckDB
 from nefertem.models.constraints.evidently import ConstraintEvidently, EvidentlyElement, MetricEvidently
@@ -19,8 +18,9 @@ from nefertem.models.constraints.great_expectations import ConstraintGreatExpect
 from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
 from nefertem.models.data_resource import DataResource
 from nefertem.models.run_config import RunConfig
-from nefertem.models.store_config import StoreConfig
+from nefertem.stores.models import StoreConfig
 from nefertem.plugins.utils.plugin_utils import Result
+from nefertem.stores.builder import StoreBuilder
 from nefertem.utils.commons import *
 from nefertem.utils.utils import listify
 

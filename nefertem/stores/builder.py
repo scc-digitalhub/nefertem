@@ -1,28 +1,24 @@
 """
-StoreFactory module.
+StoreBuilder module.
 """
+from __future__ import annotations
+
+import typing
 from pathlib import Path
 from typing import Union
 
-from nefertem.models.store_config import StoreConfig
-from nefertem.stores.artifact.registry import ART_STORES
-from nefertem.stores.metadata.registry import MD_STORES
-from nefertem.utils.commons import (
-    API_BASE,
-    GENERIC_DUMMY,
-    SCHEME_AZURE,
-    SCHEME_DUMMY,
-    SCHEME_FTP,
-    SCHEME_HTTP,
-    SCHEME_LOCAL,
-    SCHEME_ODBC,
-    SCHEME_S3,
-    SCHEME_SQL,
-    STORE_DUMMY,
-)
+from nefertem.stores.models import StoreConfig
+from nefertem.stores.artifact.registry import artstore_registry
+from nefertem.stores.kinds import SchemeKinds
+from nefertem.stores.metadata.registry import mdstore_registry
+from nefertem.utils.commons import API_BASE, DUMMY
 from nefertem.utils.file_utils import get_absolute_path
 from nefertem.utils.uri_utils import check_url, get_uri_netloc, get_uri_path, get_uri_scheme, rebuild_uri
 from nefertem.utils.utils import get_uiid
+
+if typing.TYPE_CHECKING:
+    from nefertem.stores.artifact.objects.base import ArtifactStore
+    from nefertem.stores.metadata.objects.base import MetadataStore
 
 
 class StoreBuilder:
@@ -43,14 +39,14 @@ class StoreBuilder:
             return self.build_metadata_store(cfg)
         return self.build_artifact_store(cfg)
 
-    def build_metadata_store(self, cfg: StoreConfig) -> "MetadataStore":
+    def build_metadata_store(self, cfg: StoreConfig) -> MetadataStore:
         """
         Method to create a metadata stores.
         """
         scheme = get_uri_scheme(cfg.uri)
         new_uri = self.resolve_uri_metadata(cfg.uri, scheme, self.project_id)
         try:
-            return MD_STORES[cfg.type](cfg.name, cfg.type, new_uri, cfg.config)
+            return mdstore_registry[cfg.type](cfg.name, cfg.type, new_uri, cfg.config)
         except KeyError:
             raise NotImplementedError
 
@@ -59,16 +55,16 @@ class StoreBuilder:
         """
         Resolve metadata URI location.
         """
-        if scheme in [*SCHEME_LOCAL]:
+        if scheme in SchemeKinds.LOCAL.value:
             return get_absolute_path(get_uri_netloc(uri), get_uri_path(uri), "metadata")
-        if scheme in [*SCHEME_HTTP]:
+        if scheme in SchemeKinds.HTTP.value:
             url = uri + API_BASE + project_name
             return check_url(url)
-        if scheme in [*SCHEME_DUMMY]:
+        if scheme in SchemeKinds.DUMMY.value:
             return uri
         raise NotImplementedError
 
-    def build_artifact_store(self, cfg: StoreConfig) -> "ArtifactStore":
+    def build_artifact_store(self, cfg: StoreConfig) -> ArtifactStore:
         """
         Method to create a artifact stores.
         """
@@ -76,7 +72,7 @@ class StoreBuilder:
         new_uri = self.resolve_artifact_uri(cfg.uri, scheme)
         tmp = str(Path(self.tmp_dir, get_uiid()))
         try:
-            return ART_STORES[cfg.type](cfg.name, cfg.type, new_uri, tmp, cfg.config, cfg.isDefault)
+            return artstore_registry[cfg.type](cfg.name, cfg.type, new_uri, tmp, cfg.config, cfg.isDefault)
         except KeyError:
             raise NotImplementedError
 
@@ -85,11 +81,20 @@ class StoreBuilder:
         """
         Resolve artifact URI location.
         """
-        if scheme in [*SCHEME_LOCAL]:
+        if scheme in SchemeKinds.LOCAL.value:
             return get_absolute_path(get_uri_netloc(uri), get_uri_path(uri), "artifact")
-        if scheme in [*SCHEME_AZURE, *SCHEME_S3, *SCHEME_FTP]:
+        if scheme in [
+            *SchemeKinds.AZURE.value,
+            *SchemeKinds.S3.value,
+            *SchemeKinds.FTP.value,
+        ]:
             return rebuild_uri(uri, "artifact")
-        if scheme in [*SCHEME_DUMMY, *SCHEME_HTTP, *SCHEME_SQL, *SCHEME_ODBC]:
+        if scheme in [
+            *SchemeKinds.HTTP.value,
+            *SchemeKinds.SQL.value,
+            *SchemeKinds.ODBC.value,
+            *SchemeKinds.DUMMY.value,
+        ]:
             return uri
         raise NotImplementedError
 
@@ -101,7 +106,7 @@ class StoreBuilder:
         config.
         """
         if config is None:
-            return StoreConfig(name=GENERIC_DUMMY, type=STORE_DUMMY, uri=f"{SCHEME_DUMMY}://")
+            return StoreConfig(name=DUMMY, type=DUMMY, uri=f"{DUMMY}://")
         if not isinstance(config, StoreConfig):
             try:
                 return StoreConfig(**config)

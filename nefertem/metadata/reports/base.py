@@ -20,6 +20,7 @@ class NefertemBaseReport(Metadata):
     duration : float
         Time required by the execution process.
     """
+
     lib_name: str
     lib_version: str
     duration: float

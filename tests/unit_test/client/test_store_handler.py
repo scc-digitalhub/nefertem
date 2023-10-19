@@ -9,11 +9,11 @@ from nefertem.client.store_handler import (
     StoreHandler,
     StoreRegistry,
 )
-from nefertem.stores.artifact.artifact_store import ArtifactStore
-from nefertem.stores.artifact.dummy_artifact_store import DummyArtifactStore
-from nefertem.stores.metadata.dummy_metadata_store import DummyMetadataStore
-from nefertem.stores.metadata.metadata_store import MetadataStore
-from nefertem.utils.commons import GENERIC_DUMMY
+from nefertem.stores.artifact.objects.base import ArtifactStore
+from nefertem.stores.artifact.objects.dummy import DummyArtifactStore
+from nefertem.stores.metadata.objects.base import MetadataStore
+from nefertem.stores.metadata.objects.dummy import DummyMetadataStore
+from nefertem.utils.commons import DUMMY
 from nefertem.utils.exceptions import StoreError
 
 
@@ -70,7 +70,7 @@ class TestStoreHandler:
     def test_setup(self, temp_data):
         handler = StoreHandler(tmp_dir=temp_data)
         assert isinstance(handler.get_md_store(), MetadataStore)
-        assert isinstance(handler.get_art_store(GENERIC_DUMMY), ArtifactStore)
+        assert isinstance(handler.get_art_store(DUMMY), ArtifactStore)
         assert isinstance(handler.get_def_store(), ArtifactStore)
 
     def test_add_metadata_store(self, temp_data, mds_cfg):
@@ -106,7 +106,7 @@ class TestStoreHandler:
 
     def test_get_art_store(self, temp_data):
         assert isinstance(
-            StoreHandler(tmp_dir=temp_data).get_art_store(GENERIC_DUMMY),
+            StoreHandler(tmp_dir=temp_data).get_art_store(DUMMY),
             DummyArtifactStore,
         )
 

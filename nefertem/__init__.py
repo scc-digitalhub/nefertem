@@ -9,7 +9,7 @@ from nefertem.models.constraints.great_expectations import ConstraintGreatExpect
 from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
 from nefertem.models.data_resource import DataResource
 from nefertem.models.run_config import RunConfig
-from nefertem.models.store_config import StoreConfig
+from nefertem.stores.models import StoreConfig
 from nefertem.plugins.utils.frictionless_utils import frictionless_schema_converter
 
 __all__ = [

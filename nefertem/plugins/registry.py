@@ -4,7 +4,6 @@ PluginBuilder registry.
 # Dummy imports
 from nefertem.plugins.inference.dummy_inference import InferenceBuilderDummy
 from nefertem.plugins.profiling.dummy_profiling import ProfileBuilderDummy
-from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently
 from nefertem.plugins.validation.dummy_validation import ValidationBuilderDummy
 from nefertem.utils.commons import LIBRARY_DUMMY, OPERATION_INFERENCE, OPERATION_PROFILING, OPERATION_VALIDATION
 

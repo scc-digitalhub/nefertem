@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.stores.artifact.artifact_store import ArtifactStore, ResourceRegistry
+from nefertem.stores.artifact.objects.base import ArtifactStore, ResourceRegistry
 from tests.conftest import TEST_FILENAME
 
 

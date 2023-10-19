@@ -10,7 +10,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.engine.cursor import CursorResult
 from sqlalchemy.exc import SQLAlchemyError
 
-from nefertem.stores.artifact.artifact_store import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import check_make_dir, get_path
 from nefertem.utils.uri_utils import get_uri_netloc

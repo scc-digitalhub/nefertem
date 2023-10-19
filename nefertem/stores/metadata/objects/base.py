@@ -1,5 +1,5 @@
 """
-Abstract class for metadata store.
+Base abstract metadata store module.
 """
 from abc import ABCMeta, abstractmethod
 from typing import Optional
@@ -64,7 +64,7 @@ class MetadataStore(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def _build_source_destination(self, dst: str, src_type: str, key: Optional[str] = None) -> str:
+    def _build_source_destination(self, dst: str, src_type: str) -> str:
         """
         Return source destination based on source type.
         """

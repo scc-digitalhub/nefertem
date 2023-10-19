@@ -3,7 +3,7 @@ StoreHandler module.
 """
 from typing import List, Optional, Union
 
-from nefertem.client.store_factory import StoreBuilder
+from nefertem.stores.builder import StoreBuilder
 from nefertem.utils.commons import DEFAULT_DIRECTORY, DEFAULT_PROJECT
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import clean_all
@@ -202,6 +202,6 @@ class StoreHandler:
         Get rid of reference to temporary paths stored
         in artifact stores.
         """
-        stores = self.get_all_art_stores()
+        stores: List["ArtifactStore"] = self.get_all_art_stores()
         for store in stores:
             store.clean_paths()

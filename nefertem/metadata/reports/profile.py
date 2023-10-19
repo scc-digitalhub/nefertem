@@ -23,6 +23,7 @@ class NefertemProfileMetric:
         Metric value
 
     """
+
     name: str
     title: str
     type: str

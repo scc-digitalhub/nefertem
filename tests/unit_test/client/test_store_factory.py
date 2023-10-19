@@ -2,9 +2,9 @@ import os
 
 import pytest
 
-from nefertem.models.store_config import StoreConfig
-from nefertem.stores.artifact.artifact_store import ArtifactStore
-from nefertem.stores.metadata.metadata_store import MetadataStore
+from nefertem.stores.models import StoreConfig
+from nefertem.stores.artifact.objects.base import ArtifactStore
+from nefertem.stores.metadata.objects.base import MetadataStore
 from nefertem.utils.uri_utils import get_uri_scheme
 
 PROJ = "test"

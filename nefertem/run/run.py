@@ -14,7 +14,7 @@ from nefertem.utils.commons import (
     MT_RUN_ENV,
     MT_RUN_METADATA,
     NEFERTEM_VERSION,
-    SCHEME_DUMMY,
+    DUMMY,
     STATUS_ERROR,
     STATUS_FINISHED,
     STATUS_INIT,
@@ -175,14 +175,14 @@ class Run:
         """
         Check metadata uri existence.
         """
-        if self.run_info.run_metadata_uri in SCHEME_DUMMY:
+        if self.run_info.run_metadata_uri in [DUMMY]:
             raise StoreError("Please configure a metadata store.")
 
     def _check_artifacts_uri(self) -> None:
         """
         Check artifact uri existence.
         """
-        if self.run_info.run_artifacts_uri in SCHEME_DUMMY:
+        if self.run_info.run_artifacts_uri in [DUMMY]:
             raise StoreError("Please configure a artifact store.")
 
     def _get_libraries(self) -> None:

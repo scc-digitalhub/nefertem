@@ -22,6 +22,7 @@ class BlobLog(Metadata):
     contents : dict
         Blob of metadata to log.
     """
+
     run_id: str
     experiment_name: str
     nefertem_version: str

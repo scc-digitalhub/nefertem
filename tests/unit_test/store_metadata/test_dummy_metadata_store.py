@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.stores.metadata.dummy_metadata_store import DummyMetadataStore
+from nefertem.stores.metadata.objects.dummy import DummyMetadataStore
 
 
 class TestDummyMetadataStore:
@@ -19,4 +19,4 @@ class TestDummyMetadataStore:
 
 @pytest.fixture
 def store():
-    return DummyMetadataStore("", "", "")
+    return DummyMetadataStore("_dummy", "_dummy", "_dummy")
