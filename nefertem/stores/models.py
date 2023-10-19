@@ -1,12 +1,20 @@
 """
 Stores related models.
 """
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel
 
 
 class StoreConfig(BaseModel):
+    """
+    Store configuration class.
+    It defines the configuration settings for a Store like endpoints, credentials, etc.
+    It is modelled on different kind of Store.
+    """
+
+
+class StoreParameters(BaseModel):
     """
     Store configuration class.
     This object define the configuration of a Store passed to a
@@ -29,5 +37,5 @@ class StoreConfig(BaseModel):
     isDefault: Optional[bool] = False
     """Determine if a Store is the default one."""
 
-    config: Optional[dict] = None
+    config: Optional[Union[dict, StoreConfig]] = None
     """Dictionary containing the configuration for the backend."""

@@ -9,8 +9,8 @@ from nefertem.models.constraints.great_expectations import ConstraintGreatExpect
 from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
 from nefertem.models.data_resource import DataResource
 from nefertem.models.run_config import RunConfig
-from nefertem.stores.models import StoreConfig
 from nefertem.plugins.utils.frictionless_utils import frictionless_schema_converter
+from nefertem.stores.models import StoreParameters
 
 __all__ = [
     "Client",
@@ -24,5 +24,5 @@ __all__ = [
     "DataResource",
     "frictionless_schema_converter",
     "RunConfig",
-    "StoreConfig",
+    "StoreParameters",
 ]

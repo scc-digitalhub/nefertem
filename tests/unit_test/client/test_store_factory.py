@@ -2,9 +2,9 @@ import os
 
 import pytest
 
-from nefertem.stores.models import StoreConfig
 from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.stores.metadata.objects.base import MetadataStore
+from nefertem.stores.models import StoreParameters
 from nefertem.utils.uri_utils import get_uri_scheme
 
 PROJ = "test"
@@ -91,11 +91,11 @@ class TestStoreBuilder:
 
     def test_check_config(self, store_builder, st_loc1):
         cfg = store_builder._check_config(None)
-        assert isinstance(cfg, StoreConfig)
+        assert isinstance(cfg, StoreParameters)
         assert cfg.type == "_dummy"
 
         cfg = store_builder._check_config(st_loc1)
-        assert isinstance(cfg, StoreConfig)
+        assert isinstance(cfg, StoreParameters)
         assert cfg.type == "local"
 
         with pytest.raises(TypeError):

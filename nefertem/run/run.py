@@ -4,9 +4,10 @@ Run module.
 from pathlib import Path
 from typing import Any, List, Optional
 
-from nefertem.metadata.blob_log import BlobLog
-from nefertem.metadata.env_log import EnvLog
+from nefertem.metadata.blob import BlobLog
+from nefertem.metadata.env import EnvLog
 from nefertem.utils.commons import (
+    DUMMY,
     MT_ARTIFACT_METADATA,
     MT_NT_PROFILE,
     MT_NT_REPORT,
@@ -14,7 +15,6 @@ from nefertem.utils.commons import (
     MT_RUN_ENV,
     MT_RUN_METADATA,
     NEFERTEM_VERSION,
-    DUMMY,
     STATUS_ERROR,
     STATUS_FINISHED,
     STATUS_INIT,

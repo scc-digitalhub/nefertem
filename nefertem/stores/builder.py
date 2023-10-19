@@ -7,10 +7,10 @@ import typing
 from pathlib import Path
 from typing import Union
 
-from nefertem.stores.models import StoreConfig
 from nefertem.stores.artifact.registry import artstore_registry
 from nefertem.stores.kinds import SchemeKinds
 from nefertem.stores.metadata.registry import mdstore_registry
+from nefertem.stores.models import StoreParameters
 from nefertem.utils.commons import API_BASE, DUMMY
 from nefertem.utils.file_utils import get_absolute_path
 from nefertem.utils.uri_utils import check_url, get_uri_netloc, get_uri_path, get_uri_scheme, rebuild_uri
@@ -30,7 +30,7 @@ class StoreBuilder:
         self.project_id = project_id
         self.tmp_dir = tmp_dir
 
-    def build(self, config: Union[dict, StoreConfig], md_store: bool = False) -> dict:
+    def build(self, config: Union[dict, StoreParameters], md_store: bool = False) -> dict:
         """
         Builder method that recieves store configurations.
         """
@@ -39,7 +39,7 @@ class StoreBuilder:
             return self.build_metadata_store(cfg)
         return self.build_artifact_store(cfg)
 
-    def build_metadata_store(self, cfg: StoreConfig) -> MetadataStore:
+    def build_metadata_store(self, cfg: StoreParameters) -> MetadataStore:
         """
         Method to create a metadata stores.
         """
@@ -64,7 +64,7 @@ class StoreBuilder:
             return uri
         raise NotImplementedError
 
-    def build_artifact_store(self, cfg: StoreConfig) -> ArtifactStore:
+    def build_artifact_store(self, cfg: StoreParameters) -> ArtifactStore:
         """
         Method to create a artifact stores.
         """
@@ -99,17 +99,17 @@ class StoreBuilder:
         raise NotImplementedError
 
     @staticmethod
-    def _check_config(config: Union[StoreConfig, dict]) -> StoreConfig:
+    def _check_config(config: Union[StoreParameters, dict]) -> StoreParameters:
         """
-        Try to convert a dictionary in a StoreConfig model.
+        Try to convert a dictionary in a StoreParameters model.
         In case the config parameter is None, return a dummy store basic
         config.
         """
         if config is None:
-            return StoreConfig(name=DUMMY, type=DUMMY, uri=f"{DUMMY}://")
-        if not isinstance(config, StoreConfig):
+            return StoreParameters(name=DUMMY, type=DUMMY, uri=f"{DUMMY}://")
+        if not isinstance(config, StoreParameters):
             try:
-                return StoreConfig(**config)
+                return StoreParameters(**config)
             except TypeError:
                 raise TypeError("Malformed store configuration.")
         return config

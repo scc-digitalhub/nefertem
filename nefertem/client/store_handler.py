@@ -81,8 +81,8 @@ class StoreHandler:
 
     def __init__(
         self,
-        metadata_store: Optional["StoreConfig"] = None,
-        store: Optional[List["StoreConfig"]] = None,
+        metadata_store: Optional["StoreParameters"] = None,
+        store: Optional[List["StoreParameters"]] = None,
         project: Optional[str] = DEFAULT_PROJECT,
         tmp_dir: Optional[str] = DEFAULT_DIRECTORY,
     ) -> None:
@@ -94,8 +94,8 @@ class StoreHandler:
 
     def _setup(
         self,
-        metadata_store: Optional["StoreConfig"] = None,
-        store: Optional[List["StoreConfig"]] = None,
+        metadata_store: Optional["StoreParameters"] = None,
+        store: Optional[List["StoreParameters"]] = None,
     ) -> None:
         """
         Build stores according to configurations provided by user
@@ -112,14 +112,14 @@ class StoreHandler:
         # Register default store
         self._update_default_store()
 
-    def _add_metadata_store(self, config: Union["StoreConfig", dict]) -> None:
+    def _add_metadata_store(self, config: Union["StoreParameters", dict]) -> None:
         """
         Add a metadata store to the registry.
         """
         md_store = self._store_builder.build(config, md_store=True)
         self._store_registry.register(md_store, STORE_TYPE_METADATA)
 
-    def add_artifact_store(self, config: Union["StoreConfig", dict]) -> None:
+    def add_artifact_store(self, config: Union["StoreParameters", dict]) -> None:
         """
         Add an artifact store to the registry.
         """

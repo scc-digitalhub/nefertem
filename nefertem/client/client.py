@@ -8,7 +8,7 @@ from __future__ import annotations
 import typing
 
 from nefertem.models.data_resource import DataResource
-from nefertem.stores.models import StoreConfig
+from nefertem.stores.models import StoreParameters
 
 if typing.TYPE_CHECKING:
     from nefertem.models.run_config import RunConfig
@@ -34,10 +34,10 @@ class Client:
 
     Parameters
     ----------
-    metadata_store : Optional[StoreConfig], optional
-        StoreConfig containing configuration for the metadata store, by default None.
-    store : Optional[Union[StoreConfig, List[StoreConfig]]], optional
-        (List of) StoreConfig containing configuration for the artifact stores, by default None.
+    metadata_store : Optional[StoreParameters], optional
+        StoreParameters containing configuration for the metadata store, by default None.
+    store : Optional[Union[StoreParameters, List[StoreParameters]]], optional
+        (List of) StoreParameters containing configuration for the artifact stores, by default None.
     project : Optional[str], optional
         The id of the project, required for the DigitalHub metadata store, by default "project".
     tmp_dir : Optional[str], optional
@@ -54,21 +54,21 @@ class Client:
 
     def __init__(
         self,
-        metadata_store: Optional[StoreConfig] = None,
-        store: Optional[Union[StoreConfig, List[StoreConfig]]] = None,
+        metadata_store: Optional[StoreParameters] = None,
+        store: Optional[Union[StoreParameters, List[StoreParameters]]] = None,
         project: Optional[str] = DEFAULT_PROJECT,
         tmp_dir: Optional[str] = DEFAULT_DIRECTORY,
     ) -> None:
         self._store_handler = StoreHandler(metadata_store, store, project, tmp_dir)
         self._run_builder = RunBuilder(self._store_handler)
 
-    def add_store(self, store: StoreConfig) -> None:
+    def add_store(self, store: StoreParameters) -> None:
         """
         Add a new store to the client internal registry.
 
         Parameters
         ----------
-        store: StoreConfig
+        store: StoreParameters
             Store configuration.
 
         """

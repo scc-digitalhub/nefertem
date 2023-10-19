@@ -14,7 +14,7 @@ from nefertem.utils.commons import (
     CONSTRAINT_SQL_CHECK_ROWS,
     CONSTRAINT_SQL_CHECK_VALUE,
     LIBRARY_SQLALCHEMY,
-    PANDAS_DATAFRAME_SQL_READER
+    PANDAS_DATAFRAME_SQL_READER,
 )
 from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list

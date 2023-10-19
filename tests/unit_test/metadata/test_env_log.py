@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.metadata.env_log import EnvLog
+from nefertem.metadata.env import EnvLog
 
 
 @pytest.fixture()

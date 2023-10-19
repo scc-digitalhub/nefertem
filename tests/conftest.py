@@ -18,9 +18,9 @@ from nefertem.models.constraints.great_expectations import ConstraintGreatExpect
 from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
 from nefertem.models.data_resource import DataResource
 from nefertem.models.run_config import RunConfig
-from nefertem.stores.models import StoreConfig
 from nefertem.plugins.utils.plugin_utils import Result
 from nefertem.stores.builder import StoreBuilder
+from nefertem.stores.models import StoreParameters
 from nefertem.utils.commons import *
 from nefertem.utils.utils import listify
 
@@ -184,7 +184,7 @@ def store(store_cfg, store_builder):
 # Local 1
 @pytest.fixture
 def local_store_cfg(temp_data):
-    return StoreConfig(
+    return StoreParameters(
         **{
             "title": "Local Store",
             "name": "local",
@@ -198,7 +198,7 @@ def local_store_cfg(temp_data):
 # Local 2
 @pytest.fixture
 def local_store_cfg_2():
-    return StoreConfig(
+    return StoreParameters(
         **{
             "title": "Local Store 2",
             "name": "local_2",
@@ -212,7 +212,7 @@ def local_store_cfg_2():
 # SQL
 @pytest.fixture
 def sql_store_cfg(sqlitedb):
-    return StoreConfig(
+    return StoreParameters(
         **{
             "title": "SQLite Store",
             "name": "sql",
@@ -227,7 +227,7 @@ def sql_store_cfg(sqlitedb):
 # S3
 @pytest.fixture
 def s3_store_cfg():
-    return StoreConfig(
+    return StoreParameters(
         **{
             "title": "S3 Store",
             "name": "s3",
@@ -251,7 +251,7 @@ def s3_store_cfg():
 # Local
 @pytest.fixture
 def local_md_store_cfg(temp_data):
-    return StoreConfig(
+    return StoreParameters(
         **{
             "title": "Local Metadata Store",
             "name": "local_md",
