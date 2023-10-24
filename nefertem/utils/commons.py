@@ -3,7 +3,7 @@ Module for common terms definition.
 """
 
 # Nefertem version
-NEFERTEM_VERSION: str = ""
+NEFERTEM_VERSION: str = "1.0.0"
 
 
 # Libraries
@@ -52,24 +52,6 @@ CONSTRAINT_SQL_CHECK_VALUE: str = "value"
 CONSTRAINT_SQL_CHECK_ROWS: str = "rows"
 
 
-# Filenames metadata
-FN_RUN_METADATA: str = "run_metadata.json"
-FN_NT_REPORT: str = "report_{}.json"
-FN_NT_SCHEMA: str = "schema_{}.json"
-FN_NT_PROFILE: str = "profile_{}.json"
-FN_ARTIFACT_METADATA: str = "artifact_metadata_{}.json"
-FN_RUN_ENV: str = "run_env.json"
-
-
-# Metadata type
-MT_RUN_METADATA: str = "run"
-MT_NT_REPORT: str = "report"
-MT_NT_SCHEMA: str = "schema"
-MT_NT_PROFILE: str = "profile"
-MT_ARTIFACT_METADATA: str = "artifact"
-MT_RUN_ENV: str = "run_env"
-
-
 # Execution operations
 OPERATION_INFERENCE: str = "inference"
 OPERATION_PROFILING: str = "profiling"
@@ -94,5 +76,4 @@ STATUS_ERROR: str = "error"
 # Generics
 DUMMY: str = "_dummy"
 DEFAULT_DIRECTORY: str = "./ntruns/tmp"
-DEFAULT_PROJECT: str = "project"
 DEFAULT_EXPERIMENT: str = "experiment"

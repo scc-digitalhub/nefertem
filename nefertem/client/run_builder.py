@@ -59,7 +59,7 @@ class RunBuilder:
         run_art_uri = self._get_art_uri(experiment, run_id)
 
         # Create run
-        run_handler = RunHandler(run_config, self._store_handler)
+        run_handler = RunHandler(cfg, self._store_handler)
         run_info = RunInfo(experiment, res, run_id, cfg, run_md_uri, run_art_uri)
         return Run(run_info, run_handler, overwrite)
 
