@@ -1,11 +1,10 @@
 """
 Inference plugin abstract class module.
 """
-
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
-from nefertem.plugins.base_plugin import Plugin
+from nefertem.plugins.base_plugin import Plugin, PluginBuilder
 from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 
@@ -46,3 +45,18 @@ class Inference(Plugin, metaclass=ABCMeta):
         Return a common field structure.
         """
         return {"name": name, "type": type_}
+
+
+class InferencePluginBuilder(PluginBuilder):
+    """
+    Inference plugin builder.
+    """
+
+    def destroy(self, *args) -> None:
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """

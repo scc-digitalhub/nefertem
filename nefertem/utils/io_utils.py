@@ -1,11 +1,13 @@
 """
 Common IO utils.
 """
+from __future__ import annotations
+
 import json
 import shutil
 from io import BufferedReader, BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
-from typing import IO, Union
+from typing import IO
 
 
 #  https://stackoverflow.com/questions/55889474/convert-io-stringio-to-io-bytesio
@@ -73,7 +75,7 @@ def write_bytesio(src: str) -> BytesIO:
     return bytesio
 
 
-def write_json(data: dict, path: Union[str, Path]) -> None:
+def write_json(data: dict, path: str | Path) -> None:
     """
     Store JSON file.
     """
@@ -81,7 +83,7 @@ def write_json(data: dict, path: Union[str, Path]) -> None:
         json.dump(data, file)
 
 
-def write_text(string: str, path: Union[str, Path]) -> None:
+def write_text(string: str, path: str | Path) -> None:
     """
     Write text on a file.
     """
@@ -89,7 +91,7 @@ def write_text(string: str, path: Union[str, Path]) -> None:
         file.write(string)
 
 
-def write_bytes(byt: bytes, path: Union[str, Path]) -> None:
+def write_bytes(byt: bytes, path: str | Path) -> None:
     """
     Write text on a file.
     """

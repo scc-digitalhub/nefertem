@@ -2,12 +2,19 @@
 RunInfo module.
 Implementation of the basic Run's metadata.
 """
-from typing import List, Optional
+from __future__ import annotations
 
+import typing
+
+from nefertem.metadata.metadata import Metadata
 from nefertem.utils.utils import get_time
 
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
+    from nefertem.run.run_config import RunConfig
 
-class RunInfo:
+
+class RunInfo(Metadata):
     """
     Run's metadata.
 
@@ -25,22 +32,16 @@ class RunInfo:
         URI that point to the artifact store.
     resources_uri : str
         URI that point to the resource.
-
-    Methods
-    -------
-    to_dict :
-        Transform the object in a dictionary.
-
     """
 
     def __init__(
         self,
         experiment_name: str,
-        resources: List["DataResource"],
+        resources: list[DataResource],
         run_id: str,
-        run_config: "RunConfig",
-        run_metadata_uri: Optional[str] = None,
-        run_artifacts_uri: Optional[str] = None,
+        run_config: RunConfig,
+        run_metadata_uri: str | None = None,
+        run_artifacts_uri: str | None = None,
     ) -> None:
         self.experiment_name = experiment_name
         self.run_id = run_id
@@ -59,23 +60,24 @@ class RunInfo:
 
     def to_dict(self) -> dict:
         """
-        Return a dictionary of attributes.
+        Override the method to_dict of the Metadata class.
+
+        Returns
+        -------
+        dict
+            Dictionary representation of the object.
         """
-        run_dict = {
-            "experimentName": self.experiment_name,
-            "runId": self.run_id,
-            "runConfig": self.run_config.dict(exclude_none=True),
-            "runLibraries": self.run_libraries,
-            "runMetadataUri": self.run_metadata_uri,
-            "runArtifactsUri": self.run_artifacts_uri,
+        return {
+            "experiment_name": self.experiment_name,
+            "run_id": self.run_id,
+            "run_config": self.run_config.dict(exclude_none=True),
+            "run_libraries": self.run_libraries,
+            "run_metadata_uri": self.run_metadata_uri,
+            "run_artifacts_uri": self.run_artifacts_uri,
             "resources": [i.dict(exclude_none=True) for i in self.resources],
             "created": self.created,
-            "beginStatus": self.begin_status,
+            "begin_status": self.begin_status,
             "started": self.started,
-            "endStatus": self.end_status,
+            "end_status": self.end_status,
             "finished": self.finished,
         }
-        return run_dict
-
-    def __repr__(self) -> str:
-        return str(self.to_dict())

@@ -14,9 +14,9 @@ class TestDummyMetadataStore:
         assert store._build_source_destination("dst", "src_type") is None
 
     def test_get_run_metadata_uri(self, store):
-        assert store.get_run_metadata_uri("exp1", "run1") is None
+        assert store.get_run_path("exp1", "run1") is None
 
 
 @pytest.fixture
-def store():
-    return DummyMetadataStore("_dummy", "_dummy", "_dummy")
+def store() -> DummyMetadataStore:
+    return DummyMetadataStore("_dummy")

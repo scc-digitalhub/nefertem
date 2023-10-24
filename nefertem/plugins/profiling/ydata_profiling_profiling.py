@@ -1,8 +1,10 @@
 """
 Pandas profiling implementation of profiling plugin.
 """
+from __future__ import annotations
+
 import json
-from typing import List, Optional
+import typing
 
 import ydata_profiling
 from ydata_profiling import ProfileReport
@@ -12,6 +14,12 @@ from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPlug
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import LIBRARY_YDATA_PROFILING, PANDAS_DATAFRAME_FILE_READER
 from nefertem.utils.io_utils import write_bytesio
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.evidently import Metric
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.native import NativeReader
+    from nefertem.resources.data_resource import DataResource
 
 # Columns/fields to parse from profile
 PROFILE_COLUMNS = ["analysis", "table", "variables"]
@@ -89,8 +97,8 @@ class ProfilePluginYdataProfiling(Profiling):
 
     def setup(
         self,
-        data_reader: "NativeReader",
-        resource: "DataResource",
+        data_reader: NativeReader,
+        resource: DataResource,
         exec_args: dict,
     ) -> None:
         """
@@ -110,7 +118,7 @@ class ProfilePluginYdataProfiling(Profiling):
         return ProfileReport().loads(profile.dumps())
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemProfile:
+    def render_nefertem(self, result: Result) -> NefertemProfile:
         """
         Return a NefertemProfile.
         """
@@ -163,7 +171,7 @@ class ProfilePluginYdataProfiling(Profiling):
         return (metrics, field_metrics)
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a rendered profile ready to be persisted as artifact.
         """
@@ -208,8 +216,8 @@ class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
     """
 
     def build(
-        self, resources: List["DataResource"], metrics: Optional[List] = None
-    ) -> List[ProfilePluginYdataProfiling]:
+        self, resources: list[DataResource], metrics: list[Metric] | None = None
+    ) -> list[ProfilePluginYdataProfiling]:
         """
         Build a plugin.
         """
@@ -226,10 +234,11 @@ class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
         return plugins
 
     @staticmethod
-    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
-        ...
-
-    def destroy(self) -> None:
+    def _filter_metrics(*args) -> None:
         """
-        Destory plugins.
+        Placeholder methods.
+
+        Returns
+        -------
+        None
         """

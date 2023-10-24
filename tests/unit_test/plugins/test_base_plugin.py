@@ -1,11 +1,16 @@
-from typing import List
+from __future__ import annotations
+
+import typing
 from unittest.mock import Mock
 
 import pytest
 
-from nefertem.models.data_resource import DataResource
 from nefertem.plugins.base_plugin import Plugin, PluginBuilder
+from nefertem.resources.data_resource import DataResource
 from nefertem.utils.exceptions import StoreError
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils.plugin_utils import Result
 
 
 class SamplePlugin(Plugin):
@@ -19,10 +24,10 @@ class SamplePlugin(Plugin):
     def execute(self) -> dict:
         return {"result": "success"}
 
-    def render_nefertem(self, obj: "Result") -> "Result":
+    def render_nefertem(self, obj: Result) -> Result:
         return obj  # dummy implementation for testing
 
-    def render_artifact(self, obj: "Result") -> "Result":
+    def render_artifact(self, obj: Result) -> Result:
         return obj  # dummy implementation for testing
 
     @staticmethod
@@ -39,7 +44,7 @@ class SampleBuilder(PluginBuilder):
     Sample concrete builder implementation for testing.
     """
 
-    def build(self, *args, **kwargs) -> List[Plugin]:
+    def build(self, *args, **kwargs) -> list[Plugin]:
         return [SamplePlugin()]
 
     def destroy(self) -> None:

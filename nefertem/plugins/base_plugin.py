@@ -1,16 +1,24 @@
 """
 Base abstract Run Plugin module.
 """
+from __future__ import annotations
+
+import typing
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
-from typing import Any, List
+from typing import Any
 
-from nefertem.data_reader.utils import build_reader
-from nefertem.models.data_resource import DataResource
 from nefertem.plugins.utils.plugin_utils import RenderTuple
+from nefertem.readers.utils import build_reader
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.logger import LOGGER
-from nefertem.utils.utils import get_uiid
+from nefertem.utils.utils import build_uuid
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.base import DataReader
+    from nefertem.resources.data_resource import DataResource
+    from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
 class Plugin(metaclass=ABCMeta):
@@ -19,7 +27,7 @@ class Plugin(metaclass=ABCMeta):
     """
 
     def __init__(self) -> None:
-        self._id = get_uiid()
+        self._id = build_uuid()
         self.lib_name = self.get_lib_name()
         self.lib_version = self.get_lib_version()
         self.logger = LOGGER
@@ -43,13 +51,13 @@ class Plugin(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def render_nefertem(self, obj: "Result") -> "Result":
+    def render_nefertem(self, obj: Result) -> Result:
         """
         Produce nefertem output.
         """
 
     @abstractmethod
-    def render_artifact(self, obj: "Result") -> "Result":
+    def render_artifact(self, obj: Result) -> Result:
         """
         Render an artifact to be persisted.
         """
@@ -90,12 +98,12 @@ class PluginBuilder:
     Abstract PluginBuilder class.
     """
 
-    def __init__(self, stores: List["ArtifactStore"], exec_args: dict) -> None:
+    def __init__(self, stores: list[ArtifactStore], exec_args: dict) -> None:
         self.stores = stores
         self.exec_args = exec_args
 
     @abstractmethod
-    def build(self, *args, **kwargs) -> List[Plugin]:
+    def build(self, *args, **kwargs) -> list[Plugin]:
         """
         Build a list of plugin.
         """
@@ -107,7 +115,7 @@ class PluginBuilder:
         """
         return deepcopy(resource)
 
-    def _get_resource_store(self, resource: DataResource) -> "ArtifactStore":
+    def _get_resource_store(self, resource: DataResource) -> ArtifactStore:
         """
         Get the resource store.
         """
@@ -119,7 +127,7 @@ class PluginBuilder:
             )
 
     @staticmethod
-    def _get_data_reader(type: str, store: "ArtifactStore") -> "DataReader":
+    def _get_data_reader(type: str, store: ArtifactStore) -> DataReader:
         """
         Get data reader.
         """

@@ -10,18 +10,24 @@ import duckdb
 import pytest
 from moto import mock_s3
 
-from nefertem.data_reader.utils import build_reader
 from nefertem.models.constraints.duckdb import ConstraintDuckDB
 from nefertem.models.constraints.evidently import ConstraintEvidently, EvidentlyElement, MetricEvidently
 from nefertem.models.constraints.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
 from nefertem.models.constraints.great_expectations import ConstraintGreatExpectations
 from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
-from nefertem.models.data_resource import DataResource
-from nefertem.models.run_config import RunConfig
 from nefertem.plugins.utils.plugin_utils import Result
+from nefertem.readers.utils import build_reader
+from nefertem.resources.data_resource import DataResource
+from nefertem.run.run_config import RunConfig
 from nefertem.stores.builder import StoreBuilder
-from nefertem.stores.models import StoreParameters
-from nefertem.utils.commons import *
+from nefertem.utils.commons import (
+    CONSTRAINT_FRICTIONLESS_SCHEMA,
+    LIBRARY_DUCKDB,
+    LIBRARY_EVIDENTLY,
+    LIBRARY_FRICTIONLESS,
+    LIBRARY_GREAT_EXPECTATIONS,
+    LIBRARY_SQLALCHEMY,
+)
 from nefertem.utils.utils import listify
 
 ##############################
@@ -166,14 +172,14 @@ def run_empty():
 # ---------------
 
 
-@pytest.fixture(scope="session")
-def store_builder(temp_folder):
-    return StoreBuilder("test", temp_folder)
+@pytest.fixture
+def store_builder():
+    return StoreBuilder()
 
 
 @pytest.fixture
 def store(store_cfg, store_builder):
-    return store_builder.build(store_cfg)
+    return store_builder.build_artifact_store(store_cfg)
 
 
 # ---------------
@@ -184,63 +190,55 @@ def store(store_cfg, store_builder):
 # Local 1
 @pytest.fixture
 def local_store_cfg(temp_data):
-    return StoreParameters(
-        **{
-            "title": "Local Store",
-            "name": "local",
-            "type": "local",
-            "uri": temp_data,
-            "isDefault": True,
-        }
-    )
+    return {
+        "title": "Local Store",
+        "name": "local",
+        "type": "local",
+        "uri": temp_data,
+        "isDefault": True,
+    }
 
 
 # Local 2
 @pytest.fixture
-def local_store_cfg_2():
-    return StoreParameters(
-        **{
-            "title": "Local Store 2",
-            "name": "local_2",
-            "type": "local",
-            "uri": "./ntruns",
-            "isDefault": False,
-        }
-    )
+def local_store_cfg_2(temp_folder):
+    return {
+        "title": "Local Store 2",
+        "name": "local_2",
+        "type": "local",
+        "uri": str(temp_folder),
+        "isDefault": False,
+    }
 
 
 # SQL
 @pytest.fixture
 def sql_store_cfg(sqlitedb):
-    return StoreParameters(
-        **{
-            "title": "SQLite Store",
-            "name": "sql",
-            "type": "sql",
-            "uri": "sql://test",
-            "isDefault": True,
-            "config": {"connection_string": sqlitedb},
-        }
-    )
+    return {
+        "title": "SQLite Store",
+        "name": "sql",
+        "type": "sql",
+        "uri": "sql://test",
+        "isDefault": True,
+        "config": {"connection_string": sqlitedb},
+    }
 
 
 # S3
 @pytest.fixture
 def s3_store_cfg():
-    return StoreParameters(
-        **{
-            "title": "S3 Store",
-            "name": "s3",
-            "type": "s3",
-            "uri": "s3://test",
-            "isDefault": True,
-            "config": {
-                "aws_access_key_id": "test",
-                "aws_secret_access_key": "test",
-                "endpoint_url": "http://localhost:9000/",
-            },
-        }
-    )
+    return {
+        "title": "S3 Store",
+        "name": "s3",
+        "type": "s3",
+        "uri": "s3://test",
+        "isDefault": True,
+        "config": {
+            "aws_access_key_id": "test",
+            "aws_secret_access_key": "test",
+            "endpoint_url": "http://localhost:9000/",
+        },
+    }
 
 
 # ----------------
@@ -250,15 +248,8 @@ def s3_store_cfg():
 
 # Local
 @pytest.fixture
-def local_md_store_cfg(temp_data):
-    return StoreParameters(
-        **{
-            "title": "Local Metadata Store",
-            "name": "local_md",
-            "type": "local",
-            "uri": temp_data,
-        }
-    )
+def local_md_store_cfg(tmp_path):
+    return tmp_path
 
 
 # ----------------

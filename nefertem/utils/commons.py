@@ -52,16 +52,6 @@ CONSTRAINT_SQL_CHECK_VALUE: str = "value"
 CONSTRAINT_SQL_CHECK_ROWS: str = "rows"
 
 
-# API endpoints
-API_BASE: str = "/api/project/"
-API_RUN_METADATA: str = "/run-metadata"
-API_NT_REPORT: str = "/short-report"
-API_NT_SCHEMA: str = "/short-schema"
-API_NT_PROFILE: str = "/data-profile"
-API_ARTIFACT_METADATA: str = "/artifact-metadata"
-API_RUN_ENV: str = "/run-environment"
-
-
 # Filenames metadata
 FN_RUN_METADATA: str = "run_metadata.json"
 FN_NT_REPORT: str = "report_{}.json"

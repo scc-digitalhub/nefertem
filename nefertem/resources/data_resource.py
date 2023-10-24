@@ -1,8 +1,8 @@
-from typing import List, Optional, Union
-from uuid import uuid4
+from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
+from nefertem.utils.utils import build_uuid
 
 class DataResource(BaseModel):
     """
@@ -12,26 +12,26 @@ class DataResource(BaseModel):
     from other resources.
     """
 
-    id: str = Field(default_factory=uuid4)
+    id: str = Field(default_factory=build_uuid)
     """UUID of DataResource."""
 
     name: str
     """Name of the DataResource."""
 
-    path: Union[str, List[str]]
+    path: str | list[str]
     """An URI (or a list of URI) that point to data."""
 
     store: str
     """Store name where to find the resource."""
 
-    package: Optional[str] = None
+    package: str | None = None
     """Package name that DataResource belongs to."""
 
-    title: Optional[str] = None
+    title: str | None = None
     """Human readable name for the DataResource."""
 
-    description: Optional[str] = None
+    description: str | None = None
     """A description of the DataResource."""
 
-    tableSchema: Optional[Union[str, dict]] = None
+    tableSchema: str | dict | None = None
     """Resource table schema or path to table schema."""

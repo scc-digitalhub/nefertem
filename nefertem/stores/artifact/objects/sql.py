@@ -1,19 +1,37 @@
 """
 Implementation of SQL artifact store.
 """
-from typing import Any, Optional
+import re
 
-import pyarrow as pa
-import pyarrow.parquet as pq
-from sqlalchemy import MetaData, Table, create_engine
-from sqlalchemy.engine import Engine
-from sqlalchemy.engine.cursor import CursorResult
-from sqlalchemy.exc import SQLAlchemyError
+import polars as pl
 
-from nefertem.stores.artifact.objects.base import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import check_make_dir, get_path
-from nefertem.utils.uri_utils import get_uri_netloc
+from nefertem.utils.file_utils import get_path
+
+
+class SQLStoreConfig(StoreConfig):
+    """
+    SQL store configuration class.
+    """
+
+    driver: str
+    """SQL driver."""
+
+    host: str
+    """SQL host."""
+
+    port: int
+    """SQL port."""
+
+    user: str
+    """SQL user."""
+
+    password: str
+    """SQL password."""
+
+    database: str
+    """SQL database name."""
 
 
 class SQLArtifactStore(ArtifactStore):
@@ -24,111 +42,174 @@ class SQLArtifactStore(ArtifactStore):
 
     """
 
-    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
+    def __init__(
+        self,
+        name: str,
+        store_type: str,
+        uri: str,
+        temp_dir: str,
+        is_default: bool,
+        config: SQLStoreConfig,
+    ) -> None:
         """
-        Method to persist an artifact.
+        Constructor.
         """
-        raise NotImplementedError
+        super().__init__(name, store_type, uri, temp_dir, is_default)
+        self.config = config
 
-    def _get_and_register_artifact(self, src: str, fetch_mode: str) -> str:
+    def persist_artifact(self, *args) -> None:
         """
-        Method to fetch an artifact from the backend an to register
-        it on the paths registry.
+        Persist an artfact.
+
+        Raises
+        ------
+        NotImplementedError
+            This method is not implemented.
         """
-        engine = self._get_engine()
-        self._check_access_to_storage(engine)
-        table_name = self._get_table_name(src)
-        schema = self._get_schema(src)
-        key = f"{schema}.{table_name}.{fetch_mode}.parquet"
+        raise NotImplementedError("SQL store does not support persistence.")
+
+    def fetch_file(self, src: str) -> str:
+        """
+        Return the path where a resource it is stored.
+
+        Parameters
+        ----------
+        src : str
+            The name of the file.
+
+        Returns
+        -------
+        str
+            The location of the requested file.
+        """
+        key = f"{src}_file"
+        cached = self._get_resource(key)
+        if cached is not None:
+            return cached
 
         self.logger.info(f"Fetching resource {src} from store {self.name}")
-
-        # Return a presigned URL
-        if fetch_mode == self.NATIVE:
-            conn_str = self.config.get("connection_string")
-            self._register_resource(f"{src}_{fetch_mode}", conn_str)
-            engine.dispose()
-            return conn_str
-
-        # Get file from remote and store locally
-        if fetch_mode == self.FILE:
-            obj = self._get_data(engine, table_name, schema)
-            filepath = self._store_data(obj, key)
-            self._register_resource(f"{src}_{fetch_mode}", filepath)
-            engine.dispose()
-            return filepath
-
-        if fetch_mode == self.BUFFER:
-            engine.dispose()
-            raise NotImplementedError
-
-    def _check_access_to_storage(self, engine: Engine) -> None:
-        """
-        Check if there is access to the storage.
-        """
-        try:
-            engine.connect()
-        except SQLAlchemyError:
-            engine.dispose()
-            raise StoreError("No access to db!")
-
-    def _get_engine(self) -> Engine:
-        """
-        Create engine from connection string.
-        """
-        connection_string = self.config.get("connection_string")
-        try:
-            return create_engine(connection_string, future=True)
-        except Exception as ex:
-            raise StoreError(f"Something wrong with connection string. Arguments: {str(ex.args)}")
-
-    @staticmethod
-    def _get_table_name(uri: str) -> str:
-        """
-        Return table name from path.
-        """
-        name = get_uri_netloc(uri)
-        return name.split(".")[-1]
-
-    @staticmethod
-    def _get_schema(uri: str) -> str:
-        """
-        Try to get schema from configuration.
-        """
-        name = get_uri_netloc(uri)
-        return name.split(".")[0]
-
-    def _get_data(self, engine: Engine, table_name: str, schema: Optional[str] = None) -> CursorResult:
-        """
-        Return a table from a db.
-        """
-        metadata = MetaData(bind=engine, schema=schema)
-        table = Table(table_name, metadata, autoload=True)
-        query = table.select()
-        with engine.connect() as conn:
-            results = conn.execute(query)
-        return results
-
-    def _store_data(self, obj: CursorResult, key: str) -> str:
-        """
-        Store data locally in temporary folder and return tmp path.
-        """
-        check_make_dir(self.temp_dir)
-        filepath = get_path(self.temp_dir, key)
-        self._write_table(obj, filepath)
+        table = self._get_table_name(src)
+        dst = get_path(self.temp_dir, f"{table}.parquet")
+        filepath = self._download_table(table, dst)
+        self._register_resource(key, filepath)
         return filepath
 
+    def fetch_native(self, src: str) -> str:
+        raise NotImplementedError
+
+    ############################
+    # Private helper methods
+    ############################
+
+    def _get_connection_string(self) -> str:
+        """
+        Get the connection string.
+
+        Returns
+        -------
+        str
+            The connection string.
+        """
+        return (
+            f"{self.config.driver}//{self.config.user}:{self.config.password}@"
+            f"{self.config.host}:{self.config.port}/{self.config.database}"
+        )
+
     @staticmethod
-    def _write_table(query_result: CursorResult, filepath: str) -> None:
+    def _parse_path(path: str) -> dict:
         """
-        Write a query result as file.
+        Parse the path and return the components.
+
+        Parameters
+        ----------
+        path : str
+            The path.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the components of the path.
         """
-        arrays = []
-        while True:
-            res = query_result.fetchmany(1024)
-            if res:
-                arrays.extend(list(map(dict, res)))
-            else:
-                tab = pa.Table.from_pylist(arrays)
-                pq.write_table(tab, filepath)
-                break
+        pattern = r"^sql://(?P<database>.+)/(?P<table>.+)$"
+        match = re.match(pattern, path)
+        if match is None:
+            raise ValueError("Invalid SQL path. Must be sql://<database>/<table>")
+        return match.groupdict()
+
+    def _get_table_name(self, uri: str) -> str:
+        """
+        Get the name of the table from the URI.
+
+        Parameters
+        ----------
+        uri : str
+            The URI.
+
+        Returns
+        -------
+        str
+            The name of the table
+        """
+        return str(self._parse_path(uri).get("table"))
+
+    ############################
+    # Private I/O methods
+    ############################
+
+    def _execute_query(self, query: str) -> pl.DataFrame:
+        """
+        Execute a query.
+
+        Parameters
+        ----------
+        query : str
+            The query.
+
+        Returns
+        -------
+        list
+            The query results.
+        """
+        pl.read_database(query, self._get_connection_string(), engine="adbc")
+
+    def _download_table(self, table: str, dst: str) -> str:
+        """
+        Download a table from SQL based storage.
+
+        Parameters
+        ----------
+        table : str
+            The origin table.
+        dst : str
+            The destination path.
+
+        Returns
+        -------
+        str
+            The destination path.
+        """
+        self._verify_table(table)
+        query = f"select * from {table}"
+        pl.read_database(query, self._get_connection_string()).write_parquet(dst)
+        return dst
+
+    def _verify_table(self, table: str) -> None:
+        """
+        Verify if table exists.
+
+        Parameters
+        ----------
+        table : str
+            Table name.
+
+        Returns
+        -------
+        None
+        """
+        query = """
+        SELECT TABLE_NAME as table
+        FROM INFORMATION_SCHEMA.TABLES
+        """
+        res = self._execute_query(query)
+        if table not in res.to_series().to_list():
+            raise StoreError(f"Table {table} not in db.")

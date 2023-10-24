@@ -1,16 +1,22 @@
 """
 Frictionless implementation of inference plugin.
 """
-from typing import List
+from __future__ import annotations
+
+import typing
 
 import frictionless
 from frictionless.schema import Schema
 
 from nefertem.metadata.reports.schema import NefertemSchema
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.inference.inference_plugin import Inference
+from nefertem.plugins.inference.inference_plugin import Inference, InferencePluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class InferencePluginFrictionless(Inference):
@@ -23,7 +29,7 @@ class InferencePluginFrictionless(Inference):
         self.resource = None
         self.exec_multiprocess = True
 
-    def setup(self, data_reader: "FileReader", resource: "DataResource", exec_args: dict) -> None:
+    def setup(self, data_reader: FileReader, resource: DataResource, exec_args: dict) -> None:
         """
         Set plugin resource.
         """
@@ -42,7 +48,7 @@ class InferencePluginFrictionless(Inference):
         return Schema(schema.to_dict())
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemSchema:
+    def render_nefertem(self, result: Result) -> NefertemSchema:
         """
         Return a NefertemSchema.
         """
@@ -64,7 +70,7 @@ class InferencePluginFrictionless(Inference):
         return NefertemSchema(self.get_lib_name(), self.get_lib_version(), duration, fields)
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a frictionless schema to be persisted as artifact.
         """
@@ -92,12 +98,12 @@ class InferencePluginFrictionless(Inference):
         return frictionless.__version__
 
 
-class InferenceBuilderFrictionless(PluginBuilder):
+class InferenceBuilderFrictionless(InferencePluginBuilder):
     """
     Inference plugin builder.
     """
 
-    def build(self, resources: List["DataResource"]) -> List[InferencePluginFrictionless]:
+    def build(self, resources: list[DataResource]) -> list[InferencePluginFrictionless]:
         """
         Build a plugin.
         """
@@ -110,6 +116,3 @@ class InferenceBuilderFrictionless(PluginBuilder):
             plugin.setup(data_reader, resource, self.exec_args)
             plugins.append(plugin)
         return plugins
-
-    def destroy(self) -> None:
-        ...

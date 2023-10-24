@@ -1,8 +1,11 @@
 """
 SQLAlchemy implementation of validation plugin.
 """
+from __future__ import annotations
+
+import typing
 from copy import deepcopy
-from typing import Any, List
+from typing import Any
 
 import sqlalchemy
 
@@ -19,6 +22,13 @@ from nefertem.utils.commons import (
 from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list
 
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.base import Constraint
+    from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.native import NativeReader
+    from nefertem.resources.data_resource import DataResource
+
 
 class ValidationPluginSqlAlchemy(Validation):
     """
@@ -31,8 +41,8 @@ class ValidationPluginSqlAlchemy(Validation):
 
     def setup(
         self,
-        data_reader: "NativeReader",
-        constraint: "ConstraintSqlAlchemy",
+        data_reader: NativeReader,
+        constraint: ConstraintSqlAlchemy,
         error_report: str,
         exec_args: dict,
     ) -> None:
@@ -74,7 +84,7 @@ class ValidationPluginSqlAlchemy(Validation):
         return self.data_reader.return_head(data)
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemReport:
+    def render_nefertem(self, result: Result) -> NefertemReport:
         """
         Return a NefertemReport.
         """
@@ -104,7 +114,7 @@ class ValidationPluginSqlAlchemy(Validation):
         )
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a rendered report ready to be persisted as artifact.
         """
@@ -139,10 +149,10 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
 
     def build(
         self,
-        resources: List["DataResource"],
-        constraints: List["Constraint"],
+        resources: list[DataResource],
+        constraints: list[Constraint],
         error_report: str,
-    ) -> List[ValidationPluginSqlAlchemy]:
+    ) -> list[ValidationPluginSqlAlchemy]:
         """
         Build a plugin for every resource and every constraint.
         """
@@ -174,16 +184,14 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
 
     @staticmethod
     def _filter_constraints(
-        constraints: List["Constraint"],
-    ) -> List["ConstraintSqlAlchemy"]:
+        constraints: list[Constraint],
+    ) -> list[ConstraintSqlAlchemy]:
         """
         Filter out ConstraintSqlAlchemy.
         """
         return [const for const in constraints if const.type == LIBRARY_SQLALCHEMY]
 
-    def _filter_resources(
-        self, resources: List["DataResource"], constraints: List["Constraint"]
-    ) -> List["DataResource"]:
+    def _filter_resources(self, resources: list[DataResource], constraints: list[Constraint]) -> list[DataResource]:
         """
         Filter resources used by validator.
         """
@@ -193,7 +201,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         res_in_db = [res for res in res_to_validate if res.store in st_names]
         return res_in_db
 
-    def _regroup_constraint_resources(self, constraints: List["Constraint"], resources: List["DataResource"]) -> list:
+    def _regroup_constraint_resources(self, constraints: list[Constraint], resources: list[DataResource]) -> list:
         """
         Check univocity of resources location and return connection
         string for db access. Basically, all resources must be in

@@ -2,55 +2,24 @@ import os
 
 import pytest
 
-from nefertem.stores.artifact.objects.base import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore, StoreParameters
+from nefertem.stores.builder import store_builder
 from nefertem.stores.metadata.objects.base import MetadataStore
-from nefertem.stores.models import StoreParameters
 from nefertem.utils.uri_utils import get_uri_scheme
 
 PROJ = "test"
 
 
 class TestStoreBuilder:
-    def test_build(self, store_builder, mds_cfg, st_loc1):
-        store = store_builder.build(mds_cfg, md_store=True)
-        assert isinstance(store, MetadataStore)
-        store = store_builder.build(st_loc1)
-        assert isinstance(store, ArtifactStore)
-
-    def test_build_metadata_store(self, mds_cfg, store_builder):
-        store = store_builder.build_metadata_store(mds_cfg)
+    def test_build_metadata_store(self, tmp_path):
+        store = store_builder.build_metadata_store(tmp_path)
         assert isinstance(store, MetadataStore)
 
-    def test_resolve_uri_metadata(self, store_builder):
-        uris = [
-            "http://localhost:5000",
-            "https://test.com",
-            "./test",
-            "/test/test",
-            "file:///test",
-        ]
-
-        resolved_uris = []
-        for uri in uris:
-            scheme = get_uri_scheme(uri)
-            new_uri = store_builder.resolve_uri_metadata(uri, scheme, PROJ)
-            resolved_uris.append(new_uri)
-        assert resolved_uris[0] == f"http://localhost:5000/api/project/{PROJ}"
-        assert resolved_uris[1] == f"https://test.com/api/project/{PROJ}"
-        assert resolved_uris[2] == f"{os.getcwd()}/test/metadata"
-        assert resolved_uris[3] == "/test/test/metadata"
-        assert resolved_uris[4] == "/test/metadata"
-
-        with pytest.raises(NotImplementedError):
-            uri = "fail://test"
-            scheme = get_uri_scheme(uri)
-            new_uri = store_builder.resolve_uri_metadata(uri, scheme, PROJ)
-
-    def test_build_artifact_store(self, store_builder, st_loc1):
+    def test_build_artifact_store(self, st_loc1):
         store = store_builder.build_artifact_store(st_loc1)
         assert isinstance(store, ArtifactStore)
 
-    def test_resolve_artifact_uri(self, store_builder):
+    def test_resolve_artifact_uri(self):
         uris = [
             "./test",
             "/test/test",
@@ -89,23 +58,13 @@ class TestStoreBuilder:
             scheme = get_uri_scheme(uri)
             new_uri = store_builder.resolve_artifact_uri(uri, scheme)
 
-    def test_check_config(self, store_builder, st_loc1):
-        cfg = store_builder._check_config(None)
-        assert isinstance(cfg, StoreParameters)
-        assert cfg.type == "_dummy"
-
-        cfg = store_builder._check_config(st_loc1)
+    def test_validate_parameters(self, st_loc1):
+        cfg = store_builder._validate_parameters(st_loc1)
         assert isinstance(cfg, StoreParameters)
         assert cfg.type == "local"
 
         with pytest.raises(TypeError):
-            store_builder._check_config([])
-
-
-# Metadata store config
-@pytest.fixture
-def mds_cfg(local_md_store_cfg):
-    return local_md_store_cfg
+            store_builder._validate_parameters([])
 
 
 # Artifact store config

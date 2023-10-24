@@ -1,9 +1,9 @@
-from typing import List, Optional
-from uuid import uuid4
-
+"""
+Run configuration objects module.
+"""
 from pydantic import BaseModel, Field
 
-from nefertem.utils.commons import LIBRARY_DUMMY
+from nefertem.utils.utils import build_uuid
 
 
 class ExecConfig(BaseModel):
@@ -11,13 +11,13 @@ class ExecConfig(BaseModel):
     Generic configuration for run operation.
     """
 
-    id: str = Field(default_factory=uuid4)
+    id: str = Field(default_factory=build_uuid)
     """UUID of operation."""
 
-    library: Optional[str] = LIBRARY_DUMMY
+    library: str | None = "_dummy"
     """Library to use for performing an operation."""
 
-    execArgs: Optional[dict] = {}
+    exec_args: dict | None = {}
     """Execution arguments to pass to plugins."""
 
 
@@ -26,11 +26,11 @@ class RunConfig(BaseModel):
     Run configuration object.
     """
 
-    validation: Optional[List[ExecConfig]] = [ExecConfig()]
+    validation: list[ExecConfig] | None = [ExecConfig()]
     """List of validation configuration."""
 
-    inference: Optional[List[ExecConfig]] = [ExecConfig()]
+    inference: list[ExecConfig] | None = [ExecConfig()]
     """List of inference configuration."""
 
-    profiling: Optional[List[ExecConfig]] = [ExecConfig()]
+    profiling: list[ExecConfig] | None = [ExecConfig()]
     """List of profiling configuration."""

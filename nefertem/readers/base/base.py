@@ -1,8 +1,14 @@
 """
 DataReader module.
 """
+from __future__ import annotations
+
+import typing
 from abc import ABCMeta, abstractmethod
 from typing import Any
+
+if typing.TYPE_CHECKING:
+    from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
 class DataReader(metaclass=ABCMeta):
@@ -13,7 +19,7 @@ class DataReader(metaclass=ABCMeta):
 
     """
 
-    def __init__(self, store: "ArtifactStore") -> None:
+    def __init__(self, store: ArtifactStore) -> None:
         self.store = store
 
     @abstractmethod

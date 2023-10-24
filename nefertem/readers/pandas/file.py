@@ -1,11 +1,16 @@
 """
 PandasDataFrameReader module.
 """
-import pandas as pd
+from __future__ import annotations
 
-from nefertem.data_reader.base_reader.base_file_reader import FileReader
+import typing
+
 from nefertem.plugins.utils.frictionless_utils import describe_resource
+from nefertem.readers.base.file import FileReader
 from nefertem.utils.utils import listify
+
+if typing.TYPE_CHECKING:
+    import pandas as pd
 
 
 class PandasDataFrameFileReader(FileReader):

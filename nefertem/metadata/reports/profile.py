@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import List
 
 from nefertem.metadata.reports.base import NefertemBaseReport
 
@@ -50,5 +49,5 @@ class NefertemProfile(NefertemBaseReport):
 
     stats: dict
     fields: dict
-    metrics: List["NefertemProfileMetric"] = field(default_factory=list)
+    metrics: list[NefertemProfileMetric] = field(default_factory=list)
     field_metrics: dict = field(default_factory=dict)

@@ -7,10 +7,7 @@ from nefertem.models.constraints.evidently import ConstraintEvidently, Evidently
 from nefertem.models.constraints.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
 from nefertem.models.constraints.great_expectations import ConstraintGreatExpectations
 from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
-from nefertem.models.data_resource import DataResource
-from nefertem.models.run_config import RunConfig
 from nefertem.plugins.utils.frictionless_utils import frictionless_schema_converter
-from nefertem.stores.models import StoreParameters
 
 __all__ = [
     "Client",
@@ -21,8 +18,5 @@ __all__ = [
     "ConstraintSqlAlchemy",
     "ConstraintEvidently",
     "EvidentlyElement",
-    "DataResource",
     "frictionless_schema_converter",
-    "RunConfig",
-    "StoreParameters",
 ]

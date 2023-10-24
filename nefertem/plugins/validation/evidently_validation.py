@@ -1,8 +1,10 @@
 """
 Evidently implementation of validation plugin.
 """
+from __future__ import annotations
+
 import importlib
-from typing import List
+import typing
 
 import evidently
 from evidently.test_suite import TestSuite
@@ -11,6 +13,13 @@ from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_EVIDENTLY
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.base import Constraint
+    from nefertem.models.constraints.evidently import ConstraintEvidently
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class ValidationPluginEvidently(Validation):
@@ -26,13 +35,13 @@ class ValidationPluginEvidently(Validation):
 
     def setup(
         self,
-        data_reader: "FileReader",
-        resource: "DataResource",
-        constraint: "ConstraintEvidently",
+        data_reader: FileReader,
+        resource: DataResource,
+        constraint: ConstraintEvidently,
         error_report: str,
         exec_args: dict,
-        reference_data_reader: "FileReader" = None,
-        reference_resource: "DataResource" = None,
+        reference_data_reader: FileReader = None,
+        reference_resource: DataResource = None,
     ) -> None:
         self.data_reader = data_reader
         self.reference_data_reader = reference_data_reader
@@ -58,7 +67,7 @@ class ValidationPluginEvidently(Validation):
         test_run.run(current_data=data, reference_data=reference_data)
         return test_run
 
-    def _rebuild_constraints(self) -> List[any]:
+    def _rebuild_constraints(self) -> list[any]:
         """
         Rebuild constraints converting to Evidently test.
         """
@@ -74,7 +83,7 @@ class ValidationPluginEvidently(Validation):
         return res
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemReport:
+    def render_nefertem(self, result: Result) -> NefertemReport:
         """
         Return a NefertemReport.
         """
@@ -104,7 +113,7 @@ class ValidationPluginEvidently(Validation):
         )
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return an Evidently report to be persisted as artifact.
         """
@@ -139,10 +148,10 @@ class ValidationBuilderEvidently(ValidationPluginBuilder):
 
     def build(
         self,
-        resources: List["DataResource"],
-        constraints: List["ConstraintEvidently"],
+        resources: list[DataResource],
+        constraints: list[ConstraintEvidently],
         error_report: str,
-    ) -> List[ValidationPluginEvidently]:
+    ) -> list[ValidationPluginEvidently]:
         """
         Build a plugin for every constraint.
         """
@@ -180,8 +189,8 @@ class ValidationBuilderEvidently(ValidationPluginBuilder):
 
     @staticmethod
     def _filter_constraints(
-        constraints: List["Constraint"],
-    ) -> List["ConstraintEvidently"]:
+        constraints: list[Constraint],
+    ) -> list[ConstraintEvidently]:
         """
         Filter out ConstraintEvidently.
         """

@@ -11,6 +11,9 @@ class DummyMetadataStore(MetadataStore):
     Only allows the client to interact with store methods.
     """
 
+    def __init__(self, path: str) -> None:
+        super().__init__(path)
+
     def init_run(self, *args) -> None:
         """
         Placeholder method.
@@ -38,7 +41,7 @@ class DummyMetadataStore(MetadataStore):
         None
         """
 
-    def get_run_metadata_uri(self, *args) -> None:
+    def get_run_path(self, *args) -> None:
         """
         Placeholder method.
 

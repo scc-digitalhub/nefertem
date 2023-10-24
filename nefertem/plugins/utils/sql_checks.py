@@ -1,8 +1,10 @@
 """
 SQL checks module.
 """
+from __future__ import annotations
+
 import re
-from typing import Any, Union
+from typing import Any
 
 from nefertem.utils.commons import (
     CONSTRAINT_SQL_EMPTY,
@@ -62,7 +64,7 @@ def evaluate_exact(result: Any, value: Any) -> tuple:
     return False, f"Expected value {value}, instead got {result}."
 
 
-def evaluate_min(result: Union[int, float], value: Union[int, float]) -> tuple:
+def evaluate_min(result: int | float, value: int | float) -> tuple:
     """
     Check if a value is bigger than a specific value.
     """
@@ -71,7 +73,7 @@ def evaluate_min(result: Union[int, float], value: Union[int, float]) -> tuple:
     return False, f"Minimum value {value}, instead got {result}."
 
 
-def evaluate_max(result: Union[int, float], value: Union[int, float]) -> tuple:
+def evaluate_max(result: int | float, value: int | float) -> tuple:
     """
     Check if a value is lesser than a specific value.
     """

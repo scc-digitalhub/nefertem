@@ -75,3 +75,36 @@ def check_url(url: str) -> str:
     """
     parsed = get_uri_path(url).replace("//", "/")
     return urljoin(url, parsed)
+
+
+def map_uri_scheme(uri: str) -> str:
+    """
+    Map an URI scheme to a common scheme.
+
+    Parameters
+    ----------
+    uri : str
+        URI.
+
+    Returns
+    -------
+    str
+        Mapped scheme type.
+
+    Raises
+    ------
+    ValueError
+        If the scheme is unknown.
+    """
+    scheme = get_uri_scheme(uri)
+    if scheme in ["", "file", "local"]:
+        return "local"
+    if scheme in ["http", "https", "remote"]:
+        return "remote"
+    if scheme in ["s3", "s3a", "s3n"]:
+        return "s3"
+    if scheme in ["mssql", "mysql", "oracle", "postgresql", "sql", "sqlite"]:
+        return "sql"
+    if scheme in ["_dummy"]:
+        return "_dummy"
+    raise ValueError(f"Unknown scheme '{scheme}'!")

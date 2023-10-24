@@ -20,11 +20,11 @@ class SamplePlugin(Validation):
         return {"result": "success"}
 
     @exec_decorator
-    def render_nefertem(self, obj: "Result") -> "Result":
+    def render_nefertem(self, obj: Result) -> Result:
         return obj  # dummy implementation for testing
 
     @exec_decorator
-    def render_artifact(self, obj: "Result") -> "Result":
+    def render_artifact(self, obj: Result) -> Result:
         return obj  # dummy implementation for testing
 
     @staticmethod

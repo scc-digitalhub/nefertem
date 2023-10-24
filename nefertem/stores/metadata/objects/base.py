@@ -2,9 +2,6 @@
 Base abstract metadata store module.
 """
 from abc import ABCMeta, abstractmethod
-from typing import Optional
-
-from nefertem.utils import commons as cfg
 
 
 class MetadataStore(metaclass=ABCMeta):
@@ -18,7 +15,7 @@ class MetadataStore(metaclass=ABCMeta):
         Name of store.
     type : str
         Type of store, e.g. http, local.
-    metadata_uri : str
+    path : str
         An URI string that points to the storage.
     config : dict, default = None
         A dictionary with the credentials/configurations
@@ -26,24 +23,8 @@ class MetadataStore(metaclass=ABCMeta):
 
     """
 
-    _RUN_METADATA = cfg.MT_RUN_METADATA
-    _NT_REPORT = cfg.MT_NT_REPORT
-    _NT_SCHEMA = cfg.MT_NT_SCHEMA
-    _NT_PROFILE = cfg.MT_NT_PROFILE
-    _ARTIFACT_METADATA = cfg.MT_ARTIFACT_METADATA
-    _RUN_ENV = cfg.MT_RUN_ENV
-
-    def __init__(
-        self,
-        name: str,
-        store_type: str,
-        metadata_uri: str,
-        config: Optional[dict] = None,
-    ) -> None:
-        self.name = name
-        self.store_type = store_type
-        self.metadata_uri = metadata_uri
-        self.config = config
+    def __init__(self, path: str) -> None:
+        self.path = path
 
     @abstractmethod
     def init_run(self, exp_name: str, run_id: str, overwrite: bool) -> None:
@@ -58,7 +39,7 @@ class MetadataStore(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def get_run_metadata_uri(self, exp_name: str, run_id: str) -> str:
+    def get_run_path(self, exp_name: str, run_id: str) -> str:
         """
         Return the URI of the metadata store for the Run.
         """

@@ -1,12 +1,12 @@
 import re
 
-from nefertem.utils.utils import flatten_list, get_time, get_uiid, listify
+from nefertem.utils.utils import build_uuid, flatten_list, get_time, listify
 
 
 class TestUtils:
-    def test_get_uiid(self) -> None:
-        assert len(get_uiid()) == 32
-        assert get_uiid("test") == "test"
+    def test_build_uuid(self) -> None:
+        assert len(build_uuid()) == 32
+        assert build_uuid("test") == "test"
 
     def test_flatten_list(self):
         list_ = flatten_list([[1], [1, 1], [1]])

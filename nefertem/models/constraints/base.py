@@ -1,15 +1,14 @@
-from typing import List
-from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from nefertem.utils.utils import build_uuid
 
 class Constraint(BaseModel):
     """
     Base model for constraint.
     """
 
-    id: str = Field(default_factory=uuid4)
+    id: str = Field(default_factory=build_uuid)
     """UUID of constraint."""
 
     name: str
@@ -18,7 +17,7 @@ class Constraint(BaseModel):
     title: str
     """Human readable name for the constraint."""
 
-    resources: List[str]
+    resources: list[str]
     """List of resources affected by the constraint."""
 
     weight: int

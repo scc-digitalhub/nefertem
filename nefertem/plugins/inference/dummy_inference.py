@@ -1,14 +1,17 @@
 """
 Dummy implementation of inference plugin.
 """
-# pylint: disable=unused-argument
-from typing import List
+from __future__ import annotations
+
+import typing
 
 from nefertem.metadata.reports.schema import NefertemSchema
-from nefertem.plugins.base_plugin import PluginBuilder
-from nefertem.plugins.inference.inference_plugin import Inference
+from nefertem.plugins.inference.inference_plugin import Inference, InferencePluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils.plugin_utils import Result
 
 
 class InferencePluginDummy(Inference):
@@ -34,7 +37,7 @@ class InferencePluginDummy(Inference):
         return NefertemSchema(self.get_lib_name(), self.get_lib_version(), 0.0, [])
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a dummy schema to be persisted as artifact.
         """
@@ -62,16 +65,13 @@ class InferencePluginDummy(Inference):
         return LIBRARY_DUMMY
 
 
-class InferenceBuilderDummy(PluginBuilder):
+class InferenceBuilderDummy(InferencePluginBuilder):
     """
     Inference plugin builder.
     """
 
-    def build(self, *args) -> List[InferencePluginDummy]:
+    def build(self, *args) -> list[InferencePluginDummy]:
         """
         Build a plugin.
         """
         return [InferencePluginDummy()]
-
-    def destroy(self) -> None:
-        ...

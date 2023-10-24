@@ -4,20 +4,21 @@ StoreBuilder module.
 from __future__ import annotations
 
 import typing
-from pathlib import Path
-from typing import Union
 
+from pydantic import ValidationError
+
+from nefertem.stores.artifact.objects.base import StoreParameters
 from nefertem.stores.artifact.registry import artstore_registry
-from nefertem.stores.kinds import SchemeKinds
+from nefertem.stores.kinds import StoreKinds
 from nefertem.stores.metadata.registry import mdstore_registry
-from nefertem.stores.models import StoreParameters
-from nefertem.utils.commons import API_BASE, DUMMY
-from nefertem.utils.file_utils import get_absolute_path
-from nefertem.utils.uri_utils import check_url, get_uri_netloc, get_uri_path, get_uri_scheme, rebuild_uri
-from nefertem.utils.utils import get_uiid
+from nefertem.utils.commons import DUMMY
+from nefertem.utils.exceptions import StoreError
+from nefertem.utils.file_utils import get_absolute_path, get_path
+from nefertem.utils.uri_utils import map_uri_scheme, rebuild_uri
+from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:
-    from nefertem.stores.artifact.objects.base import ArtifactStore
+    from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
     from nefertem.stores.metadata.objects.base import MetadataStore
 
 
@@ -26,90 +27,175 @@ class StoreBuilder:
     StoreBuilder class.
     """
 
-    def __init__(self, project_id: str, tmp_dir: str) -> None:
-        self.project_id = project_id
-        self.tmp_dir = tmp_dir
+    def build_metadata_store(self, path: str | None = None) -> MetadataStore:
+        """
+        Method to create a metadata stores. If the path is None, the method creates a dummy
+        metadata store.
 
-    def build(self, config: Union[dict, StoreParameters], md_store: bool = False) -> dict:
-        """
-        Builder method that recieves store configurations.
-        """
-        cfg = self._check_config(config)
-        if md_store:
-            return self.build_metadata_store(cfg)
-        return self.build_artifact_store(cfg)
+        Parameters
+        ----------
+        path: str
+            Path to the metadata store.
 
-    def build_metadata_store(self, cfg: StoreParameters) -> MetadataStore:
+        Returns
+        -------
+        MetadataStore
+            Metadata store object.
         """
-        Method to create a metadata stores.
-        """
-        scheme = get_uri_scheme(cfg.uri)
-        new_uri = self.resolve_uri_metadata(cfg.uri, scheme, self.project_id)
-        try:
-            return mdstore_registry[cfg.type](cfg.name, cfg.type, new_uri, cfg.config)
-        except KeyError:
-            raise NotImplementedError
+        if path is None:
+            return mdstore_registry[StoreKinds.DUMMY.value](DUMMY)
+        uri = get_absolute_path(path, "metadata")
+        return mdstore_registry[StoreKinds.LOCAL.value](uri)
 
-    @staticmethod
-    def resolve_uri_metadata(uri: str, scheme: str, project_name: str) -> str:
-        """
-        Resolve metadata URI location.
-        """
-        if scheme in SchemeKinds.LOCAL.value:
-            return get_absolute_path(get_uri_netloc(uri), get_uri_path(uri), "metadata")
-        if scheme in SchemeKinds.HTTP.value:
-            url = uri + API_BASE + project_name
-            return check_url(url)
-        if scheme in SchemeKinds.DUMMY.value:
-            return uri
-        raise NotImplementedError
-
-    def build_artifact_store(self, cfg: StoreParameters) -> ArtifactStore:
+    def build_artifact_store(self, tmp_dir: str, config: dict | None = None) -> ArtifactStore:
         """
         Method to create a artifact stores.
+
+        Parameters
+        ----------
+        config : dict
+            Store configuration.
+        tmp_dir: str
+            Temporary directory.
+
+        Returns
+        -------
+        ArtifactStore
+            Artifact store object.
         """
-        scheme = get_uri_scheme(cfg.uri)
-        new_uri = self.resolve_artifact_uri(cfg.uri, scheme)
-        tmp = str(Path(self.tmp_dir, get_uiid()))
-        try:
-            return artstore_registry[cfg.type](cfg.name, cfg.type, new_uri, tmp, cfg.config, cfg.isDefault)
-        except KeyError:
-            raise NotImplementedError
+        params = self._parse_parameters(tmp_dir, config)
+        return self._get_store(params)
+
+    def _parse_parameters(self, tmp_dir: str, config: dict | None = None) -> dict:
+        """
+        Parse store parameters.
+
+        Parameters
+        ----------
+        tmp_dir : str
+            Temporary directory.
+        config : dict
+            Store configuration.
+
+        Returns
+        -------
+        dict
+            Store parameters.
+        """
+        cfg: StoreParameters = self._validate_parameters(config)
+        store_type = map_uri_scheme(cfg.uri)
+        return {
+            "name": cfg.name,
+            "store_type": store_type,
+            "uri": self._resolve_uri(store_type, cfg.uri),
+            "temp_dir": get_path(tmp_dir, build_uuid()),
+            "is_default": cfg.is_default,
+            "config": self._validate_config(store_type, cfg.config),
+        }
 
     @staticmethod
-    def resolve_artifact_uri(uri: str, scheme: str) -> str:
+    def _validate_parameters(config: dict | None = None) -> StoreParameters:
+        """
+        Validate store parameters against a pydantic model.
+
+        Parameters
+        ----------
+        config : dict
+            Store configuration.
+
+        Returns
+        -------
+        StoreParameters
+            Store parameters.
+
+        Raises
+        ------
+        StoreError
+            If the store configuration is invalid.
+        """
+        try:
+            return StoreParameters(**config)
+        except TypeError:  # If config is None
+            return StoreParameters(StoreKinds.DUMMY.value, "_dummy://")
+        except ValidationError:
+            raise StoreError("Invalid store configuration.")
+
+    @staticmethod
+    def _validate_config(store_type: str, config: dict | None = None) -> StoreConfig:
+        """
+        Validate store configuration.
+
+        Parameters
+        ----------
+        store_type : str
+            Store type.
+        config : dict
+            Store configuration.
+
+        Returns
+        -------
+        dict
+            Store configuration.
+
+        Raises
+        ------
+        StoreError
+            If the store configuration is invalid.
+        """
+        try:
+            return artstore_registry[store_type]["model"](**config)
+        except (ValidationError, TypeError):
+            raise StoreError("Invalid store configuration.")
+        except KeyError:
+            raise StoreError("Invalid store type.")
+
+    @staticmethod
+    def _get_store(params: dict) -> ArtifactStore:
+        """
+        Validate store configuration.
+
+        Parameters
+        ----------
+        params : dict
+            Store configuration.
+
+        Returns
+        -------
+        dict
+            Store configuration.
+
+        Raises
+        ------
+        StoreError
+            If the store configuration is invalid.
+        """
+        try:
+            store_type = params["store_type"]
+            return artstore_registry[store_type]["store"](**params)
+        except TypeError:
+            raise StoreError("Something went wrong.")
+        except KeyError:
+            raise StoreError("Invalid store type.")
+
+    @staticmethod
+    def _resolve_uri(store_type: str, uri: str) -> str:
         """
         Resolve artifact URI location.
-        """
-        if scheme in SchemeKinds.LOCAL.value:
-            return get_absolute_path(get_uri_netloc(uri), get_uri_path(uri), "artifact")
-        if scheme in [
-            *SchemeKinds.AZURE.value,
-            *SchemeKinds.S3.value,
-            *SchemeKinds.FTP.value,
-        ]:
-            return rebuild_uri(uri, "artifact")
-        if scheme in [
-            *SchemeKinds.HTTP.value,
-            *SchemeKinds.SQL.value,
-            *SchemeKinds.ODBC.value,
-            *SchemeKinds.DUMMY.value,
-        ]:
-            return uri
-        raise NotImplementedError
 
-    @staticmethod
-    def _check_config(config: Union[StoreParameters, dict]) -> StoreParameters:
+        Parameters
+        ----------
+        store_type : str
+            Store type.
+        uri : str
+            Artifact URI.
+
+        Returns
+        -------
+        str
+            Resolved URI.
         """
-        Try to convert a dictionary in a StoreParameters model.
-        In case the config parameter is None, return a dummy store basic
-        config.
-        """
-        if config is None:
-            return StoreParameters(name=DUMMY, type=DUMMY, uri=f"{DUMMY}://")
-        if not isinstance(config, StoreParameters):
-            try:
-                return StoreParameters(**config)
-            except TypeError:
-                raise TypeError("Malformed store configuration.")
-        return config
+        if store_type == StoreKinds.LOCAL.value:
+            return get_absolute_path(uri, "artifact")
+        if store_type == StoreKinds.S3.value:
+            return rebuild_uri(uri, "artifact")
+        return uri

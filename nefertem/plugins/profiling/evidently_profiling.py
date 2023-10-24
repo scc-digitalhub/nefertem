@@ -1,18 +1,26 @@
 """
 Evidently implementation of profiling plugin.
 """
+from __future__ import annotations
+
 import importlib
-from typing import List, Optional
+import typing
 
 import evidently
 from evidently.report import Report
 
 from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
-from nefertem.models.constraints.evidently import Metric, MetricEvidently
+from nefertem.models.constraints.evidently import MetricEvidently
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_EVIDENTLY
 from nefertem.utils.io_utils import write_bytesio
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.evidently import Metric
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfilePluginEvidently(Profiling):
@@ -28,12 +36,12 @@ class ProfilePluginEvidently(Profiling):
 
     def setup(
         self,
-        data_reader: "FileReader",
-        resource: "DataResource",
-        metric: "MetricEvidently",
+        data_reader: FileReader,
+        resource: DataResource,
+        metric: MetricEvidently,
         exec_args: dict,
-        reference_data_reader: "FileReader" = None,
-        reference_resource: "DataResource" = None,
+        reference_data_reader: FileReader = None,
+        reference_resource: DataResource = None,
     ) -> None:
         """
         Set plugin resource.
@@ -62,7 +70,7 @@ class ProfilePluginEvidently(Profiling):
         report.run(current_data=data, reference_data=reference_data)
         return report
 
-    def _rebuild_metrics(self) -> List[any]:
+    def _rebuild_metrics(self) -> list[any]:
         """
         Rebuild metrics converting to Evidently metrics.
         """
@@ -78,7 +86,7 @@ class ProfilePluginEvidently(Profiling):
         return res
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemProfile:
+    def render_nefertem(self, result: Result) -> NefertemProfile:
         """
         Return a NefertemProfile.
         """
@@ -110,7 +118,7 @@ class ProfilePluginEvidently(Profiling):
         )
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a rendered profile ready to be persisted as artifact.
         """
@@ -155,7 +163,7 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
     Evidently profile plugin builder.
     """
 
-    def build(self, resources: List["DataResource"], metrics: Optional[List] = None) -> List[ProfilePluginEvidently]:
+    def build(self, resources: list[DataResource], metrics: list[Metric] | None = None) -> list[ProfilePluginEvidently]:
         """
         Build a plugin for every metric element.
         """
@@ -187,7 +195,7 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
         return plugins
 
     @staticmethod
-    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+    def _filter_metrics(metrics: list[Metric]) -> list[Metric]:
         """
         Filter out MetricEvidently.
         """

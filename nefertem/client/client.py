@@ -7,18 +7,12 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.models.data_resource import DataResource
-from nefertem.stores.models import StoreParameters
-
 if typing.TYPE_CHECKING:
-    from nefertem.models.run_config import RunConfig
     from nefertem.run.run import Run
-
-from typing import List, Optional, Union
 
 from nefertem.client.run_builder import RunBuilder
 from nefertem.client.store_handler import StoreHandler
-from nefertem.utils.commons import DEFAULT_DIRECTORY, DEFAULT_EXPERIMENT, DEFAULT_PROJECT
+from nefertem.utils.commons import DEFAULT_EXPERIMENT
 
 
 class Client:
@@ -34,14 +28,12 @@ class Client:
 
     Parameters
     ----------
-    metadata_store : Optional[StoreParameters], optional
-        StoreParameters containing configuration for the metadata store, by default None.
-    store : Optional[Union[StoreParameters, List[StoreParameters]]], optional
-        (List of) StoreParameters containing configuration for the artifact stores, by default None.
-    project : Optional[str], optional
-        The id of the project, required for the DigitalHub metadata store, by default "project".
-    tmp_dir : Optional[str], optional
-        Default local temporary folder where to store input data, by default "./ntruns/tmp".
+    metadata_store : str
+        Path to the metadata store.
+    store : list[dict]
+        List of dict containing configuration for the artifact stores.
+    tmp_dir : str
+        Default local temporary folder where to store input data".
 
     Methods
     -------
@@ -54,51 +46,52 @@ class Client:
 
     def __init__(
         self,
-        metadata_store: Optional[StoreParameters] = None,
-        store: Optional[Union[StoreParameters, List[StoreParameters]]] = None,
-        project: Optional[str] = DEFAULT_PROJECT,
-        tmp_dir: Optional[str] = DEFAULT_DIRECTORY,
+        metadata_store_path: str | None = None,
+        stores: list[dict] | None = None,
+        tmp_dir: str | None = None,
     ) -> None:
-        self._store_handler = StoreHandler(metadata_store, store, project, tmp_dir)
+        self._store_handler = StoreHandler(metadata_store_path, stores, tmp_dir)
         self._run_builder = RunBuilder(self._store_handler)
 
-    def add_store(self, store: StoreParameters) -> None:
+    def add_store(self, config: dict) -> None:
         """
         Add a new store to the client internal registry.
 
         Parameters
         ----------
-        store: StoreParameters
-            Store configuration.
+        config : dict
+            Dictionary containing the configuration of the store.
 
+        Returns
+        -------
+        None
         """
-        self._store_handler.add_artifact_store(store)
+        self._store_handler.add_artifact_store(config)
 
     def create_run(
         self,
-        resources: Union[List["DataResource"], "DataResource"],
-        run_config: "RunConfig",
-        experiment: Optional[str] = DEFAULT_EXPERIMENT,
-        run_id: Optional[str] = None,
-        overwrite: Optional[bool] = False,
-    ) -> "Run":
+        resources: list[dict],
+        run_config: dict,
+        experiment: str | None = DEFAULT_EXPERIMENT,
+        run_id: str | None = None,
+        overwrite: bool = False,
+    ) -> Run:
         """
         Create a new run.
 
         Parameters
         ----------
-        resources : Union[List[DataResource], DataResource]
-            (List of) DataResource object(s).
-        run_config : RunConfig
+        resources : list[dict]
+            List of DataResource objects.
+        run_config : dict
             RunConfig object.
-        experiment : Optional[str], optional
+        experiment : str
             Name of the experiment. An experiment is a logical unit for ordering the runs execution,
             by default "experiment".
-        run_id : Optional[str], optional
-            Optional string parameter for user defined run id, by default None.
-        overwrite : Optional[bool], optional
-            If True, the run metadata/artifact can be overwritten by a run with the same id,
-            by default False.
+        run_id : str
+            Optional string parameter for user defined run id.
+        overwrite : bool
+            If True, the run metadata/artifact can be overwritten by a run with the same id.
 
         Returns
         -------

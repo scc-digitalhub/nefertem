@@ -1,13 +1,19 @@
 """
 Dummy implementation of profiling plugin.
 """
-# pylint: disable=unused-argument
-from typing import List
+
+from __future__ import annotations
+
+import typing
 
 from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfilePluginDummy(Profiling):
@@ -36,7 +42,7 @@ class ProfilePluginDummy(Profiling):
         return NefertemProfile(self.get_lib_name(), self.get_lib_version(), 0.0, {}, {})
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a dummy schema to be persisted as artifact.
         """
@@ -69,7 +75,7 @@ class ProfileBuilderDummy(ProfilingPluginBuilder):
     Profile plugin builder.
     """
 
-    def build(self, resources: List["DataResource"]) -> List[ProfilePluginDummy]:
+    def build(self, resources: list[DataResource]) -> list[ProfilePluginDummy]:
         """
         Build a plugin.
         """
@@ -77,7 +83,10 @@ class ProfileBuilderDummy(ProfilingPluginBuilder):
 
     @staticmethod
     def _filter_metrics(*args) -> None:
-        ...
+        """
+        Placeholder methods.
 
-    def destroy(self) -> None:
-        ...
+        Returns
+        -------
+        None
+        """

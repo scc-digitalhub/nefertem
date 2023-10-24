@@ -1,11 +1,13 @@
 """
 DuckDB implementation of validation plugin.
 """
-# pylint: disable=import-error
+from __future__ import annotations
+
 import shutil
+import typing
 from copy import deepcopy
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 import duckdb
 
@@ -22,7 +24,15 @@ from nefertem.utils.commons import (
     PANDAS_DATAFRAME_FILE_READER,
     POLARS_DATAFRAME_FILE_READER,
 )
-from nefertem.utils.utils import flatten_list, get_uiid, listify
+from nefertem.utils.utils import build_uuid, flatten_list, listify
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.base import Constraint
+    from nefertem.models.constraints.duckdb import ConstraintDuckDB
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.native import NativeReader
+    from nefertem.resources.data_resource import DataResource
+    from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
 class ValidationPluginDuckDB(Validation):
@@ -37,9 +47,9 @@ class ValidationPluginDuckDB(Validation):
 
     def setup(
         self,
-        data_reader: "NativeReader",
+        data_reader: NativeReader,
         db: str,
-        constraint: "ConstraintDuckDB",
+        constraint: ConstraintDuckDB,
         error_report: str,
         exec_args: dict,
     ) -> None:
@@ -82,7 +92,7 @@ class ValidationPluginDuckDB(Validation):
         return self.data_reader.return_head(data)
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemReport:
+    def render_nefertem(self, result: Result) -> NefertemReport:
         """
         Return a NefertemReport.
         """
@@ -112,7 +122,7 @@ class ValidationPluginDuckDB(Validation):
         )
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a rendered report ready to be persisted as artifact.
         """
@@ -147,10 +157,10 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
 
     def build(
         self,
-        resources: List["DataResource"],
-        constraints: List["Constraint"],
+        resources: list[DataResource],
+        constraints: list[Constraint],
         error_report: str,
-    ) -> List[ValidationPluginDuckDB]:
+    ) -> list[ValidationPluginDuckDB]:
         """
         Build a plugin for every resource and every constraint.
         """
@@ -174,28 +184,28 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         """
         Setup db connection.
         """
-        self.tmp_db = Path(DEFAULT_DIRECTORY, get_uiid(), "tmp.duckdb")
+        self.tmp_db = Path(DEFAULT_DIRECTORY, build_uuid(), "tmp.duckdb")
         self.tmp_db.parent.mkdir(parents=True, exist_ok=True)
         self.con = duckdb.connect(database=str(self.tmp_db), read_only=False)
 
     @staticmethod
     def _filter_constraints(
-        constraints: List["Constraint"],
-    ) -> List["ConstraintDuckDB"]:
+        constraints: list[Constraint],
+    ) -> list[ConstraintDuckDB]:
         """
-        Filter out "ConstraintDuckDB".
+        Filter out ConstraintDuckDB.
         """
         return [const for const in constraints if const.type == LIBRARY_DUCKDB]
 
     @staticmethod
-    def _filter_resources(resources: List["DataResource"], constraints: List["Constraint"]) -> List["DataResource"]:
+    def _filter_resources(resources: list[DataResource], constraints: list[Constraint]) -> list[DataResource]:
         """
         Filter resources used by validator.
         """
         res_names = set(flatten_list([deepcopy(const.resources) for const in constraints]))
         return [res for res in resources if res.name in res_names]
 
-    def _register_resources(self, resource: "DataResource") -> None:
+    def _register_resources(self, resource: DataResource) -> None:
         """
         Register resource in db.
         """
@@ -204,7 +214,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         df = self._get_data(data_reader, listify(resource.path))  # noqa pylint: disable=no-member
         self.con.execute(f"CREATE TABLE IF NOT EXISTS {resource.name} AS SELECT * FROM df;")
 
-    def _get_reader(self, store: "ArtifactStore") -> "NativeReader":
+    def _get_reader(self, store: ArtifactStore) -> NativeReader:
         """
         Get reader. Preference goes to polars, otherwise, use pandas.
         """
@@ -215,7 +225,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
             return self._get_data_reader(PANDAS_DATAFRAME_FILE_READER, store)
 
     @staticmethod
-    def _get_data(data_reader: "NativeReader", paths: list) -> Any:
+    def _get_data(data_reader: NativeReader, paths: list) -> Any:
         """
         Fetch data from paths.
         """

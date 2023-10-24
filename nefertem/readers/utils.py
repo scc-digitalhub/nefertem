@@ -1,10 +1,18 @@
 """
 Utils functions for data reader.
 """
-from nefertem.data_reader.registry import REGISTRY
+from __future__ import annotations
+
+import typing
+
+from nefertem.readers.registry import REGISTRY
+
+if typing.TYPE_CHECKING:
+    from nefertem.readers.base.base import DataReader
+    from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
-def get_reader(reader_type: str) -> "DataReader":
+def get_reader(reader_type: str) -> DataReader:
     """
     Registry getter.
     """
@@ -16,9 +24,9 @@ def get_reader(reader_type: str) -> "DataReader":
 
 def build_reader(
     reader_type: str,
-    store: "ArtifactStore",
+    store: ArtifactStore,
     **kwargs,
-) -> "DataReader":
+) -> DataReader:
     """
     Reader builder.
     """

@@ -1,14 +1,18 @@
 """
 Dummy implementation of validation plugin.
 """
-# pylint: disable=unused-argument
+from __future__ import annotations
+
+import typing
 from collections import namedtuple
-from typing import List
 
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils.plugin_utils import Result
 
 DummyConstraint = namedtuple("DummyConstraint", ["name", "resources"], defaults=["", [""]])
 
@@ -40,7 +44,7 @@ class ValidationPluginDummy(Validation):
         return NefertemReport(self.get_lib_name(), self.get_lib_version(), 0.0, {}, True, {})
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a dummy report to be persisted as artifact.
         """
@@ -73,7 +77,7 @@ class ValidationBuilderDummy(ValidationPluginBuilder):
     Dummy validation plugin builder.
     """
 
-    def build(self, *args) -> List[ValidationPluginDummy]:
+    def build(self, *args) -> list[ValidationPluginDummy]:
         """
         Build a plugin.
         """

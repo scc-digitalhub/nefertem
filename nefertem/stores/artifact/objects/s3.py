@@ -5,19 +5,38 @@ Implementation of S3 artifact store.
 import json
 from io import BytesIO, StringIO
 from pathlib import Path
-from typing import IO, Any, Type
+from typing import Any, Type
 
 import boto3
 import botocore.client
 from botocore.exceptions import ClientError
 
-from nefertem.stores.artifact.objects.base import ArtifactStore
+from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import check_make_dir, check_path, get_path
-from nefertem.utils.io_utils import wrap_string, write_bytes, write_bytesio
-from nefertem.utils.uri_utils import build_key, get_name_from_uri, get_uri_netloc, get_uri_path
+from nefertem.utils.file_utils import check_path, get_path
+from nefertem.utils.io_utils import wrap_string, write_bytesio
+from nefertem.utils.uri_utils import build_key, get_name_from_uri, get_uri_path
 
+# Type aliases
 S3Client = Type["botocore.client.S3"]
+
+
+class S3StoreConfig(StoreConfig):
+    """
+    S3 store configuration class.
+    """
+
+    endpoint_url: str
+    """S3 endpoint URL."""
+
+    aws_access_key_id: str
+    """AWS access key ID."""
+
+    aws_secret_access_key: str
+    """AWS secret access key."""
+
+    bucket_name: str
+    """S3 bucket name."""
 
 
 class S3ArtifactStore(ArtifactStore):
@@ -27,6 +46,25 @@ class S3ArtifactStore(ArtifactStore):
     Allows the client to interact with S3 based storages.
 
     """
+
+    def __init__(
+        self,
+        name: str,
+        store_type: str,
+        uri: str,
+        temp_dir: str,
+        is_default: bool,
+        config: S3StoreConfig,
+    ) -> None:
+        """
+        Constructor.
+        """
+        super().__init__(name, store_type, uri, temp_dir, is_default)
+        self.config = config
+
+    ############################
+    # I/O methods
+    ############################
 
     def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
         """
@@ -56,161 +94,219 @@ class S3ArtifactStore(ArtifactStore):
         --------
         None
         """
-        client = self._get_client()
-        bucket = get_uri_netloc(self.artifact_uri)
-        self._check_access_to_storage(client, bucket)
-
         # Build the key for the artifact
         key = build_key(dst, src_name)
 
         # Local file
         if isinstance(src, (str, Path)) and check_path(src):
-            self._upload_file(client, bucket, str(src), key, metadata)
+            return self._upload_file(str(src), key, metadata)
 
         # Dictionary
-        elif isinstance(src, dict) and src_name is not None:
+        if isinstance(src, dict) and src_name is not None:
             # Convert the dictionary to JSON string and write it to BytesIO buffer
-            src = json.dumps(src)
-            src = write_bytesio(src)
-            self._upload_fileobj(client, bucket, src, key, metadata)
+            bytesio = write_bytesio(json.dumps(src))
+            return self._upload_fileobj(bytesio, key, metadata)
 
         # StringIO/BytesIO buffer
-        elif isinstance(src, (BytesIO, StringIO)) and src_name is not None:
+        if isinstance(src, (BytesIO, StringIO)) and src_name is not None:
             # Wrap the buffer in a BufferedIOBase object and upload it
-            src = wrap_string(src)
-            self._upload_fileobj(client, bucket, src, key, metadata)
+            bytesio = wrap_string(src)
+            return self._upload_fileobj(bytesio, key, metadata)
 
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
-    def _get_and_register_artifact(self, src: str, fetch_mode: str) -> str:
+    def fetch_file(self, src: str) -> str:
         """
-        Method to fetch an artifact from the backend and to register it on the paths registry.
+        Return the path where a resource it is stored.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         src : str
-            The source location of the artifact.
+            The name of the file.
 
-        fetch_mode : str
-            The mode for fetching the artifact. It can be one of the following:
-                * self.NATIVE : Returns a presigned URL.
-                * self.FILE : Gets the file from remote and stores it locally.
-                * self.BUFFER : Not implemented.
-
-        Raises:
+        Returns
         -------
-        NotImplementedError :
-            If fetch_mode is not one of the supported modes.
-
-        Returns:
-        --------
         str
-            Returns a presigned URL (if fetch_mode is self.NATIVE) or the file path (if fetch_mode is self.FILE).
+            The location of the requested file.
         """
-        client = self._get_client()
-        bucket = get_uri_netloc(self.artifact_uri)
-        self._check_access_to_storage(client, bucket)
-        key = get_uri_path(src)
+        key = f"{src}_file"
+        cached = self._get_resource(key)
+        if cached is not None:
+            return cached
 
-        # Log the information about the resource being fetched
         self.logger.info(f"Fetching resource {src} from store {self.name}")
+        dst = get_path(self.temp_dir, get_name_from_uri(src))
+        filepath = self._download_file(src, dst)
+        self._register_resource(key, filepath)
+        return filepath
 
-        # Return a presigned URL
-        if fetch_mode == self.NATIVE:
-            url = self._get_presigned_url(client, bucket, key)
-            self._register_resource(f"{src}_{fetch_mode}", url)
-            return url
+    def fetch_native(self, src: str) -> str:
+        """
+        Return a native format path for a resource.
 
-        # Get the file from S3 and save it locally
-        elif fetch_mode == self.FILE:
-            obj = self._get_data(client, bucket, key)
-            filepath = self._store_data(obj, key)
-            self._register_resource(f"{src}_{fetch_mode}", filepath)
-            return filepath
+        Parameters
+        ----------
+        src : str
+            A presigned URL.
 
-        elif fetch_mode == self.BUFFER:
-            raise NotImplementedError
+        Returns
+        -------
+        str
+            A presigned URL.
+        """
+        key = f"{src}_native"
+        cached = self._get_resource(key)
+        if cached is not None:
+            return cached
 
-        else:
-            raise NotImplementedError
+        self.logger.info(f"Fetching resource {src} from store {self.name}")
+        url = self._get_presinged_url(src)
+        self._register_resource(key, url)
+        return url
+
+    ############################
+    # Private helper methods
+    ############################
+
+    def _get_bucket(self) -> str:
+        """
+        Get the name of the S3 bucket from the URI.
+
+        Returns
+        -------
+        str
+            The name of the S3 bucket.
+        """
+        return str(self.config.bucket_name)
 
     def _get_client(self) -> S3Client:
         """
-        Return a boto client.
+        Get an S3 client object.
 
-        Returns:
-        --------
+        Returns
+        -------
         S3Client
             Returns a client object that interacts with the S3 storage service.
         """
-        return boto3.client("s3", **self.config)
+        cfg = {
+            "endpoint_url": self.config.endpoint_url,
+            "aws_access_key_id": self.config.aws_access_key_id,
+            "aws_secret_access_key": self.config.aws_secret_access_key,
+        }
+        return boto3.client("s3", **cfg)
+
+    @staticmethod
+    def _get_key(path: str) -> str:
+        """
+        Build key.
+
+        Parameters
+        ----------
+        path : str
+            The source path to get the key from.
+
+        Returns
+        -------
+        str
+            The key.
+        """
+        key = get_uri_path(path)
+        if key.startswith("/"):
+            key = key[1:]
+        return key
+
+    def _check_factory(self) -> tuple[S3Client, str]:
+        """
+        Check if the S3 bucket is accessible by sending a head_bucket request.
+
+        Returns
+        -------
+        tuple[S3Client, str]
+            A tuple containing the S3 client object and the name of the S3 bucket.
+        """
+        client = self._get_client()
+        bucket = self._get_bucket()
+        self._check_access_to_storage(client, bucket)
+        return client, bucket
 
     def _check_access_to_storage(self, client: S3Client, bucket: str) -> None:
         """
         Check if the S3 bucket is accessible by sending a head_bucket request.
 
-        Parameters:
-        -----------
-        client: S3Client
-            An instance of 'S3Client' class that provides client interfaces to S3 service.
-        bucket: string
-            A string representing the name of the S3 bucket for which access needs to be checked.
+        Parameters
+        ----------
+        client : S3Client
+            The S3 client object.
+        bucket : str
+            The name of the S3 bucket.
 
-        Returns:
-        --------
+        Returns
+        -------
         None
 
-        Raises:
-        -------
+        Raises
+        ------
         StoreError:
             If access to the specified bucket is not available.
-
         """
         try:
             client.head_bucket(Bucket=bucket)
-        except ClientError:
-            raise StoreError("No access to s3 bucket!")
+        except ClientError as exc:
+            raise StoreError("No access to s3 bucket!") from exc
 
-    @staticmethod
-    def _get_presigned_url(client: S3Client, bucket: str, src: str) -> str:
+    ############################
+    # Private I/O methods
+    ############################
+
+    def _download_file(self, key: str, dst: str) -> str:
+        """
+        Download a file from S3 based storage. The function checks if the bucket is accessible
+        and if the destination directory exists. If the destination directory does not exist,
+        it will be created.
+
+        Parameters
+        ----------
+        key : str
+            The key of the file on S3 based storage.
+        dst : str
+            The destination of the file on local filesystem.
+
+        Returns
+        -------
+        str
+            The path of the downloaded file.
+        """
+        client, bucket = self._check_factory()
+        client.download_file(bucket, key, dst)
+        return dst
+
+    def _get_presinged_url(self, src: str) -> str:
         """
         Returns a presigned URL for a specified object in an S3 bucket.
 
         Parameters:
         -----------
-        client: S3Client
-            An instance of 'S3Client' class that provides client interfaces to S3 service.
-        bucket: string
-            A string representing the name of the S3 bucket containing the object.
-        src: string
-            A string representing the key of the object.
+        src : str
+            The name of the file.
 
         Returns:
         --------
         url: string
             A string representing the generated Presigned URL
-
         """
-        if src.startswith("/"):
-            src = src[1:]
+        client, bucket = self._check_factory()
         return client.generate_presigned_url(
             ClientMethod="get_object",
             Params={"Bucket": bucket, "Key": src},
             ExpiresIn=7200,
         )
 
-    @staticmethod
-    def _upload_file(client: S3Client, bucket: str, src: str, key: str, metadata: dict) -> None:
+    def _upload_file(self, src: str, key: str, metadata: dict) -> None:
         """
         Upload file to S3.
 
         Parameters
         ----------
-        client : S3Client
-            An instance of the S3 Client used for uploading the file.
-        bucket : str
-            The name of the S3 bucket where the file will be uploaded.
         src : str
             The path to the file that needs to be uploaded to S3.
         key : str
@@ -222,21 +318,17 @@ class S3ArtifactStore(ArtifactStore):
         -------
         None
         """
+        client, bucket = self._check_factory()
         ex_args = {"Metadata": metadata}
         client.upload_file(Filename=src, Bucket=bucket, Key=key, ExtraArgs=ex_args)
 
-    @staticmethod
-    def _upload_fileobj(client: S3Client, bucket: str, obj: IO, key: str, metadata: dict) -> None:
+    def _upload_fileobj(self, obj: BytesIO, key: str, metadata: dict) -> None:
         """
         Upload a file object to S3.
 
         Parameters
         ----------
-        client : S3Client
-            An instance of the S3 Client used for uploading the file object.
-        bucket : str
-            The name of the S3 bucket where the file object will be uploaded.
-        obj : io.IOBase
+        obj : BytesIO
             A file object representing the data to be uploaded to S3.
         key : str
             The key under which the file object needs to be saved in S3.
@@ -247,50 +339,6 @@ class S3ArtifactStore(ArtifactStore):
         -------
         None
         """
+        client, bucket = self._check_factory()
         ex_args = {"Metadata": metadata}
         client.upload_fileobj(obj, Bucket=bucket, Key=key, ExtraArgs=ex_args)
-
-    @staticmethod
-    def _get_data(client: S3Client, bucket: str, key: str) -> bytes:
-        """
-        Download an object from S3.
-
-        Parameters
-        ----------
-        client : S3Client
-            An instance of the S3 Client used for downloading the object.
-        bucket : str
-            The name of the S3 bucket where the object resides.
-        key : str
-            The key under which the object is stored in the specified bucket.
-
-        Returns
-        -------
-        bytes
-            A bytes object representing the downloaded object.
-
-        """
-        obj = client.get_object(Bucket=bucket, Key=key)
-        return obj["Body"].read()
-
-    def _store_data(self, obj: bytes, key: str) -> str:
-        """
-        Store binary data in a temporary directory and return the file path.
-
-        Parameters
-        ----------
-        obj : bytes
-            Binary data to store in a temporary directory.
-        key : str
-            Key of the S3 object to store.
-
-        Returns
-        -------
-        str
-            Path of the stored data file.
-        """
-        check_make_dir(self.temp_dir)
-        name = get_name_from_uri(key)
-        filepath = get_path(self.temp_dir, name)
-        write_bytes(obj, filepath)
-        return filepath

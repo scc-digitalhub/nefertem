@@ -1,11 +1,17 @@
 """
 PolarsDataFrameDuckDBReader module.
 """
-import duckdb
-import polars as pl
+from __future__ import annotations
 
-from nefertem.data_reader.base_reader.base_native_reader import NativeReader
+import typing
+
+import duckdb
+
+from nefertem.readers.base.native import NativeReader
 from nefertem.utils.exceptions import StoreError
+
+if typing.TYPE_CHECKING:
+    import polars as pl
 
 
 class PolarsDataFrameDuckDBReader(NativeReader):
@@ -24,10 +30,10 @@ class PolarsDataFrameDuckDBReader(NativeReader):
     @staticmethod
     def _read_df_from_db(src: str, query: str) -> pl.DataFrame:
         """
-        Use the pandas to read data from db.
+        Use polars to read data from db.
         """
         try:
-            # Not thread safe apparently
+            # Not thread safe apparently, do not use this.
             conn = duckdb.connect(database=src, read_only=True)
             return conn.sql(query).pl()
         except Exception as ex:

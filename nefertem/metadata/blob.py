@@ -27,3 +27,19 @@ class BlobLog(Metadata):
     experiment_name: str
     nefertem_version: str
     contents: dict
+
+    def to_dict(self) -> dict:
+        """
+        Override the method to_dict of the Metadata class.
+
+        Returns
+        -------
+        dict
+            Dictionary representation of the object.
+        """
+        return {
+            "run_id": self.run_id,
+            "experiment_name": self.experiment_name,
+            "nefertem_version": self.nefertem_version,
+            **self.contents,
+        }

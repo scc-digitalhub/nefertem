@@ -1,30 +1,12 @@
 import pytest
 
-from nefertem.stores.artifact.objects.base import ArtifactStore, ResourceRegistry
+from nefertem.stores.artifact.objects.base import ArtifactStore
 from tests.conftest import TEST_FILENAME
 
 
-class TestResourceRegistry:
-    def test_register(self, registry):
-        registry.register("resource", "path")
-        assert registry.registry["resource"] == "path"
-
-    def test_get_resource(self, registry):
-        registry.register("resource", "path")
-        key = registry.get_resource("resource")
-        assert key == "path"
-        key_err = registry.get_resource("err")
-        assert key_err is None
-
-    def test_clean_all(self, registry):
-        registry.register("resource", "path")
-        registry.clean_all()
-        assert registry.registry == {}
-
-
 class TestArtifactStore:
-    def test_get_run_artifacts_uri(self, store, temp_folder):
-        assert store.get_run_artifacts_uri("test", "test") == "test/test"
+    def test_get_run_artifacts_uri(self, store):
+        assert store.get_run_path("test", "test") == "test/test"
 
     def test_get_resource(self, store):
         assert not store._get_resource(TEST_FILENAME)
@@ -58,11 +40,6 @@ class ArtifactStoreSample(ArtifactStore):
 
     def _check_access_to_storage(self, *args, **kwargs):
         ...
-
-
-@pytest.fixture
-def registry():
-    return ResourceRegistry()
 
 
 @pytest.fixture

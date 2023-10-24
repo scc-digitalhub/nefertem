@@ -1,11 +1,17 @@
 """
 Validation plugin abstract class module.
 """
+from __future__ import annotations
+
+import typing
 from abc import ABCMeta, abstractmethod
-from typing import Any, List
+from typing import Any
 
 from nefertem.plugins.base_plugin import Plugin, PluginBuilder
 from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.base import Constraint
 
 
 class Validation(Plugin, metaclass=ABCMeta):
@@ -83,7 +89,7 @@ class ValidationPluginBuilder(PluginBuilder):
 
     @staticmethod
     @abstractmethod
-    def _filter_constraints(constraints: List["Constraint"]) -> List["Constraint"]:
+    def _filter_constraints(constraints: list[Constraint]) -> list[Constraint]:
         """
         Filter constraints by library.
         """

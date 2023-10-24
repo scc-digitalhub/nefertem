@@ -1,11 +1,17 @@
 """
 Profiling plugin abstract class module.
 """
+from __future__ import annotations
+
+import typing
 from abc import ABCMeta, abstractmethod
-from typing import Any, List
+from typing import Any
 
 from nefertem.plugins.base_plugin import Plugin, PluginBuilder
 from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.evidently import Metric
 
 
 class Profiling(Plugin, metaclass=ABCMeta):
@@ -48,12 +54,21 @@ class Profiling(Plugin, metaclass=ABCMeta):
 
 class ProfilingPluginBuilder(PluginBuilder):
     """
-    Validation plugin builder.
+    Profiling plugin builder.
     """
 
     @staticmethod
     @abstractmethod
-    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+    def _filter_metrics(metrics: list[Metric]) -> list[Metric]:
         """
         Filter metric by library.
+        """
+
+    def destroy(self, *args) -> None:
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
         """

@@ -11,5 +11,5 @@ class TestLocalMetadataStore:
     def test_build_source_destination(self):
         ...
 
-    def test_get_run_metadata_uri(self):
+    def test_get_run_path(self):
         ...

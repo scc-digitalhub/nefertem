@@ -23,7 +23,7 @@ class TestDummyArtifactStore:
         assert store._check_access_to_storage() is None
 
     def test_get_run_artifacts_uri(self, store):
-        assert store.get_run_artifacts_uri() is None
+        assert store.get_run_path() is None
 
     def test_get_data(self, store):
         assert store._get_data() is None

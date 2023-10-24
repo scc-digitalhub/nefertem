@@ -79,9 +79,9 @@ class TestLocalArtifactStore:
 
     def test_get_run_artifacts_uri(self, store, temp_folder):
         pth = str(temp_folder / "artifact" / "test" / "test")
-        assert store.get_run_artifacts_uri("test", "test") == pth
+        assert store.get_run_path("test", "test") == pth
         pth = str(temp_folder / "artifact" / "test1" / "test2")
-        assert store.get_run_artifacts_uri("test1", "test2") == pth
+        assert store.get_run_path("test1", "test2") == pth
 
 
 @pytest.fixture

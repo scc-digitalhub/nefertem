@@ -36,37 +36,16 @@ try:
 except ImportError:
     ...
 
-# great_expectations imports
-try:
-    from nefertem.plugins.profiling.great_expectations_profiling import ProfileBuilderGreatExpectations
-    from nefertem.plugins.validation.great_expectations_validation import ValidationBuilderGreatExpectations
-    from nefertem.utils.commons import LIBRARY_GREAT_EXPECTATIONS
-
-    REGISTRY[OPERATION_PROFILING][LIBRARY_GREAT_EXPECTATIONS] = ProfileBuilderGreatExpectations
-    REGISTRY[OPERATION_VALIDATION][LIBRARY_GREAT_EXPECTATIONS] = ValidationBuilderGreatExpectations
-
-except ImportError:
-    ...
-
-# pandas_profiling imports
-try:
-    from nefertem.plugins.profiling.pandas_profiling_profiling import ProfileBuilderPandasProfiling
-    from nefertem.utils.commons import LIBRARY_PANDAS_PROFILING
-
-    REGISTRY[OPERATION_PROFILING][LIBRARY_PANDAS_PROFILING] = ProfileBuilderPandasProfiling
-
-except ImportError:
-    ...
 
 # ydata_profiling imports
-try:
-    from nefertem.plugins.profiling.ydata_profiling_profiling import ProfileBuilderYdataProfiling
-    from nefertem.utils.commons import LIBRARY_YDATA_PROFILING
+# try:
+#     from nefertem.plugins.profiling.ydata_profiling_profiling import ProfileBuilderYdataProfiling
+#     from nefertem.utils.commons import LIBRARY_YDATA_PROFILING
 
-    REGISTRY[OPERATION_PROFILING][LIBRARY_YDATA_PROFILING] = ProfileBuilderYdataProfiling
+#     REGISTRY[OPERATION_PROFILING][LIBRARY_YDATA_PROFILING] = ProfileBuilderYdataProfiling
 
-except ImportError:
-    ...
+# except ImportError:
+#     ...
 
 # duckdb imports
 try:
@@ -89,13 +68,13 @@ except ImportError:
     ...
 
 # evidently imports
-try:
-    from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently
-    from nefertem.plugins.validation.evidently_validation import ValidationBuilderEvidently
-    from nefertem.utils.commons import LIBRARY_EVIDENTLY
+# try:
+#     from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently
+#     from nefertem.plugins.validation.evidently_validation import ValidationBuilderEvidently
+#     from nefertem.utils.commons import LIBRARY_EVIDENTLY
 
-    REGISTRY[OPERATION_VALIDATION][LIBRARY_EVIDENTLY] = ValidationBuilderEvidently
-    REGISTRY[OPERATION_PROFILING][LIBRARY_EVIDENTLY] = ProfileBuilderEvidently
+#     REGISTRY[OPERATION_VALIDATION][LIBRARY_EVIDENTLY] = ValidationBuilderEvidently
+#     REGISTRY[OPERATION_PROFILING][LIBRARY_EVIDENTLY] = ProfileBuilderEvidently
 
-except ImportError:
-    ...
+# except ImportError:
+#     ...

@@ -1,7 +1,9 @@
 """
 Frictionless implementation of validation plugin.
 """
-from typing import List, Union
+from __future__ import annotations
+
+import typing
 
 import frictionless
 from frictionless import Report, Resource, Schema
@@ -12,6 +14,13 @@ from nefertem.plugins.utils.frictionless_utils import custom_frictionless_detect
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import BASE_FILE_READER, CONSTRAINT_FRICTIONLESS_SCHEMA, LIBRARY_FRICTIONLESS
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.base import Constraint
+    from nefertem.models.constraints.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class ValidationPluginFrictionless(Validation):
@@ -27,9 +36,9 @@ class ValidationPluginFrictionless(Validation):
 
     def setup(
         self,
-        data_reader: "FileReader",
-        resource: "DataResource",
-        constraint: "ConstraintFrictionless",
+        data_reader: FileReader,
+        resource: DataResource,
+        constraint: ConstraintFrictionless,
         error_report: str,
         exec_args: dict,
     ) -> None:
@@ -96,7 +105,7 @@ class ValidationPluginFrictionless(Validation):
             raise fex
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemReport:
+    def render_nefertem(self, result: Result) -> NefertemReport:
         """
         Return a NefertemReport.
         """
@@ -127,7 +136,7 @@ class ValidationPluginFrictionless(Validation):
         )
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a rendered report ready to be persisted as artifact.
         """
@@ -162,10 +171,10 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
 
     def build(
         self,
-        resources: List["DataResource"],
-        constraints: List["Constraint"],
+        resources: list[DataResource],
+        constraints: list[Constraint],
         error_report: str,
-    ) -> List[ValidationPluginFrictionless]:
+    ) -> list[ValidationPluginFrictionless]:
         """
         Build a plugin for every resource and every constraint.
         """
@@ -185,8 +194,8 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
 
     @staticmethod
     def _filter_constraints(
-        constraints: List["Constraint"],
-    ) -> List[Union["ConstraintFrictionless", "ConstraintFullFrictionless"]]:
+        constraints: list[Constraint],
+    ) -> list[ConstraintFrictionless | ConstraintFullFrictionless]:
         """
         Filter out ConstraintFrictionless and ConstraintFullFrictionless.
         """

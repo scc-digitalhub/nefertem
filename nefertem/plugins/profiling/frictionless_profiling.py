@@ -1,7 +1,9 @@
 """
 Frictionless implementation of profiling plugin.
 """
-from typing import List, Optional
+from __future__ import annotations
+
+import typing
 
 import frictionless
 from frictionless import Resource
@@ -11,6 +13,12 @@ from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPlug
 from nefertem.plugins.utils.plugin_utils import exec_decorator
 from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS
 from nefertem.utils.io_utils import write_bytesio
+
+if typing.TYPE_CHECKING:
+    from nefertem.models.constraints.evidently import Metric
+    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.readers.base.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfilePluginFrictionless(Profiling):
@@ -23,7 +31,7 @@ class ProfilePluginFrictionless(Profiling):
         self.resource = None
         self.exec_multiprocess = True
 
-    def setup(self, data_reader: "FileReader", resource: "DataResource", exec_args: dict) -> None:
+    def setup(self, data_reader: FileReader, resource: DataResource, exec_args: dict) -> None:
         """
         Set plugin resource.
         """
@@ -41,7 +49,7 @@ class ProfilePluginFrictionless(Profiling):
         return Resource(profile.to_dict())
 
     @exec_decorator
-    def render_nefertem(self, result: "Result") -> NefertemProfile:
+    def render_nefertem(self, result: Result) -> NefertemProfile:
         """
         Return a NefertemProfile.
         """
@@ -61,7 +69,7 @@ class ProfilePluginFrictionless(Profiling):
         return NefertemProfile(self.get_lib_name(), self.get_lib_version(), duration, stats, fields)
 
     @exec_decorator
-    def render_artifact(self, result: "Result") -> List[tuple]:
+    def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a rendered profile ready to be persisted as artifact.
         """
@@ -94,7 +102,9 @@ class ProfileBuilderFrictionless(ProfilingPluginBuilder):
     Profile plugin builder.
     """
 
-    def build(self, resources: List["DataResource"], metrics: Optional[List] = None) -> List[ProfilePluginFrictionless]:
+    def build(
+        self, resources: list[DataResource], metrics: list[Metric] | None = None
+    ) -> list[ProfilePluginFrictionless]:
         """
         Build a plugin. Metrics are not supported
         """
@@ -111,12 +121,11 @@ class ProfileBuilderFrictionless(ProfilingPluginBuilder):
         return plugins
 
     @staticmethod
-    def _filter_metrics(metrics: List["Metric"]) -> List["Metric"]:
+    def _filter_metrics(*args) -> None:
         """
-        Filter metric by library.
-        """
+        Placeholder methods.
 
-    def destroy(self) -> None:
-        """
-        Destory plugins.
+        Returns
+        -------
+        None
         """

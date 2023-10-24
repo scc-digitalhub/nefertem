@@ -1,11 +1,14 @@
 """
 Run handler module.
 """
-import concurrent.futures
-from typing import Any, List, Optional
+from __future__ import annotations
 
-from nefertem.data_reader.utils import build_reader
+import concurrent.futures
+import typing
+from typing import Any
+
 from nefertem.plugins.plugin_factory import builder_factory
+from nefertem.readers.utils import build_reader
 from nefertem.utils.commons import (
     BASE_FILE_READER,
     OPERATION_INFERENCE,
@@ -20,6 +23,17 @@ from nefertem.utils.exceptions import RunError
 from nefertem.utils.file_utils import get_absolute_path
 from nefertem.utils.uri_utils import get_name_from_uri
 from nefertem.utils.utils import flatten_list, listify
+
+if typing.TYPE_CHECKING:
+    from nefertem.client.store_handler import StoreHandler
+    from nefertem.metadata.reports.profile import NefertemProfile
+    from nefertem.metadata.reports.report import NefertemReport
+    from nefertem.metadata.reports.schema import NefertemSchema
+    from nefertem.models.constraints.base import Constraint
+    from nefertem.models.constraints.evidently import Metric
+    from nefertem.plugins.base_plugin import Plugin, PluginBuilder
+    from nefertem.resources.data_resource import DataResource
+    from nefertem.run.run_config import RunConfig
 
 
 class RunHandlerRegistry:
@@ -75,14 +89,14 @@ class RunHandler:
 
     """
 
-    def __init__(self, config: "RunConfig", store_handler: "StoreHandler") -> None:
+    def __init__(self, config: RunConfig, store_handler: StoreHandler) -> None:
         self._config = config
         self._store_handler = store_handler
         self._registry = RunHandlerRegistry()
 
     def infer(
         self,
-        resources: List["DataResource"],
+        resources: list[DataResource],
         parallel: bool = False,
         num_worker: int = 10,
     ) -> None:
@@ -100,8 +114,8 @@ class RunHandler:
 
     def validate(
         self,
-        resources: List["DataResource"],
-        constraints: List["Constraint"],
+        resources: list[DataResource],
+        constraints: list[Constraint],
         error_report: str,
         parallel: bool = False,
         num_worker: int = 10,
@@ -131,8 +145,8 @@ class RunHandler:
 
     def profile(
         self,
-        resources: List["DataResource"],
-        metrics: Optional[List] = None,
+        resources: list[DataResource],
+        metrics: list[Metric] | None = None,
         parallel: bool = False,
         num_worker: int = 10,
     ) -> None:
@@ -150,13 +164,13 @@ class RunHandler:
         self._destroy_builders(builders)
 
     @staticmethod
-    def _create_plugins(builders: "PluginBuilder", *args) -> List["Plugin"]:
+    def _create_plugins(builders: PluginBuilder, *args) -> list[Plugin]:
         """
         Return a list of plugins.
         """
         return flatten_list([builder.build(*args) for builder in builders])
 
-    def _scheduler(self, plugins: List["Plugin"], ops: str, parallel: bool, num_worker: int) -> None:
+    def _scheduler(self, plugins: list[Plugin], ops: str, parallel: bool, num_worker: int) -> None:
         """
         Schedule execution to avoid multiprocessing issues.
         """
@@ -179,7 +193,7 @@ class RunHandler:
         self._pool_execute_multithread(multithreading, ops, num_worker)
         self._pool_execute_multiprocess(multiprocess, ops, num_worker)
 
-    def _sequential_execute(self, plugins: List["Plugin"], ops: str) -> None:
+    def _sequential_execute(self, plugins: list[Plugin], ops: str) -> None:
         """
         Execute operations in sequence.
         """
@@ -187,7 +201,7 @@ class RunHandler:
             data = self._execute(plugin)
             self._register_results(ops, data)
 
-    def _pool_execute_multiprocess(self, plugins: List["Plugin"], ops: str, num_worker: int) -> None:
+    def _pool_execute_multiprocess(self, plugins: list[Plugin], ops: str, num_worker: int) -> None:
         """
         Instantiate a concurrent.future.ProcessPoolExecutor pool to
         execute operations in multiprocessing.
@@ -196,7 +210,7 @@ class RunHandler:
             for data in pool.map(self._execute, plugins):
                 self._register_results(ops, data)
 
-    def _pool_execute_multithread(self, plugins: List["Plugin"], ops: str, num_worker: int) -> None:
+    def _pool_execute_multithread(self, plugins: list[Plugin], ops: str, num_worker: int) -> None:
         """
         Instantiate a concurrent.future.ThreadPoolExecutor pool to
         execute operations in multithreading.
@@ -206,7 +220,7 @@ class RunHandler:
                 self._register_results(ops, data)
 
     @staticmethod
-    def _execute(plugin: "Plugin") -> dict:
+    def _execute(plugin: Plugin) -> dict:
         """
         Wrap plugins main execution method. The handler create
         builders to build plugins. Once the plugin are built,
@@ -229,74 +243,74 @@ class RunHandler:
             self._registry.register(operation, key, value)
 
     @staticmethod
-    def _destroy_builders(builders: List["PluginBuilder"]) -> None:
+    def _destroy_builders(builders: list[PluginBuilder]) -> None:
         """
         Destroy builders.
         """
         for builder in builders:
             builder.destroy()
 
-    def get_item(self, operation: str, _type: str) -> List[Any]:
+    def get_item(self, operation: str, _type: str) -> list[Any]:
         """
         Get item from registry.
         """
         return self._registry.get_object(operation, _type)
 
-    def get_artifact_schema(self) -> List[Any]:
+    def get_artifact_schema(self) -> list[Any]:
         """
         Get a list of schemas produced by inference libraries.
         """
         return [obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_WRAPPED)]
 
-    def get_artifact_report(self) -> List[Any]:
+    def get_artifact_report(self) -> list[Any]:
         """
         Get a list of reports produced by validation libraries.
         """
         return [obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_WRAPPED)]
 
-    def get_artifact_profile(self) -> List[Any]:
+    def get_artifact_profile(self) -> list[Any]:
         """
         Get a list of profiles produced by profiling libraries.
         """
         return [obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_WRAPPED)]
 
-    def get_nefertem_schema(self) -> List["NefertemSchema"]:
+    def get_nefertem_schema(self) -> list[NefertemSchema]:
         """
         Wrapper for plugins parsing methods.
         """
         return [obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_NEFERTEM)]
 
-    def get_nefertem_report(self) -> List["NefertemReport"]:
+    def get_nefertem_report(self) -> list[NefertemReport]:
         """
         Wrapper for plugins parsing methods.
         """
         return [obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_NEFERTEM)]
 
-    def get_nefertem_profile(self) -> List["NefertemProfile"]:
+    def get_nefertem_profile(self) -> list[NefertemProfile]:
         """
         Wrapper for plugins parsing methods.
         """
         return [obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_NEFERTEM)]
 
-    def get_rendered_schema(self) -> List[Any]:
+    def get_rendered_schema(self) -> list[Any]:
         """
         Get a list of schemas ready to be persisted.
         """
         return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_RENDERED)]))
 
-    def get_rendered_report(self) -> List[Any]:
+    def get_rendered_report(self) -> list[Any]:
         """
         Get a list of reports ready to be persisted.
         """
         return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_RENDERED)]))
 
-    def get_rendered_profile(self) -> List[Any]:
+    def get_rendered_profile(self) -> list[Any]:
         """
         Get a list of profiles ready to be persisted.
         """
         return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_RENDERED)]))
 
-    def get_libraries(self) -> List[dict]:
+    def get_libraries(self) -> list[dict]:
         """
         Return libraries used by run.
         """
@@ -322,7 +336,7 @@ class RunHandler:
         store = self._store_handler.get_def_store()
         store.persist_artifact(src, dst, src_name, metadata)
 
-    def persist_data(self, resources: List["DataResource"], dst: str) -> None:
+    def persist_data(self, resources: list[DataResource], dst: str) -> None:
         """
         Persist input data as artifact.
         """
