@@ -6,32 +6,23 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from nefertem.utils.commons import (
-    CONSTRAINT_SQL_EMPTY,
-    CONSTRAINT_SQL_EXACT,
-    CONSTRAINT_SQL_MAXIMUM,
-    CONSTRAINT_SQL_MINIMUM,
-    CONSTRAINT_SQL_NON_EMPTY,
-    CONSTRAINT_SQL_RANGE,
-)
-
 
 def evaluate_validity(result: Any, expect: str, value: Any) -> tuple:
     """
     Evaluate validity of query results.
     """
     try:
-        if expect == CONSTRAINT_SQL_EMPTY:
+        if expect == "empty":
             return evaluate_empty(result, empty=True)
-        if expect == CONSTRAINT_SQL_NON_EMPTY:
+        if expect == "non-empty":
             return evaluate_empty(result, empty=False)
-        if expect == CONSTRAINT_SQL_EXACT:
+        if expect == "exact":
             return evaluate_exact(result, value)
-        if expect == CONSTRAINT_SQL_RANGE:
+        if expect == "range":
             return evaluate_range(result, value)
-        if expect == CONSTRAINT_SQL_MINIMUM:
+        if expect == "minimum":
             return evaluate_min(result, value)
-        if expect == CONSTRAINT_SQL_MAXIMUM:
+        if expect == "maximum":
             return evaluate_max(result, value)
         else:
             return False, "Invalid constraint expectation."

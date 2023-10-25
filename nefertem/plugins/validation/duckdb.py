@@ -10,16 +10,15 @@ from pathlib import Path
 from typing import Any
 
 import duckdb
+from pydantic import Field
+from typing_extensions import Literal
 
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import ValidationReport, exec_decorator
 from nefertem.plugins.utils.sql_checks import evaluate_validity
-from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
+from nefertem.plugins.validation.base import Constraint, Validation, ValidationPluginBuilder
 from nefertem.utils.commons import (
-    CONSTRAINT_SQL_CHECK_ROWS,
-    CONSTRAINT_SQL_CHECK_VALUE,
     DEFAULT_DIRECTORY,
-    LIBRARY_DUCKDB,
     PANDAS_DATAFRAME_DUCKDB_READER,
     PANDAS_DATAFRAME_FILE_READER,
     POLARS_DATAFRAME_FILE_READER,
@@ -27,12 +26,15 @@ from nefertem.utils.commons import (
 from nefertem.utils.utils import build_uuid, flatten_list, listify
 
 if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.base import Constraint
-    from nefertem.models.constraints.duckdb import ConstraintDuckDB
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.native import NativeReader
     from nefertem.resources.data_resource import DataResource
     from nefertem.stores.artifact.objects.base import ArtifactStore
+
+
+####################
+# PLUGIN
+####################
 
 
 class ValidationPluginDuckDB(Validation):
@@ -80,9 +82,9 @@ class ValidationPluginDuckDB(Validation):
         """
         Return value or size of DataFrame for SQL checks.
         """
-        if self.constraint.check == CONSTRAINT_SQL_CHECK_VALUE:
+        if self.constraint.check == "value":
             return self.data_reader.return_first_value(data)
-        elif self.constraint.check == CONSTRAINT_SQL_CHECK_ROWS:
+        elif self.constraint.check == "rows":
             return self.data_reader.return_length(data)
 
     def _shorten_data(self, data: Any) -> Any:
@@ -131,7 +133,7 @@ class ValidationPluginDuckDB(Validation):
             _object = {"errors": result.errors}
         else:
             _object = result.artifact.to_dict()
-        filename = self._fn_report.format(f"{LIBRARY_DUCKDB}.json")
+        filename = self._fn_report.format("duckdb.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -148,6 +150,11 @@ class ValidationPluginDuckDB(Validation):
         Get library version.
         """
         return duckdb.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class ValidationBuilderDuckDB(ValidationPluginBuilder):
@@ -195,7 +202,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         """
         Filter out ConstraintDuckDB.
         """
-        return [const for const in constraints if const.type == LIBRARY_DUCKDB]
+        return [const for const in constraints if const.type == "duckdb"]
 
     @staticmethod
     def _filter_resources(resources: list[DataResource], constraints: list[Constraint]) -> list[DataResource]:
@@ -243,3 +250,29 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         Destory db.
         """
         shutil.rmtree(self.tmp_db.parent, ignore_errors=True)
+
+
+####################
+# CONSTRAINT
+####################
+
+
+class ConstraintDuckDB(Constraint):
+    """
+    DuckDB constraint.
+    """
+
+    type: str = Field("duckdb", Literal=True)
+    """Constraint type ("duckdb")."""
+
+    query: str
+    """SQL query to execute over resources."""
+
+    expect: Literal["empty", "non-empty", "exact", "range", "minimum", "maximum"]
+    """SQL constraint type to check."""
+
+    value: Any | None = None
+    """Value of the constraint."""
+
+    check: Literal["value", "rows"] = "rows"
+    """Modality of constraint checking (On rows or single value)."""

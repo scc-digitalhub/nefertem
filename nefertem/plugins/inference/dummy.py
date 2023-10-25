@@ -6,9 +6,9 @@ from __future__ import annotations
 import typing
 
 from nefertem.metadata.reports.schema import NefertemSchema
-from nefertem.plugins.inference.inference_plugin import Inference, InferencePluginBuilder
+from nefertem.plugins.inference.base import Inference, InferencePluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
+from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils.plugin_utils import Result
@@ -20,7 +20,13 @@ class InferencePluginDummy(Inference):
     """
 
     def setup(self, *args) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
 
     @exec_decorator
     def infer(self) -> dict:
@@ -55,14 +61,14 @@ class InferencePluginDummy(Inference):
         """
         Get library name.
         """
-        return LIBRARY_DUMMY
+        return DUMMY
 
     @staticmethod
     def get_lib_version() -> str:
         """
         Get library version.
         """
-        return LIBRARY_DUMMY
+        return DUMMY
 
 
 class InferenceBuilderDummy(InferencePluginBuilder):

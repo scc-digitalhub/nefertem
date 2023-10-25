@@ -4,11 +4,8 @@ import pytest
 import ydata_profiling
 from ydata_profiling import ProfileReport
 
-from nefertem.plugins.profiling.ydata_profiling_profiling import (
-    ProfileBuilderYdataProfiling,
-    ProfilePluginYdataProfiling,
-)
-from nefertem.utils.commons import LIBRARY_YDATA_PROFILING, OPERATION_PROFILING, PANDAS_DATAFRAME_FILE_READER
+from nefertem.plugins.profiling.ydata import ProfileBuilderYdataProfiling, ProfilePluginYdataProfiling
+from nefertem.utils.commons import LIBRARY_YDATA_PROFILING, PANDAS_DATAFRAME_FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
@@ -42,13 +39,13 @@ class TestProfilePluginYdataProfiling:
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_PROFILING)
+        correct_render_nefertem(output, PROFILE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_PROFILING)
+        incorrect_render_nefertem(output, PROFILE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution

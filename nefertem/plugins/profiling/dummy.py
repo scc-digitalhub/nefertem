@@ -7,9 +7,9 @@ from __future__ import annotations
 import typing
 
 from nefertem.metadata.reports.profile import NefertemProfile
-from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
+from nefertem.plugins.profiling.base import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
+from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils.plugin_utils import Result
@@ -25,7 +25,13 @@ class ProfilePluginDummy(Profiling):
         super().__init__()
 
     def setup(self, *args) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
 
     @exec_decorator
     def profile(self) -> dict:
@@ -60,14 +66,14 @@ class ProfilePluginDummy(Profiling):
         """
         Get library name.
         """
-        return LIBRARY_DUMMY
+        return DUMMY
 
     @staticmethod
     def get_lib_version() -> str:
         """
         Get library version.
         """
-        return LIBRARY_DUMMY
+        return DUMMY
 
 
 class ProfileBuilderDummy(ProfilingPluginBuilder):

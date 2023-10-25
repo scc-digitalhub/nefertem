@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from nefertem.plugins.base_plugin import Plugin, PluginBuilder
+from nefertem.plugins.base import Plugin, PluginBuilder
 from nefertem.resources.data_resource import DataResource
 from nefertem.utils.exceptions import StoreError
 

@@ -4,8 +4,8 @@ import evidently
 import pytest
 from evidently.report import Report
 
-from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently, ProfilePluginEvidently
-from nefertem.utils.commons import LIBRARY_EVIDENTLY, OPERATION_PROFILING, PANDAS_DATAFRAME_FILE_READER
+from nefertem.plugins.profiling.evidently import ProfileBuilderEvidently, ProfilePluginEvidently
+from nefertem.utils.commons import LIBRARY_EVIDENTLY, PANDAS_DATAFRAME_FILE_READER, PROFILE
 from tests.conftest import METRIC_EVIDENTLY_01
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
@@ -40,19 +40,19 @@ class TestProfilePluginEvidently:
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_PROFILING)
+        correct_render_nefertem(output, PROFILE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_PROFILING)
+        incorrect_render_nefertem(output, PROFILE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_artifact(result)
-        filename1 = setted_plugin._fn_profile.format(f"{LIBRARY_EVIDENTLY}.json")
+        filename1 = setted_plugin._fn_profile.format("evidently.json")
         filename2 = setted_plugin._fn_profile.format(f"{LIBRARY_EVIDENTLY}.html")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, io.BytesIO)

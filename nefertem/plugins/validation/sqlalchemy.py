@@ -8,26 +8,26 @@ from copy import deepcopy
 from typing import Any
 
 import sqlalchemy
+from pydantic import Field
+from typing_extensions import Literal
 
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import ValidationReport, exec_decorator
 from nefertem.plugins.utils.sql_checks import evaluate_validity
-from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
-from nefertem.utils.commons import (
-    CONSTRAINT_SQL_CHECK_ROWS,
-    CONSTRAINT_SQL_CHECK_VALUE,
-    LIBRARY_SQLALCHEMY,
-    PANDAS_DATAFRAME_SQL_READER,
-)
+from nefertem.plugins.validation.base import Constraint, Validation, ValidationPluginBuilder
+from nefertem.utils.commons import PANDAS_DATAFRAME_SQL_READER
 from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list
 
 if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.base import Constraint
-    from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.native import NativeReader
     from nefertem.resources.data_resource import DataResource
+
+
+####################
+# PLUGIN
+####################
 
 
 class ValidationPluginSqlAlchemy(Validation):
@@ -72,9 +72,9 @@ class ValidationPluginSqlAlchemy(Validation):
         """
         Return value or size of DataFrame for SQL checks.
         """
-        if self.constraint.check == CONSTRAINT_SQL_CHECK_VALUE:
+        if self.constraint.check == "value":
             return self.data_reader.return_first_value(data)
-        elif self.constraint.check == CONSTRAINT_SQL_CHECK_ROWS:
+        elif self.constraint.check == "rows":
             return self.data_reader.return_length(data)
 
     def _shorten_data(self, data: Any) -> Any:
@@ -123,7 +123,7 @@ class ValidationPluginSqlAlchemy(Validation):
             _object = {"errors": result.errors}
         else:
             _object = result.artifact.to_dict()
-        filename = self._fn_report.format(f"{LIBRARY_SQLALCHEMY}.json")
+        filename = self._fn_report.format("sqlalchemy.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -140,6 +140,11 @@ class ValidationPluginSqlAlchemy(Validation):
         Get library version.
         """
         return sqlalchemy.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
@@ -189,7 +194,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         """
         Filter out ConstraintSqlAlchemy.
         """
-        return [const for const in constraints if const.type == LIBRARY_SQLALCHEMY]
+        return [const for const in constraints if const.type == "sqlalchemy"]
 
     def _filter_resources(self, resources: list[DataResource], constraints: list[Constraint]) -> list[DataResource]:
         """
@@ -228,4 +233,36 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         return constraint_connection
 
     def destroy(self) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
+
+
+####################
+# CONSTRAINT
+####################
+
+
+class ConstraintSqlAlchemy(Constraint):
+    """
+    SqlAlchemy constraint.
+    """
+
+    type: str = Field("sqlalchemy", Literal=True)
+    """Constraint type ("sqlalchemy")."""
+
+    query: str
+    """SQL query to execute over resources."""
+
+    expect: Literal["empty", "non-empty", "exact", "range", "minimum", "maximum"]
+    """SQL constraint type to check."""
+
+    value: Any | None = None
+    """Value of the constraint."""
+
+    check: Literal["value", "rows"] = "rows"
+    """Modality of constraint checking (On rows or single value)."""

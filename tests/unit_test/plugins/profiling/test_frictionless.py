@@ -4,8 +4,8 @@ import frictionless
 import pytest
 from frictionless import Resource
 
-from nefertem.plugins.profiling.frictionless_profiling import ProfileBuilderFrictionless, ProfilePluginFrictionless
-from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS, OPERATION_PROFILING
+from nefertem.plugins.profiling.frictionless import ProfileBuilderFrictionless, ProfilePluginFrictionless
+from nefertem.utils.commons import BASE_FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
@@ -39,19 +39,19 @@ class TestProfilePluginFrictionless:
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_PROFILING)
+        correct_render_nefertem(output, PROFILE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_PROFILING)
+        incorrect_render_nefertem(output, PROFILE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_profile.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = setted_plugin._fn_profile.format("frictionless.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, io.BytesIO)
         assert output.artifact[0].filename == filename

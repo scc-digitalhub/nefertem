@@ -9,16 +9,21 @@ import frictionless
 from frictionless import Resource
 
 from nefertem.metadata.reports.profile import NefertemProfile
-from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
+from nefertem.plugins.profiling.base import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS
+from nefertem.utils.commons import BASE_FILE_READER
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.evidently import Metric
+    from nefertem.plugins.profiling.base import Metric
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
+
+
+####################
+# PLUGIN
+####################
 
 
 class ProfilePluginFrictionless(Profiling):
@@ -78,7 +83,7 @@ class ProfilePluginFrictionless(Profiling):
             _object = {"errors": result.errors}
         else:
             _object = write_bytesio(result.artifact.to_json())
-        filename = self._fn_profile.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = self._fn_profile.format("frictionless.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -95,6 +100,11 @@ class ProfilePluginFrictionless(Profiling):
         Get library version.
         """
         return frictionless.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class ProfileBuilderFrictionless(ProfilingPluginBuilder):

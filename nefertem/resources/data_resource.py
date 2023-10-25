@@ -1,8 +1,12 @@
+"""
+Data resource module.
+"""
 from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
 from nefertem.utils.utils import build_uuid
+
 
 class DataResource(BaseModel):
     """

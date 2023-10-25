@@ -7,17 +7,17 @@ import concurrent.futures
 import typing
 from typing import Any
 
-from nefertem.plugins.plugin_factory import builder_factory
+from nefertem.plugins.factory import builder_factory
 from nefertem.readers.utils import build_reader
 from nefertem.utils.commons import (
     BASE_FILE_READER,
-    OPERATION_INFERENCE,
-    OPERATION_PROFILING,
-    OPERATION_VALIDATION,
+    INFER,
+    PROFILE,
     RESULT_LIBRARY,
     RESULT_NEFERTEM,
     RESULT_RENDERED,
     RESULT_WRAPPED,
+    VALIDATE,
 )
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.file_utils import get_absolute_path
@@ -29,9 +29,9 @@ if typing.TYPE_CHECKING:
     from nefertem.metadata.reports.profile import NefertemProfile
     from nefertem.metadata.reports.report import NefertemReport
     from nefertem.metadata.reports.schema import NefertemSchema
-    from nefertem.models.constraints.base import Constraint
-    from nefertem.models.constraints.evidently import Metric
-    from nefertem.plugins.base_plugin import Plugin, PluginBuilder
+    from nefertem.plugins.base import Plugin, PluginBuilder
+    from nefertem.plugins.profiling.base import Metric
+    from nefertem.plugins.validation.base import Constraint
     from nefertem.resources.data_resource import DataResource
     from nefertem.run.run_config import RunConfig
 
@@ -50,7 +50,7 @@ class RunHandlerRegistry:
         """
         Setup the run handler registry.
         """
-        for ops in [OPERATION_INFERENCE, OPERATION_VALIDATION, OPERATION_PROFILING]:
+        for ops in [INFER, VALIDATE, PROFILE]:
             self.registry[ops] = {}
             for res in [
                 RESULT_WRAPPED,
@@ -105,11 +105,11 @@ class RunHandler:
         """
         builders = builder_factory(
             self._config.inference,
-            OPERATION_INFERENCE,
+            INFER,
             self._store_handler.get_all_art_stores(),
         )
         plugins = self._create_plugins(builders, resources)
-        self._scheduler(plugins, OPERATION_INFERENCE, parallel, num_worker)
+        self._scheduler(plugins, INFER, parallel, num_worker)
         self._destroy_builders(builders)
 
     def validate(
@@ -127,11 +127,11 @@ class RunHandler:
         constraints = listify(constraints)
         builders = builder_factory(
             self._config.validation,
-            OPERATION_VALIDATION,
+            VALIDATE,
             self._store_handler.get_all_art_stores(),
         )
         plugins = self._create_plugins(builders, resources, constraints, error_report)
-        self._scheduler(plugins, OPERATION_VALIDATION, parallel, num_worker)
+        self._scheduler(plugins, VALIDATE, parallel, num_worker)
         self._destroy_builders(builders)
 
     @staticmethod
@@ -156,11 +156,11 @@ class RunHandler:
         metrics = listify(metrics)
         builders = builder_factory(
             self._config.profiling,
-            OPERATION_PROFILING,
+            PROFILE,
             self._store_handler.get_all_art_stores(),
         )
         plugins = self._create_plugins(builders, resources, metrics)
-        self._scheduler(plugins, OPERATION_PROFILING, parallel, num_worker)
+        self._scheduler(plugins, PROFILE, parallel, num_worker)
         self._destroy_builders(builders)
 
     @staticmethod
@@ -260,62 +260,62 @@ class RunHandler:
         """
         Get a list of schemas produced by inference libraries.
         """
-        return [obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_WRAPPED)]
+        return [obj.artifact for obj in self.get_item(INFER, RESULT_WRAPPED)]
 
     def get_artifact_report(self) -> list[Any]:
         """
         Get a list of reports produced by validation libraries.
         """
-        return [obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_WRAPPED)]
+        return [obj.artifact for obj in self.get_item(VALIDATE, RESULT_WRAPPED)]
 
     def get_artifact_profile(self) -> list[Any]:
         """
         Get a list of profiles produced by profiling libraries.
         """
-        return [obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_WRAPPED)]
+        return [obj.artifact for obj in self.get_item(PROFILE, RESULT_WRAPPED)]
 
     def get_nefertem_schema(self) -> list[NefertemSchema]:
         """
         Wrapper for plugins parsing methods.
         """
-        return [obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_NEFERTEM)]
+        return [obj.artifact for obj in self.get_item(INFER, RESULT_NEFERTEM)]
 
     def get_nefertem_report(self) -> list[NefertemReport]:
         """
         Wrapper for plugins parsing methods.
         """
-        return [obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_NEFERTEM)]
+        return [obj.artifact for obj in self.get_item(VALIDATE, RESULT_NEFERTEM)]
 
     def get_nefertem_profile(self) -> list[NefertemProfile]:
         """
         Wrapper for plugins parsing methods.
         """
-        return [obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_NEFERTEM)]
+        return [obj.artifact for obj in self.get_item(PROFILE, RESULT_NEFERTEM)]
 
     def get_rendered_schema(self) -> list[Any]:
         """
         Get a list of schemas ready to be persisted.
         """
-        return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_INFERENCE, RESULT_RENDERED)]))
+        return listify(flatten_list([obj.artifact for obj in self.get_item(INFER, RESULT_RENDERED)]))
 
     def get_rendered_report(self) -> list[Any]:
         """
         Get a list of reports ready to be persisted.
         """
-        return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_VALIDATION, RESULT_RENDERED)]))
+        return listify(flatten_list([obj.artifact for obj in self.get_item(VALIDATE, RESULT_RENDERED)]))
 
     def get_rendered_profile(self) -> list[Any]:
         """
         Get a list of profiles ready to be persisted.
         """
-        return listify(flatten_list([obj.artifact for obj in self.get_item(OPERATION_PROFILING, RESULT_RENDERED)]))
+        return listify(flatten_list([obj.artifact for obj in self.get_item(PROFILE, RESULT_RENDERED)]))
 
     def get_libraries(self) -> list[dict]:
         """
         Return libraries used by run.
         """
         libs = {}
-        for ops in [OPERATION_INFERENCE, OPERATION_PROFILING, OPERATION_VALIDATION]:
+        for ops in [INFER, PROFILE, VALIDATE]:
             libs[ops] = []
             for i in self.get_item(ops, RESULT_LIBRARY):
                 if dict(**i) not in libs[ops]:

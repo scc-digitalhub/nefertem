@@ -10,24 +10,16 @@ import duckdb
 import pytest
 from moto import mock_s3
 
-from nefertem.models.constraints.duckdb import ConstraintDuckDB
-from nefertem.models.constraints.evidently import ConstraintEvidently, EvidentlyElement, MetricEvidently
-from nefertem.models.constraints.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
-from nefertem.models.constraints.great_expectations import ConstraintGreatExpectations
-from nefertem.models.constraints.sqlalchemy import ConstraintSqlAlchemy
 from nefertem.plugins.utils.plugin_utils import Result
+from nefertem.plugins.validation.duckdb import ConstraintDuckDB
+from nefertem.plugins.validation.evidently import ConstraintEvidently, EvidentlyElement, MetricEvidently
+from nefertem.plugins.validation.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
+from nefertem.plugins.validation.sqlalchemy import ConstraintSqlAlchemy
 from nefertem.readers.utils import build_reader
 from nefertem.resources.data_resource import DataResource
 from nefertem.run.run_config import RunConfig
 from nefertem.stores.builder import StoreBuilder
-from nefertem.utils.commons import (
-    CONSTRAINT_FRICTIONLESS_SCHEMA,
-    LIBRARY_DUCKDB,
-    LIBRARY_EVIDENTLY,
-    LIBRARY_FRICTIONLESS,
-    LIBRARY_GREAT_EXPECTATIONS,
-    LIBRARY_SQLALCHEMY,
-)
+from nefertem.utils.commons import LIBRARY_DUCKDB, LIBRARY_EVIDENTLY, LIBRARY_GREAT_EXPECTATIONS, LIBRARY_SQLALCHEMY
 from nefertem.utils.utils import listify
 
 ##############################
@@ -237,6 +229,7 @@ def s3_store_cfg():
             "aws_access_key_id": "test",
             "aws_secret_access_key": "test",
             "endpoint_url": "http://localhost:9000/",
+            "bucket_name": "test",
         },
     }
 
@@ -327,14 +320,6 @@ CONST_FRICT_FULL_01 = ConstraintFullFrictionless(
             {"name": "col4", "type": "date"},
         ]
     },
-    weight=5,
-)
-CONST_GE_01 = ConstraintGreatExpectations(
-    name="const-ge-01",
-    title="Test GE constraint",
-    resources=["res_test_01"],
-    expectation="expect_column_value_lengths_to_be_between",
-    expectation_args={"column": "col1", "min_value": 1, "max_value": 1},
     weight=5,
 )
 CONST_SQLALCHEMY_01 = ConstraintSqlAlchemy(
@@ -458,8 +443,8 @@ def mock_object_factory(**kwargs):
 # Mock constraints
 # ----------------
 
-mock_c_frict = mock_object_factory(type=LIBRARY_FRICTIONLESS)
-mock_c_frict_full = mock_object_factory(type=CONSTRAINT_FRICTIONLESS_SCHEMA)
+mock_c_frict = mock_object_factory(type="frictionless")
+mock_c_frict_full = mock_object_factory(type="frictionless_full")
 mock_c_duckdb = mock_object_factory(type=LIBRARY_DUCKDB)
 mock_c_gex = mock_object_factory(type=LIBRARY_GREAT_EXPECTATIONS)
 mock_c_sqlalc = mock_object_factory(type=LIBRARY_SQLALCHEMY)

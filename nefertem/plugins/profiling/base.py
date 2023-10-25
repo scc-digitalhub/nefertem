@@ -3,15 +3,18 @@ Profiling plugin abstract class module.
 """
 from __future__ import annotations
 
-import typing
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
-from nefertem.plugins.base_plugin import Plugin, PluginBuilder
-from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+from pydantic import BaseModel, Field
 
-if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.evidently import Metric
+from nefertem.plugins.base import Plugin, PluginBuilder
+from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+from nefertem.utils.utils import build_uuid
+
+####################
+# PLUGIN
+####################
 
 
 class Profiling(Plugin, metaclass=ABCMeta):
@@ -52,6 +55,11 @@ class Profiling(Plugin, metaclass=ABCMeta):
         """
 
 
+####################
+# BUILDER
+####################
+
+
 class ProfilingPluginBuilder(PluginBuilder):
     """
     Profiling plugin builder.
@@ -72,3 +80,26 @@ class ProfilingPluginBuilder(PluginBuilder):
         -------
         None
         """
+
+
+####################
+# METRIC
+####################
+
+
+class Metric(BaseModel):
+    """
+    Base model for metric to be evaluated via profiling.
+    """
+
+    id: str = Field(default_factory=build_uuid)
+    """UUID of metric."""
+
+    name: str
+    """Metric identificator as defined by the corresponding domain."""
+
+    title: str
+    """Human readable name for the metric."""
+
+    resources: list[str]
+    """List of resources on which the metric should be evaluated."""

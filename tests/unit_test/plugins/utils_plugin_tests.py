@@ -1,9 +1,9 @@
 from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.metadata.reports.schema import NefertemSchema
-from nefertem.plugins.base_plugin import Plugin
+from nefertem.plugins.base import Plugin
 from nefertem.plugins.utils.plugin_utils import RenderTuple, Result
-from nefertem.utils.commons import OPERATION_INFERENCE, OPERATION_PROFILING, OPERATION_VALIDATION
+from nefertem.utils.commons import INFER, PROFILE, VALIDATE
 
 
 def correct_setup(plg):
@@ -36,16 +36,16 @@ def correct_execute(output):
 def correct_render_nefertem(output, op):
     correct_result(output)
     artifact = output.artifact
-    if op == OPERATION_INFERENCE:
+    if op == INFER:
         assert isinstance(artifact, NefertemSchema)
         assert isinstance(artifact.duration, float)
         assert isinstance(artifact.fields, list)
-    if op == OPERATION_PROFILING:
+    if op == PROFILE:
         assert isinstance(artifact, NefertemProfile)
         assert isinstance(artifact.duration, float)
         assert isinstance(artifact.stats, dict)
         assert isinstance(artifact.fields, dict)
-    if op == OPERATION_VALIDATION:
+    if op == VALIDATE:
         assert isinstance(artifact, NefertemReport)
         assert isinstance(artifact.duration, float)
         assert isinstance(artifact.constraint, dict)
@@ -69,16 +69,16 @@ def incorrect_execute(output):
 def incorrect_render_nefertem(output, op):
     assert isinstance(output, Result)
     artifact = output.artifact
-    if op == OPERATION_INFERENCE:
+    if op == INFER:
         assert isinstance(artifact, NefertemSchema)
         assert isinstance(artifact.duration, float)
         assert not artifact.fields
-    if op == OPERATION_PROFILING:
+    if op == PROFILE:
         assert isinstance(artifact, NefertemProfile)
         assert isinstance(artifact.duration, float)
         assert not artifact.stats
         assert not artifact.fields
-    if op == OPERATION_VALIDATION:
+    if op == VALIDATE:
         assert isinstance(artifact, NefertemReport)
         assert isinstance(artifact.duration, float)
         assert not artifact.valid

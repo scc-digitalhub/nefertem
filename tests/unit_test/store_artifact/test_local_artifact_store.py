@@ -1,6 +1,5 @@
 import pytest
 
-from nefertem.utils.commons import DATAREADER_BUFFER, DATAREADER_FILE, DATAREADER_NATIVE
 from tests.conftest import TEST_FILENAME
 
 
@@ -49,11 +48,7 @@ class TestLocalArtifactStore:
 
     @pytest.mark.parametrize(
         "src,fetch_mode,expected,not_implemented",
-        [
-            (TEST_FILENAME, DATAREADER_FILE, TEST_FILENAME, False),
-            (TEST_FILENAME, DATAREADER_NATIVE, TEST_FILENAME, False),
-            (TEST_FILENAME, DATAREADER_BUFFER, None, True),
-        ],
+        [(TEST_FILENAME, "file", TEST_FILENAME, False), (TEST_FILENAME, "native", TEST_FILENAME, False)],
     )
     def test_get_and_register_artifact(self, store, src, fetch_mode, expected, not_implemented):
         if not_implemented:

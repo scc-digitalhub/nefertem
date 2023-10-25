@@ -4,23 +4,27 @@ Frictionless implementation of validation plugin.
 from __future__ import annotations
 
 import typing
+from typing import Any
 
 import frictionless
 from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
+from pydantic import Field
 
 from nefertem.metadata.reports.report import NefertemReport
-from nefertem.plugins.utils.frictionless_utils import custom_frictionless_detector
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
-from nefertem.utils.commons import BASE_FILE_READER, CONSTRAINT_FRICTIONLESS_SCHEMA, LIBRARY_FRICTIONLESS
+from nefertem.plugins.validation.base import Constraint, Validation, ValidationPluginBuilder
+from nefertem.utils.commons import BASE_FILE_READER
 
 if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.base import Constraint
-    from nefertem.models.constraints.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
+
+
+####################
+# PLUGIN
+####################
 
 
 class ValidationPluginFrictionless(Validation):
@@ -58,14 +62,14 @@ class ValidationPluginFrictionless(Validation):
         """
         data = self.data_reader.fetch_data(self.resource.path)
         schema = self._rebuild_constraints(data)
-        res = Resource(path=data, schema=schema, detector=custom_frictionless_detector).validate(**self.exec_args)
+        res = Resource(path=data, schema=schema).validate(**self.exec_args)
         return Report.from_descriptor(res.to_dict())
 
     def _rebuild_constraints(self, data_path: str) -> Schema:
         """
         Rebuild constraints.
         """
-        if self.constraint.type == LIBRARY_FRICTIONLESS:
+        if self.constraint.type == "frictionless":
             field_name = self.constraint.field
             field_type = self.constraint.fieldType
             val = self.constraint.value
@@ -146,7 +150,7 @@ class ValidationPluginFrictionless(Validation):
         else:
             _object = result.artifact.to_dict()
 
-        filename = self._fn_report.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = self._fn_report.format("frictionless.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -163,6 +167,11 @@ class ValidationPluginFrictionless(Validation):
         Get library version.
         """
         return frictionless.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class ValidationBuilderFrictionless(ValidationPluginBuilder):
@@ -200,9 +209,47 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
         """
         Filter out ConstraintFrictionless and ConstraintFullFrictionless.
         """
-        return [const for const in constraints if const.type in (LIBRARY_FRICTIONLESS, CONSTRAINT_FRICTIONLESS_SCHEMA)]
+        return [const for const in constraints if const.type in ("frictionless", "frictionless_full")]
 
     def destroy(self) -> None:
         """
         Destroy builder.
         """
+
+
+####################
+# CONSTRAINT
+####################
+
+
+class ConstraintFrictionless(Constraint):
+    """
+    Frictionless constraint.
+    """
+
+    type: str = Field("frictionless", Literal=True)
+    """Constraint type ("frictionless")."""
+
+    field: str
+    """Field to validate."""
+
+    fieldType: str
+    """Datatype of the field to validate."""
+
+    constraint: str
+    """Frictionless constraint typology."""
+
+    value: Any
+    """Value of the constraint."""
+
+
+class ConstraintFullFrictionless(Constraint):
+    """
+    Frictionless full schema constraint.
+    """
+
+    type: str = Field("frictionless_full", Literal=True)
+    """Constraint type ("frictionless_schema")."""
+
+    tableSchema: dict
+    """Table schema to validate a resource."""

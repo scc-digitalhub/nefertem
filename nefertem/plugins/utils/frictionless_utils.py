@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from frictionless import Detector, Resource, Schema
 
-from nefertem.models.constraints.frictionless import ConstraintFrictionless
+from nefertem.plugins.validation.frictionless import ConstraintFrictionless
 
 
 def frictionless_schema_converter(schema: Schema | dict, resource_name: str) -> list[ConstraintFrictionless]:

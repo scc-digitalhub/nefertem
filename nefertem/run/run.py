@@ -27,8 +27,8 @@ if typing.TYPE_CHECKING:
     from nefertem.metadata.reports.report import NefertemReport
     from nefertem.metadata.reports.schema import NefertemSchema
     from nefertem.metadata.run_info import RunInfo
-    from nefertem.models.constraints.base import Constraint
-    from nefertem.models.constraints.evidently import Metric
+    from nefertem.plugins.profiling.base import Metric
+    from nefertem.plugins.validation.base import Constraint
     from nefertem.run.run_handler import RunHandler
 
 

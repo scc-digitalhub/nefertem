@@ -20,6 +20,10 @@ if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource
     from nefertem.stores.artifact.objects.base import ArtifactStore
 
+####################
+# PLUGIN
+####################
+
 
 class Plugin(metaclass=ABCMeta):
     """
@@ -91,6 +95,11 @@ class Plugin(metaclass=ABCMeta):
             "libraryName": self.get_lib_name(),
             "libraryVersion": self.get_lib_version(),
         }
+
+
+####################
+# BUILDER
+####################
 
 
 class PluginBuilder:

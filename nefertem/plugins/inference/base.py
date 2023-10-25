@@ -4,7 +4,7 @@ Inference plugin abstract class module.
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
-from nefertem.plugins.base_plugin import Plugin, PluginBuilder
+from nefertem.plugins.base import Plugin, PluginBuilder
 from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 
 

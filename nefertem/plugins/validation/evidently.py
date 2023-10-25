@@ -8,18 +8,22 @@ import typing
 
 import evidently
 from evidently.test_suite import TestSuite
+from pydantic import BaseModel, Field
 
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
-from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_EVIDENTLY
+from nefertem.plugins.validation.base import Constraint, Validation, ValidationPluginBuilder
+from nefertem.utils.commons import BASE_FILE_READER
 
 if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.base import Constraint
-    from nefertem.models.constraints.evidently import ConstraintEvidently
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
+
+
+####################
+# PLUGIN
+####################
 
 
 class ValidationPluginEvidently(Validation):
@@ -122,7 +126,7 @@ class ValidationPluginEvidently(Validation):
             _object = {"errors": result.errors}
         else:
             _object = result.artifact.as_dict()
-        filename = self._fn_report.format(f"{LIBRARY_EVIDENTLY}.json")
+        filename = self._fn_report.format("evidently.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -139,6 +143,11 @@ class ValidationPluginEvidently(Validation):
         Get library version.
         """
         return evidently.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class ValidationBuilderEvidently(ValidationPluginBuilder):
@@ -194,7 +203,47 @@ class ValidationBuilderEvidently(ValidationPluginBuilder):
         """
         Filter out ConstraintEvidently.
         """
-        return [const for const in constraints if const.type == LIBRARY_EVIDENTLY]
+        return [const for const in constraints if const.type == "evidently"]
 
     def destroy(self, *args) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
+
+
+####################
+# CONSTRAINT
+####################
+
+
+class Element(BaseModel):
+    """
+    Evidently single test
+    """
+
+    type: str
+    """Evidently test/metric type (fully qualified class name)."""
+    values: dict | None = None
+    """Custom parameters for the test/metric."""
+
+
+class ConstraintEvidently(Constraint):
+    """
+    Evidently constraint.
+    """
+
+    type: str = Field("evidently", Literal=True)
+    """Constraint type ("Evidently")."""
+
+    resource: str
+    """Resource to validate."""
+
+    reference_resource: str | None = None
+    """Resource to use as reference."""
+
+    tests: list[Element]
+    """Evidently tests."""

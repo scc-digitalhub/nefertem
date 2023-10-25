@@ -5,13 +5,8 @@ import duckdb
 import pytest
 
 from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.duckdb_validation import ValidationBuilderDuckDB, ValidationPluginDuckDB
-from nefertem.utils.commons import (
-    DEFAULT_DIRECTORY,
-    LIBRARY_DUCKDB,
-    OPERATION_VALIDATION,
-    PANDAS_DATAFRAME_DUCKDB_READER,
-)
+from nefertem.plugins.validation.duckdb import ValidationBuilderDuckDB, ValidationPluginDuckDB
+from nefertem.utils.commons import DEFAULT_DIRECTORY, LIBRARY_DUCKDB, PANDAS_DATAFRAME_DUCKDB_READER, VALIDATE
 from tests.conftest import (
     CONST_DUCKDB_01,
     mock_c_duckdb,
@@ -53,13 +48,13 @@ class TestValidationPluginDuckDB:
         # Correct execution
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_VALIDATION)
+        correct_render_nefertem(output, VALIDATE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_VALIDATION)
+        incorrect_render_nefertem(output, VALIDATE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution

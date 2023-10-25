@@ -3,15 +3,18 @@ Validation plugin abstract class module.
 """
 from __future__ import annotations
 
-import typing
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
-from nefertem.plugins.base_plugin import Plugin, PluginBuilder
-from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+from pydantic import BaseModel, Field
 
-if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.base import Constraint
+from nefertem.plugins.base import Plugin, PluginBuilder
+from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+from nefertem.utils.utils import build_uuid
+
+####################
+# PLUGIN
+####################
 
 
 class Validation(Plugin, metaclass=ABCMeta):
@@ -82,6 +85,11 @@ class Validation(Plugin, metaclass=ABCMeta):
         return {"count": count, "records": records}
 
 
+####################
+# BUILDER
+####################
+
+
 class ValidationPluginBuilder(PluginBuilder):
     """
     Validation plugin builder.
@@ -93,3 +101,29 @@ class ValidationPluginBuilder(PluginBuilder):
         """
         Filter constraints by library.
         """
+
+
+####################
+# CONSTRAINT
+####################
+
+
+class Constraint(BaseModel):
+    """
+    Base model for constraint.
+    """
+
+    id: str = Field(default_factory=build_uuid)
+    """UUID of constraint."""
+
+    name: str
+    """Constraint id."""
+
+    title: str
+    """Human readable name for the constraint."""
+
+    resources: list[str]
+    """List of resources affected by the constraint."""
+
+    weight: int
+    """Criticity of an eventual error encountered in the validation for the constraint."""

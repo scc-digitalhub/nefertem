@@ -8,8 +8,8 @@ from collections import namedtuple
 
 from nefertem.metadata.reports.report import NefertemReport
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.validation_plugin import Validation, ValidationPluginBuilder
-from nefertem.utils.commons import DUMMY, LIBRARY_DUMMY
+from nefertem.plugins.validation.base import Validation, ValidationPluginBuilder
+from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils.plugin_utils import Result
@@ -27,7 +27,13 @@ class ValidationPluginDummy(Validation):
         self.constraint = DummyConstraint()
 
     def setup(self, *args) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
 
     @exec_decorator
     def validate(self) -> dict:
@@ -62,14 +68,14 @@ class ValidationPluginDummy(Validation):
         """
         Get library name.
         """
-        return LIBRARY_DUMMY
+        return DUMMY
 
     @staticmethod
     def get_lib_version() -> str:
         """
         Get library version.
         """
-        return LIBRARY_DUMMY
+        return DUMMY
 
 
 class ValidationBuilderDummy(ValidationPluginBuilder):
@@ -85,7 +91,19 @@ class ValidationBuilderDummy(ValidationPluginBuilder):
 
     @staticmethod
     def _filter_constraints(*args) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
 
     def destroy(self, *args) -> None:
-        ...
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """

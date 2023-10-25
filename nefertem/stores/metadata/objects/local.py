@@ -1,11 +1,11 @@
 """
-Implementation of local metadata store.
+Local metadata store module.
 """
+from nefertem.metadata.kinds import MetadataKind
 from nefertem.stores.metadata.objects.base import MetadataStore
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.file_utils import check_dir, clean_all, get_path, make_dir
 from nefertem.utils.io_utils import write_json
-from nefertem.metadata.kinds import MetadataKind
 
 
 class LocalMetadataStore(MetadataStore):

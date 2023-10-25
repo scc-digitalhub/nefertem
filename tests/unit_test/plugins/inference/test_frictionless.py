@@ -4,8 +4,8 @@ import frictionless
 import pytest
 from frictionless import Schema
 
-from nefertem.plugins.inference.frictionless_inference import InferenceBuilderFrictionless, InferencePluginFrictionless
-from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS, OPERATION_INFERENCE
+from nefertem.plugins.inference.frictionless import InferenceBuilderFrictionless, InferencePluginFrictionless
+from nefertem.utils.commons import BASE_FILE_READER, INFER
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
@@ -39,19 +39,19 @@ class TestInferencePluginFrictionless:
         # Correct execution
         result = setted_plugin.infer()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_INFERENCE)
+        correct_render_nefertem(output, INFER)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.infer()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_INFERENCE)
+        incorrect_render_nefertem(output, INFER)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
         result = setted_plugin.infer()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_schema.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = setted_plugin._fn_schema.format("frictionless.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, dict)
         assert output.artifact[0].filename == filename

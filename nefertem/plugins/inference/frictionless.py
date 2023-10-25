@@ -9,14 +9,19 @@ import frictionless
 from frictionless import Schema
 
 from nefertem.metadata.reports.schema import NefertemSchema
-from nefertem.plugins.inference.inference_plugin import Inference, InferencePluginBuilder
+from nefertem.plugins.inference.base import Inference, InferencePluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS
+from nefertem.utils.commons import BASE_FILE_READER
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
+
+
+####################
+# PLUGIN
+####################
 
 
 class InferencePluginFrictionless(Inference):
@@ -79,7 +84,7 @@ class InferencePluginFrictionless(Inference):
             _object = {"errors": result.errors}
         else:
             _object = result.artifact.to_dict()
-        filename = self._fn_schema.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = self._fn_schema.format("frictionless.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -96,6 +101,11 @@ class InferencePluginFrictionless(Inference):
         Get library version.
         """
         return frictionless.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class InferenceBuilderFrictionless(InferencePluginBuilder):

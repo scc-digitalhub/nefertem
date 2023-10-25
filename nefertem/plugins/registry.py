@@ -1,80 +1,91 @@
 """
 PluginBuilder registry.
 """
-# Dummy imports
-from nefertem.plugins.inference.dummy_inference import InferenceBuilderDummy
-from nefertem.plugins.profiling.dummy_profiling import ProfileBuilderDummy
-from nefertem.plugins.validation.dummy_validation import ValidationBuilderDummy
-from nefertem.utils.commons import LIBRARY_DUMMY, OPERATION_INFERENCE, OPERATION_PROFILING, OPERATION_VALIDATION
+from __future__ import annotations
 
-# Registry of plugin builders
+import typing
 
-REGISTRY = {
-    OPERATION_INFERENCE: {
-        LIBRARY_DUMMY: InferenceBuilderDummy,
-    },
-    OPERATION_PROFILING: {
-        LIBRARY_DUMMY: ProfileBuilderDummy,
-    },
-    OPERATION_VALIDATION: {
-        LIBRARY_DUMMY: ValidationBuilderDummy,
-    },
-}
+from nefertem.plugins.inference.dummy import InferenceBuilderDummy
+from nefertem.plugins.profiling.dummy import ProfileBuilderDummy
+from nefertem.plugins.validation.dummy import ValidationBuilderDummy
+from nefertem.utils.commons import DUMMY, INFER, PROFILE, VALIDATE
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.base import PluginBuilder
+
+
+class Registry(dict):
+    """
+    Registry of plugin builders.
+    """
+
+    def __init__(self) -> None:
+        self[INFER] = {}
+        self[PROFILE] = {}
+        self[VALIDATE] = {}
+
+    def register(self, operation: str, library: str, builder: PluginBuilder) -> None:
+        """
+        Register a plugin builder.
+        """
+        self[operation][library] = builder
+
+
+plugin_registry = Registry()
+plugin_registry.register(INFER, DUMMY, InferenceBuilderDummy)
+plugin_registry.register(PROFILE, DUMMY, ProfileBuilderDummy)
+plugin_registry.register(VALIDATE, DUMMY, ValidationBuilderDummy)
 
 
 # frictionless imports
 try:
-    from nefertem.plugins.inference.frictionless_inference import InferenceBuilderFrictionless
-    from nefertem.plugins.profiling.frictionless_profiling import ProfileBuilderFrictionless
-    from nefertem.plugins.validation.frictionless_validation import ValidationBuilderFrictionless
-    from nefertem.utils.commons import LIBRARY_FRICTIONLESS
+    from nefertem.plugins.inference.frictionless import InferenceBuilderFrictionless
+    from nefertem.plugins.profiling.frictionless import ProfileBuilderFrictionless
+    from nefertem.plugins.validation.frictionless import ValidationBuilderFrictionless
 
-    REGISTRY[OPERATION_INFERENCE][LIBRARY_FRICTIONLESS] = InferenceBuilderFrictionless
-    REGISTRY[OPERATION_PROFILING][LIBRARY_FRICTIONLESS] = ProfileBuilderFrictionless
-    REGISTRY[OPERATION_VALIDATION][LIBRARY_FRICTIONLESS] = ValidationBuilderFrictionless
+    plugin_registry.register(INFER, "frictionless", InferenceBuilderFrictionless)
+    plugin_registry.register(PROFILE, "frictionless", ProfileBuilderFrictionless)
+    plugin_registry.register(VALIDATE, "frictionless", ValidationBuilderFrictionless)
 
 except ImportError:
     ...
 
 
 # ydata_profiling imports
-# try:
-#     from nefertem.plugins.profiling.ydata_profiling_profiling import ProfileBuilderYdataProfiling
-#     from nefertem.utils.commons import LIBRARY_YDATA_PROFILING
-
-#     REGISTRY[OPERATION_PROFILING][LIBRARY_YDATA_PROFILING] = ProfileBuilderYdataProfiling
-
-# except ImportError:
-#     ...
-
-# duckdb imports
 try:
-    from nefertem.plugins.validation.duckdb_validation import ValidationBuilderDuckDB
-    from nefertem.utils.commons import LIBRARY_DUCKDB
+    from nefertem.plugins.profiling.ydata import ProfileBuilderYdataProfiling
 
-    REGISTRY[OPERATION_VALIDATION][LIBRARY_DUCKDB] = ValidationBuilderDuckDB
+    plugin_registry.register(PROFILE, "ydata", ProfileBuilderYdataProfiling)
 
 except ImportError:
     ...
 
+# duckdb imports
+try:
+    from nefertem.plugins.validation.duckdb import ValidationBuilderDuckDB
+
+    plugin_registry.register(VALIDATE, "duckdb", ValidationBuilderDuckDB)
+
+except ImportError:
+    ...
+
+
 # sqlalchemy imports
 try:
-    from nefertem.plugins.validation.sqlalchemy_validation import ValidationBuilderSqlAlchemy
-    from nefertem.utils.commons import LIBRARY_SQLALCHEMY
+    from nefertem.plugins.validation.sqlalchemy import ValidationBuilderSqlAlchemy
 
-    REGISTRY[OPERATION_VALIDATION][LIBRARY_SQLALCHEMY] = ValidationBuilderSqlAlchemy
+    plugin_registry.register(VALIDATE, "sqlalchemy", ValidationBuilderSqlAlchemy)
 
 except ImportError:
     ...
 
 # evidently imports
-# try:
-#     from nefertem.plugins.profiling.evidently_profiling import ProfileBuilderEvidently
-#     from nefertem.plugins.validation.evidently_validation import ValidationBuilderEvidently
-#     from nefertem.utils.commons import LIBRARY_EVIDENTLY
+try:
+    from nefertem.plugins.profiling.evidently import ProfileBuilderEvidently
+    from nefertem.plugins.validation.evidently import ValidationBuilderEvidently
 
-#     REGISTRY[OPERATION_VALIDATION][LIBRARY_EVIDENTLY] = ValidationBuilderEvidently
-#     REGISTRY[OPERATION_PROFILING][LIBRARY_EVIDENTLY] = ProfileBuilderEvidently
+    plugin_registry.register(PROFILE, "evidently", ProfileBuilderEvidently)
+    plugin_registry.register(VALIDATE, "evidently", ValidationBuilderEvidently)
 
-# except ImportError:
-#     ...
+except ImportError:
+    ...

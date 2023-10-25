@@ -2,8 +2,8 @@ import pytest
 import sqlalchemy
 
 from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.sqlalchemy_validation import ValidationBuilderSqlAlchemy, ValidationPluginSqlAlchemy
-from nefertem.utils.commons import LIBRARY_SQLALCHEMY, OPERATION_VALIDATION, PANDAS_DATAFRAME_SQL_READER
+from nefertem.plugins.validation.sqlalchemy import ValidationBuilderSqlAlchemy, ValidationPluginSqlAlchemy
+from nefertem.utils.commons import LIBRARY_SQLALCHEMY, PANDAS_DATAFRAME_SQL_READER, VALIDATE
 from tests.conftest import (
     CONST_SQLALCHEMY_01,
     mock_c_generic,
@@ -47,13 +47,13 @@ class TestValidationPluginSqlAlchemy:
         # Correct execution
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_VALIDATION)
+        correct_render_nefertem(output, VALIDATE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_VALIDATION)
+        incorrect_render_nefertem(output, VALIDATE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution

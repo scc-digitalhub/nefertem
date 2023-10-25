@@ -1,4 +1,4 @@
-from nefertem.plugins.profiling.profiling_plugin import Profiling
+from nefertem.plugins.profiling.base import Profiling
 from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
 from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
 

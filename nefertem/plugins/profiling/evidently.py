@@ -8,19 +8,23 @@ import typing
 
 import evidently
 from evidently.report import Report
+from pydantic import BaseModel, Field
 
 from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
-from nefertem.models.constraints.evidently import MetricEvidently
-from nefertem.plugins.profiling.profiling_plugin import Profiling, ProfilingPluginBuilder
+from nefertem.plugins.profiling.base import Metric, Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_EVIDENTLY
+from nefertem.utils.commons import BASE_FILE_READER
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
-    from nefertem.models.constraints.evidently import Metric
     from nefertem.plugins.utils.plugin_utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
+
+
+####################
+# PLUGIN
+####################
 
 
 class ProfilePluginEvidently(Profiling):
@@ -125,12 +129,12 @@ class ProfilePluginEvidently(Profiling):
         artifacts = []
         if result.artifact is None:
             _object = {"errors": result.errors}
-            filename = self._fn_profile.format(f"{LIBRARY_EVIDENTLY}.json")
+            filename = self._fn_profile.format("evidently.json")
             artifacts.append(self.get_render_tuple(_object, filename))
         else:
             # string_html = result.artifact.to_html()
             #     strio_html = write_bytesio(string_html)
-            html_filename = self._fn_profile.format(f"{LIBRARY_EVIDENTLY}.html")
+            html_filename = self._fn_profile.format("evidently.html")
             string_html = result.artifact.get_html()
             strio_html = write_bytesio(string_html)
             artifacts.append(self.get_render_tuple(strio_html, html_filename))
@@ -138,7 +142,7 @@ class ProfilePluginEvidently(Profiling):
             string_json = result.artifact.json()
             string_json = string_json.replace("NaN", "null")
             strio_json = write_bytesio(string_json)
-            json_filename = self._fn_profile.format(f"{LIBRARY_EVIDENTLY}.json")
+            json_filename = self._fn_profile.format("evidently.json")
             artifacts.append(self.get_render_tuple(strio_json, json_filename))
 
         return artifacts
@@ -156,6 +160,11 @@ class ProfilePluginEvidently(Profiling):
         Get library version.
         """
         return evidently.__version__
+
+
+####################
+# BUILDER
+####################
 
 
 class ProfileBuilderEvidently(ProfilingPluginBuilder):
@@ -201,9 +210,43 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
         """
         if metrics is None:
             return []
-        return [m for m in metrics if m.type == LIBRARY_EVIDENTLY]
+        return [m for m in metrics if m.type == evidently]
 
     def destroy(self) -> None:
         """
         Destory plugins.
         """
+
+
+####################
+# METRIC
+####################
+
+
+class Element(BaseModel):
+    """
+    Evidently single test
+    """
+
+    type: str
+    """Evidently test/metric type (fully qualified class name)."""
+    values: dict | None = None
+    """Custom parameters for the test/metric."""
+
+
+class MetricEvidently(Metric):
+    """
+    Evidently metric input model.
+    """
+
+    type: str = Field("evidently", Literal=True)
+    """Metric input type ("Evidently")."""
+
+    resource: str
+    """Resource to profile."""
+
+    reference_resource: str | None = None
+    """Resource to use as reference."""
+
+    metrics: list[Element]
+    """Evidently tests."""
