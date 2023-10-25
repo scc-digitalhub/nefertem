@@ -2,7 +2,7 @@
 
 import frictionless
 import pytest
-from frictionless.schema import Schema
+from frictionless import Schema
 
 from nefertem.plugins.inference.frictionless_inference import InferenceBuilderFrictionless, InferencePluginFrictionless
 from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS, OPERATION_INFERENCE

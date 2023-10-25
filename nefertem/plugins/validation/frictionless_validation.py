@@ -59,7 +59,7 @@ class ValidationPluginFrictionless(Validation):
         data = self.data_reader.fetch_data(self.resource.path)
         schema = self._rebuild_constraints(data)
         res = Resource(path=data, schema=schema, detector=custom_frictionless_detector).validate(**self.exec_args)
-        return Report(res.to_dict())
+        return Report.from_descriptor(res.to_dict())
 
     def _rebuild_constraints(self, data_path: str) -> Schema:
         """
@@ -97,7 +97,7 @@ class ValidationPluginFrictionless(Validation):
         Infer simple schema of a resource if not present.
         """
         try:
-            schema = Schema.describe(path=data_path)
+            schema = Schema.describe(path=data_path).to_dict()
             if not schema:
                 return {"fields": []}
             return {"fields": [{"name": field["name"], "type": "any"} for field in schema["fields"]]}
@@ -115,7 +115,7 @@ class ValidationPluginFrictionless(Validation):
         errors = self._get_errors()
 
         if exec_err is None:
-            valid = result.artifact.get("valid")
+            valid = result.artifact.to_dict().get("valid")
             if not valid:
                 errors_list = [self._render_error_type(err[0]) for err in result.artifact.flatten(spec=["code"])]
                 total_count = len(errors_list)
@@ -144,7 +144,8 @@ class ValidationPluginFrictionless(Validation):
         if result.artifact is None:
             _object = {"errors": result.errors}
         else:
-            _object = dict(result.artifact)
+            _object = result.artifact.to_dict()
+
         filename = self._fn_report.format(f"{LIBRARY_FRICTIONLESS}.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts

@@ -6,7 +6,7 @@ from __future__ import annotations
 import typing
 
 import frictionless
-from frictionless.schema import Schema
+from frictionless import Schema
 
 from nefertem.metadata.reports.schema import NefertemSchema
 from nefertem.plugins.inference.inference_plugin import Inference, InferencePluginBuilder
@@ -57,7 +57,7 @@ class InferencePluginFrictionless(Inference):
         duration = result.duration
 
         if exec_err is None:
-            inferred_fields = result.artifact.get("fields", [])
+            inferred_fields = result.artifact.to_dict().get("fields", [])
 
             def func(x):
                 return self._get_fields(x.get("name", ""), x.get("type", ""))
@@ -78,7 +78,7 @@ class InferencePluginFrictionless(Inference):
         if result.artifact is None:
             _object = {"errors": result.errors}
         else:
-            _object = dict(result.artifact)
+            _object = result.artifact.to_dict()
         filename = self._fn_schema.format(f"{LIBRARY_FRICTIONLESS}.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts

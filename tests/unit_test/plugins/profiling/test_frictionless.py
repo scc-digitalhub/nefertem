@@ -2,7 +2,7 @@ import io
 
 import frictionless
 import pytest
-from frictionless.resource import Resource
+from frictionless import Resource
 
 from nefertem.plugins.profiling.frictionless_profiling import ProfileBuilderFrictionless, ProfilePluginFrictionless
 from nefertem.utils.commons import BASE_FILE_READER, LIBRARY_FRICTIONLESS, OPERATION_PROFILING

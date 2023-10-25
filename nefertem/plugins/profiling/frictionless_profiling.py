@@ -45,7 +45,7 @@ class ProfilePluginFrictionless(Profiling):
         Profile
         """
         data = self.data_reader.fetch_data(self.resource.path)
-        profile = Resource().describe(data, expand=True, stats=True, **self.exec_args)
+        profile = Resource().describe(data, stats=True, **self.exec_args)
         return Resource(profile.to_dict())
 
     @exec_decorator
@@ -108,8 +108,6 @@ class ProfileBuilderFrictionless(ProfilingPluginBuilder):
         """
         Build a plugin. Metrics are not supported
         """
-        if metrics is not None and len(metrics) > 0:
-            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)

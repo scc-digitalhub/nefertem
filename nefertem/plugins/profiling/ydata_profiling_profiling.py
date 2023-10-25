@@ -221,8 +221,6 @@ class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
         """
         Build a plugin.
         """
-        if metrics is not None and len(metrics) > 0:
-            return []
         plugins = []
         for res in resources:
             resource = self._get_resource_deepcopy(res)

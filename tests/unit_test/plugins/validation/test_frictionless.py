@@ -3,8 +3,8 @@ from copy import deepcopy
 import frictionless
 import pytest
 from frictionless.exception import FrictionlessException
-from frictionless.report import Report
-from frictionless.schema import Schema
+from frictionless import Report
+from frictionless import Schema
 
 from nefertem.plugins.validation.frictionless_validation import (
     ValidationBuilderFrictionless,
