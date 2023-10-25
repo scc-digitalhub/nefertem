@@ -94,8 +94,15 @@ class SQLArtifactStore(ArtifactStore):
         self._register_resource(key, filepath)
         return filepath
 
-    def fetch_native(self, src: str) -> str:
-        raise NotImplementedError
+    def fetch_native(self, *args) -> str:
+        """
+        Fetch a native resource.
+
+        Raises
+        ------
+        NotImplementedError
+            This method is not implemented.
+        """
 
     ############################
     # Private helper methods
@@ -190,7 +197,7 @@ class SQLArtifactStore(ArtifactStore):
         """
         self._verify_table(table)
         query = f"select * from {table}"
-        pl.read_database(query, self._get_connection_string()).write_parquet(dst)
+        self._execute_query(query).write_parquet(dst)
         return dst
 
     def _verify_table(self, table: str) -> None:

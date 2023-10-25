@@ -9,14 +9,19 @@ from typing import Any
 
 from nefertem.metadata.blob import BlobLog
 from nefertem.metadata.env import EnvLog
-from nefertem.metadata.kinds import MetadataKind
 from nefertem.utils.commons import (
     DUMMY,
+    INFER,
     NEFERTEM_VERSION,
+    PROFILE,
+    RESULT_ARTIFACT,
+    RESULT_NEFERTEM,
+    RESULT_RENDERED,
     STATUS_ERROR,
     STATUS_FINISHED,
     STATUS_INIT,
     STATUS_INTERRUPTED,
+    VALIDATE,
 )
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.logger import LOGGER
@@ -28,6 +33,7 @@ if typing.TYPE_CHECKING:
     from nefertem.metadata.reports.schema import NefertemSchema
     from nefertem.metadata.run_info import RunInfo
     from nefertem.plugins.profiling.base import Metric
+    from nefertem.plugins.utils.plugin_utils import RenderTuple
     from nefertem.plugins.validation.base import Constraint
     from nefertem.run.run_handler import RunHandler
 
@@ -76,8 +82,6 @@ class Run:
 
     """
 
-    # Constructor
-
     def __init__(self, run_info: RunInfo, run_handler: RunHandler, overwrite: bool) -> None:
         self.run_info = run_info
         self._run_handler = run_handler
@@ -85,14 +89,16 @@ class Run:
 
         self._filenames = {}
 
+    ############################
     # Run methods
+    ############################
 
     def _log_run(self) -> None:
         """
         Log run's metadata.
         """
         metadata = self._get_blob(self.run_info.to_dict())
-        self._log_metadata(metadata, MetadataKind.RUN.value)
+        self._log_metadata(metadata, "run")
 
     def _log_env(self) -> None:
         """
@@ -100,7 +106,7 @@ class Run:
         """
         env_data = EnvLog().to_dict()
         metadata = self._get_blob(env_data)
-        self._log_metadata(metadata, MetadataKind.RUN_ENV.value)
+        self._log_metadata(metadata, "run_env")
 
     def _get_blob(self, blob: dict | None = None) -> dict:
         """
@@ -118,24 +124,15 @@ class Run:
         """
         Log generic metadata.
         """
-        self._run_handler.log_metadata(metadata, self.run_info.run_metadata_uri, src_type, self._overwrite)
-
-    def _get_artifact_metadata(self, uri: str, name: str) -> dict:
-        """
-        Build artifact metadata.
-        """
-        metadata = {"uri": uri, "name": name}
-        return self._get_blob(metadata)
+        self._run_handler.log_metadata(metadata, self.run_info.run_meta_path, src_type, self._overwrite)
 
     def _log_artifact(self, src_name: str | None = None) -> None:
         """
         Log artifact metadata.
         """
-        if self.run_info.run_metadata_uri is None:
-            return
-        uri = self.run_info.run_artifacts_uri
-        metadata = self._get_artifact_metadata(uri, src_name)
-        self._log_metadata(metadata, MetadataKind.ARTIFACT.value)
+        uri = self.run_info.run_art_path
+        metadata = self._get_blob({"uri": uri, "name": src_name})
+        self._log_metadata(metadata, "artifact")
 
     def _render_artifact_name(self, filename: str) -> str:
         """
@@ -152,52 +149,55 @@ class Run:
 
         return f"{fnm}_{self._filenames[filename]}{ext}"
 
-    def _persist_artifact(
-        self,
-        src: Any,
-        src_name: str | None = None,
-        metadata: dict | None = None,
-    ) -> None:
+    def _persist_artifacts(self, objects: list[RenderTuple]) -> None:
         """
         Persist artifacts in the artifact store.
 
         Parameters
         ----------
-        src : str, list or dict
-            One or a list of URI described by a string, or a dictionary.
-        src_name : str, default = None
-            Filename. Required only if src is a dictionary.
-        metadata: dict, default = None
-            Optional metadata to attach on artifact.
+        list[RenderTuple]
+            List of tuples containing the objects to persist and the filenames.
 
+        Returns
+        -------
+        None
         """
-        self._check_artifacts_uri()
-        if metadata is None:
-            metadata = {}
-        self._run_handler.persist_artifact(src, self.run_info.run_artifacts_uri, src_name=src_name, metadata=metadata)
+        for obj in objects:
+            self._persist_artifact(obj)
+
+    def _persist_artifact(self, obj: RenderTuple) -> None:
+        """
+        Persist artifact in the artifact store.
+
+        Parameters
+        ----------
+        obj : RenderTuple
+            Tuple containing the object to persist and the filename.
+
+        Returns
+        -------
+        None
+        """
+        src_name = self._render_artifact_name(obj.filename)
+        self._run_handler.persist_artifact(obj.object, self.run_info.run_art_path, src_name)
         self._log_artifact(src_name)
 
     def _check_metadata_uri(self) -> None:
         """
         Check metadata uri existence.
         """
-        if self.run_info.run_metadata_uri in [DUMMY]:
+        if self.run_info.run_meta_path == DUMMY:
             raise StoreError("Please configure a metadata store.")
-
-    def _check_artifacts_uri(self) -> None:
-        """
-        Check artifact uri existence.
-        """
-        if self.run_info.run_artifacts_uri in [DUMMY]:
-            raise StoreError("Please configure a artifact store.")
 
     def _get_libraries(self) -> None:
         """
         Return the list of libraries used by the run.
         """
-        self.run_info.run_libraries = self._run_handler.get_libraries()
+        self.run_info.run_libraries = self._run_handler.get_libs()
 
-    # Inference
+    ############################
+    # Inferece
+    ############################
 
     def infer_wrapper(self, parallel: bool = False, num_worker: int = 10) -> list[Any]:
         """
@@ -216,12 +216,12 @@ class Run:
             Return a list of framework results.
 
         """
-        schemas = self._run_handler.get_artifact_schema()
+        schemas = self._run_handler.get_item(INFER, RESULT_ARTIFACT)
         if schemas:
             return schemas
 
         self._run_handler.infer(self.run_info.resources, parallel, num_worker)
-        return self._run_handler.get_artifact_schema()
+        return self._run_handler.get_item(INFER, RESULT_ARTIFACT)
 
     def infer_nefertem(self, parallel: bool = False, num_worker: int = 10) -> list[NefertemSchema]:
         """
@@ -240,12 +240,12 @@ class Run:
             Return a list of NefertemSchemas.
 
         """
-        schemas = self._run_handler.get_nefertem_schema()
+        schemas = self._run_handler.get_item(INFER, RESULT_NEFERTEM)
         if schemas:
             return schemas
 
         self._run_handler.infer(self.run_info.resources, parallel, num_worker)
-        return self._run_handler.get_nefertem_schema()
+        return self._run_handler.get_item(INFER, RESULT_NEFERTEM)
 
     def infer(self, parallel: bool = False, num_worker: int = 10, only_nt: bool = False) -> Any:
         """
@@ -277,20 +277,22 @@ class Run:
         Log NefertemSchemas.
         """
         self._check_metadata_uri()
-        objects = self._run_handler.get_nefertem_schema()
+        objects = self._run_handler.get_item(INFER, RESULT_NEFERTEM)
         for obj in objects:
             metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, MetadataKind.SCHEMA.value)
+            self._log_metadata(metadata, "schema")
 
     def persist_schema(self) -> None:
         """
         Persist frameworks schemas.
         """
-        objects = self._run_handler.get_rendered_schema()
-        for obj in objects:
-            self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))
+        objects = self._run_handler.get_item(INFER, RESULT_RENDERED)
+        self._persist_artifacts(objects)
 
+    ############################
     # Validation
+    ############################
+
     def validate_wrapper(
         self,
         constraints: list[Constraint],
@@ -322,12 +324,12 @@ class Run:
             Return a list of framework results.
 
         """
-        reports = self._run_handler.get_artifact_report()
+        reports = self._run_handler.get_item(VALIDATE, RESULT_ARTIFACT)
         if reports:
             return reports
 
         self._run_handler.validate(self.run_info.resources, constraints, error_report, parallel, num_worker)
-        return self._run_handler.get_artifact_report()
+        return self._run_handler.get_item(VALIDATE, RESULT_ARTIFACT)
 
     def validate_nefertem(
         self,
@@ -360,12 +362,12 @@ class Run:
             Return a list of "NefertemReport".
 
         """
-        reports = self._run_handler.get_nefertem_report()
+        reports = self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM)
         if reports:
             return reports
 
         self._run_handler.validate(self.run_info.resources, constraints, error_report, parallel, num_worker)
-        return self._run_handler.get_nefertem_report()
+        return self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM)
 
     def validate(
         self,
@@ -413,20 +415,21 @@ class Run:
         Log NefertemReports.
         """
         self._check_metadata_uri()
-        objects = self._run_handler.get_nefertem_report()
+        objects = self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM)
         for obj in objects:
             metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, MetadataKind.REPORT.value)
+            self._log_metadata(metadata, "report")
 
     def persist_report(self) -> None:
         """
         Persist frameworks reports.
         """
-        objects = self._run_handler.get_rendered_report()
-        for obj in objects:
-            self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))
+        objects = self._run_handler.get_item(VALIDATE, RESULT_RENDERED)
+        self._persist_artifacts(objects)
 
+    ############################
     # Profiling
+    ############################
 
     def profile_wrapper(
         self, metrics: list[Metric] | None = None, parallel: bool = False, num_worker: int = 10
@@ -449,12 +452,12 @@ class Run:
             Return a list of framework results.
 
         """
-        profiles = self._run_handler.get_artifact_profile()
+        profiles = self._run_handler.get_item(PROFILE, RESULT_ARTIFACT)
         if profiles:
             return profiles
 
         self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
-        return self._run_handler.get_artifact_profile()
+        return self._run_handler.get_item(PROFILE, RESULT_ARTIFACT)
 
     def profile_nefertem(
         self, metrics: list[Metric] | None = None, parallel: bool = False, num_worker: int = 10
@@ -477,12 +480,12 @@ class Run:
             Return a list of NefertemProfile.
 
         """
-        profiles = self._run_handler.get_nefertem_profile()
+        profiles = self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
         if profiles:
             return profiles
 
         self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
-        return self._run_handler.get_nefertem_profile()
+        return self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
 
     def profile(
         self, metrics: list[Metric] | None = None, parallel: bool = False, num_worker: int = 10, only_nt: bool = False
@@ -519,37 +522,38 @@ class Run:
         Log NefertemProfiles.
         """
         self._check_metadata_uri()
-        objects = self._run_handler.get_nefertem_profile()
+        objects = self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
         for obj in objects:
             metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, MetadataKind.PROFILE.value)
+            self._log_metadata(metadata, "profile")
 
     def persist_profile(self) -> None:
         """
         Persist frameworks profiles.
         """
-        objects = self._run_handler.get_rendered_profile()
-        for obj in objects:
-            self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))
+        objects = self._run_handler.get_item(PROFILE, RESULT_RENDERED)
+        self._persist_artifacts(objects)
 
-    # Input data persistence
+    ############################
+    # Data
+    ############################
 
     def persist_data(self) -> None:
         """
         Persist input data as artifacts into default store.
 
-        Depending on the functioning of the store object on which the
-        artifacts are stored, the store will try to download the data
-        locally.
-        In the case of SQL/ODBC storage, the format will be parquet.
-        In the case of remote/REST/local stores, the persistence format
-        will be the same as the artifacts present in the storage.
+        Depending on the functioning of the store object on which the artifacts are stored,
+        the store will try to download the data locally.
+        In the case of SQL origin, the format will be parquet.
+        In the case of remote or s3 origin, the persistence format will be the same
+        as the artifacts present in the storage.
 
         """
-        self._check_artifacts_uri()
-        self._run_handler.persist_data(self.run_info.resources, self.run_info.run_artifacts_uri)
+        self._run_handler.persist_data(self.run_info.resources, self.run_info.run_art_path)
 
+    ############################
     # Context manager
+    ############################
 
     def __enter__(self) -> Run:
         # Set run status
@@ -577,7 +581,9 @@ class Run:
 
         self._run_handler.clean_all()
 
-    # Dunders
+    ############################
+    # Dunder
+    ############################
 
     def __repr__(self) -> str:
         return str(self.run_info.to_dict())

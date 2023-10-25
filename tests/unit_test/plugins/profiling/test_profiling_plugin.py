@@ -1,6 +1,6 @@
 from nefertem.plugins.profiling.base import Profiling
 from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
-from nefertem.utils.commons import RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class SamplePlugin(Profiling):
@@ -40,11 +40,11 @@ class TestProfile:
 
         assert isinstance(result, dict)
 
-        keys = [RESULT_WRAPPED, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]
+        keys = [RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]
         for k in keys:
             assert k in result
 
-        assert isinstance(result[RESULT_WRAPPED], Result)
+        assert isinstance(result[RESULT_ARTIFACT], Result)
         assert isinstance(result[RESULT_NEFERTEM], Result)
         assert isinstance(result[RESULT_RENDERED], Result)
         assert isinstance(result[RESULT_LIBRARY], dict)

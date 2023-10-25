@@ -1,7 +1,6 @@
 """
 Local metadata store module.
 """
-from nefertem.metadata.kinds import MetadataKind
 from nefertem.stores.metadata.objects.base import MetadataStore
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.file_utils import check_dir, clean_all, get_path, make_dir
@@ -109,7 +108,7 @@ class LocalMetadataStore(MetadataStore):
         str
             Source path.
         """
-        if src_type in [MetadataKind.RUN.value, MetadataKind.RUN_ENV.value]:
+        if src_type in ["run", "run_env"]:
             filename = f"{src_type}.json"
         else:
             self._cnt[src_type] = self._cnt.get(src_type, 0) + 1

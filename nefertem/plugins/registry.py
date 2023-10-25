@@ -52,13 +52,13 @@ except ImportError:
 
 
 # ydata_profiling imports
-try:
-    from nefertem.plugins.profiling.ydata import ProfileBuilderYdataProfiling
+# try:
+#     from nefertem.plugins.profiling.ydata import ProfileBuilderYdataProfiling
 
-    plugin_registry.register(PROFILE, "ydata", ProfileBuilderYdataProfiling)
+#     plugin_registry.register(PROFILE, "ydata", ProfileBuilderYdataProfiling)
 
-except ImportError:
-    ...
+# except ImportError:
+#     ...
 
 # duckdb imports
 try:
@@ -80,12 +80,12 @@ except ImportError:
     ...
 
 # evidently imports
-try:
-    from nefertem.plugins.profiling.evidently import ProfileBuilderEvidently
-    from nefertem.plugins.validation.evidently import ValidationBuilderEvidently
+# try:
+#     from nefertem.plugins.profiling.evidently import ProfileBuilderEvidently
+#     from nefertem.plugins.validation.evidently import ValidationBuilderEvidently
 
-    plugin_registry.register(PROFILE, "evidently", ProfileBuilderEvidently)
-    plugin_registry.register(VALIDATE, "evidently", ValidationBuilderEvidently)
+#     plugin_registry.register(PROFILE, "evidently", ProfileBuilderEvidently)
+#     plugin_registry.register(VALIDATE, "evidently", ValidationBuilderEvidently)
 
-except ImportError:
-    ...
+# except ImportError:
+#     ...

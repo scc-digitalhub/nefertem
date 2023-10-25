@@ -22,7 +22,7 @@ VALIDATE: str = "validation"
 
 
 # Result typology
-RESULT_WRAPPED: str = "wrapped"
+RESULT_ARTIFACT: str = "wrapped"
 RESULT_NEFERTEM: str = "nefertem"
 RESULT_RENDERED: str = "rendered"
 RESULT_LIBRARY: str = "library"

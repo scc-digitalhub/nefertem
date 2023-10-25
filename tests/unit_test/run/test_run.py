@@ -4,7 +4,7 @@ import pytest
 
 from nefertem.client.store_handler import StoreHandler
 from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
-from nefertem.utils.commons import MT_NT_REPORT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_WRAPPED
+from nefertem.utils.commons import MT_NT_REPORT, RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class TestRun:
@@ -128,7 +128,7 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_WRAPPED: result_obj,
+        RESULT_ARTIFACT: result_obj,
         RESULT_NEFERTEM: result_obj,
         RESULT_RENDERED: result_obj,
         RESULT_LIBRARY: [{"test": "test"}],

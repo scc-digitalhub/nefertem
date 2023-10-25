@@ -154,15 +154,7 @@ class S3ArtifactStore(ArtifactStore):
         str
             A presigned URL.
         """
-        key = f"{src}_native"
-        cached = self._get_resource(key)
-        if cached is not None:
-            return cached
-
-        self.logger.info(f"Fetching resource {src} from store {self.name}")
-        url = self._get_presinged_url(src)
-        self._register_resource(key, url)
-        return url
+        return self._get_presinged_url(src)
 
     ############################
     # Private helper methods

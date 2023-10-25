@@ -22,10 +22,29 @@ class Result:
         errors: tuple = None,
         artifact: Any = None,
     ) -> None:
+        """
+        Constructor.
+        """
         self.status = status
         self.duration = duration
         self.errors = errors
         self.artifact = artifact
+
+    def to_dict(self) -> dict:
+        """
+        Return result as dict.
+
+        Returns
+        -------
+        dict
+            Result as dict.
+        """
+        return {
+            "status": self.status,
+            "duration": self.duration,
+            "errors": self.errors,
+            "artifact": self.artifact,
+        }
 
 
 def exec_decorator(fnc: Callable) -> Result:

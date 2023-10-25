@@ -26,9 +26,9 @@ class RunInfo(Metadata):
         Run id.
     run_type: str
         Run typology.
-    run_metadata_uri : str
+    run_meta_path : str
         URI that point to the metadata store.
-    run_artifacts_uri : str
+    run_art_path : str
         URI that point to the artifact store.
     resources_uri : str
         URI that point to the resource.
@@ -40,15 +40,15 @@ class RunInfo(Metadata):
         resources: list[DataResource],
         run_id: str,
         run_config: RunConfig,
-        run_metadata_uri: str | None = None,
-        run_artifacts_uri: str | None = None,
+        run_meta_path: str | None = None,
+        run_art_path: str | None = None,
     ) -> None:
         self.experiment_name = experiment_name
         self.run_id = run_id
         self.run_config = run_config
         self.run_libraries = None
-        self.run_metadata_uri = run_metadata_uri
-        self.run_artifacts_uri = run_artifacts_uri
+        self.run_meta_path = run_meta_path
+        self.run_art_path = run_art_path
 
         self.resources = resources
 
@@ -72,8 +72,8 @@ class RunInfo(Metadata):
             "run_id": self.run_id,
             "run_config": self.run_config.dict(exclude_none=True),
             "run_libraries": self.run_libraries,
-            "run_metadata_uri": self.run_metadata_uri,
-            "run_artifacts_uri": self.run_artifacts_uri,
+            "run_meta_path": self.run_meta_path,
+            "run_art_path": self.run_art_path,
             "resources": [i.dict(exclude_none=True) for i in self.resources],
             "created": self.created,
             "begin_status": self.begin_status,

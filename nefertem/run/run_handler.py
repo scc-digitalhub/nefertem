@@ -13,10 +13,10 @@ from nefertem.utils.commons import (
     BASE_FILE_READER,
     INFER,
     PROFILE,
+    RESULT_ARTIFACT,
     RESULT_LIBRARY,
     RESULT_NEFERTEM,
     RESULT_RENDERED,
-    RESULT_WRAPPED,
     VALIDATE,
 )
 from nefertem.utils.exceptions import RunError
@@ -26,9 +26,6 @@ from nefertem.utils.utils import flatten_list, listify
 
 if typing.TYPE_CHECKING:
     from nefertem.client.store_handler import StoreHandler
-    from nefertem.metadata.reports.profile import NefertemProfile
-    from nefertem.metadata.reports.report import NefertemReport
-    from nefertem.metadata.reports.schema import NefertemSchema
     from nefertem.plugins.base import Plugin, PluginBuilder
     from nefertem.plugins.profiling.base import Metric
     from nefertem.plugins.validation.base import Constraint
@@ -36,48 +33,35 @@ if typing.TYPE_CHECKING:
     from nefertem.run.run_config import RunConfig
 
 
-class RunHandlerRegistry:
+class RunHandlerRegistry(dict):
     """
     Generic registry object to store objects
     based on operations.
     """
 
     def __init__(self) -> None:
-        self.registry = {}
-        self._setup()
-
-    def _setup(self):
         """
-        Setup the run handler registry.
+        Constructor.
         """
         for ops in [INFER, VALIDATE, PROFILE]:
-            self.registry[ops] = {}
-            for res in [
-                RESULT_WRAPPED,
-                RESULT_NEFERTEM,
-                RESULT_RENDERED,
-                RESULT_LIBRARY,
-            ]:
-                self.registry[ops][res] = []
+            self[ops] = {}
+            for res in [RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]:
+                self[ops][res] = []
 
     def register(self, ops: str, _type: str, _object: Any) -> None:
         """
-        Register an object on the registry based on
-        operation and result typology.
+        Register an object on the registry based on operation and result typology.
         """
         if isinstance(_object, list):
-            self.registry[ops][_type].extend(_object)
+            self[ops][_type].extend(_object)
         else:
-            self.registry[ops][_type].append(_object)
+            self[ops][_type].append(_object)
 
     def get_object(self, ops: str, _type: str) -> list:
         """
         Return object from registry.
         """
-        try:
-            return self.registry[ops][_type]
-        except KeyError:
-            return []
+        return self.get(ops).get(_type, [])
 
 
 class RunHandler:
@@ -93,6 +77,10 @@ class RunHandler:
         self._config = config
         self._store_handler = store_handler
         self._registry = RunHandlerRegistry()
+
+    #############################
+    # Run methods
+    #############################
 
     def infer(
         self,
@@ -163,6 +151,10 @@ class RunHandler:
         self._scheduler(plugins, PROFILE, parallel, num_worker)
         self._destroy_builders(builders)
 
+    #############################
+    # Execution methods
+    #############################
+
     @staticmethod
     def _create_plugins(builders: PluginBuilder, *args) -> list[Plugin]:
         """
@@ -176,15 +168,12 @@ class RunHandler:
         """
         multiprocess = []
         multithreading = []
-        distributed = []
         sequential = []
         for plugin in plugins:
             if plugin.exec_multiprocess and parallel:
                 multiprocess.append(plugin)
             elif plugin.exec_multithread and parallel:
                 multithreading.append(plugin)
-            elif plugin.exec_distributed and parallel:
-                distributed.append(plugin)
             else:
                 sequential.append(plugin)
 
@@ -231,6 +220,18 @@ class RunHandler:
         """
         return plugin.execute()
 
+    @staticmethod
+    def _destroy_builders(builders: list[PluginBuilder]) -> None:
+        """
+        Destroy builders.
+        """
+        for builder in builders:
+            builder.destroy()
+
+    #############################
+    # Registry methods
+    #############################
+
     def _register_results(
         self,
         operation: str,
@@ -242,82 +243,44 @@ class RunHandler:
         for key, value in result.items():
             self._registry.register(operation, key, value)
 
-    @staticmethod
-    def _destroy_builders(builders: list[PluginBuilder]) -> None:
-        """
-        Destroy builders.
-        """
-        for builder in builders:
-            builder.destroy()
-
-    def get_item(self, operation: str, _type: str) -> list[Any]:
+    def get_item(self, operation: str, item_type: str) -> list[Any]:
         """
         Get item from registry.
-        """
-        return self._registry.get_object(operation, _type)
 
-    def get_artifact_schema(self) -> list[Any]:
-        """
-        Get a list of schemas produced by inference libraries.
-        """
-        return [obj.artifact for obj in self.get_item(INFER, RESULT_WRAPPED)]
+        Parameters
+        ----------
+        ops : str
+            Operation.
+        item_type : str
+            Item type.
 
-    def get_artifact_report(self) -> list[Any]:
+        Returns
+        -------
+        list[Any]
+            List of object.
         """
-        Get a list of reports produced by validation libraries.
-        """
-        return [obj.artifact for obj in self.get_item(VALIDATE, RESULT_WRAPPED)]
+        objects = self._registry.get_object(operation, item_type)
 
-    def get_artifact_profile(self) -> list[Any]:
-        """
-        Get a list of profiles produced by profiling libraries.
-        """
-        return [obj.artifact for obj in self.get_item(PROFILE, RESULT_WRAPPED)]
+        # Get artifacts and nefertem report
+        if item_type in [RESULT_ARTIFACT, RESULT_NEFERTEM]:
+            return [obj.artifact for obj in objects]
 
-    def get_nefertem_schema(self) -> list[NefertemSchema]:
-        """
-        Wrapper for plugins parsing methods.
-        """
-        return [obj.artifact for obj in self.get_item(INFER, RESULT_NEFERTEM)]
+        # Get rendered
+        return listify(flatten_list([obj.artifact for obj in objects]))
 
-    def get_nefertem_report(self) -> list[NefertemReport]:
+    def get_libs(self) -> dict:
         """
-        Wrapper for plugins parsing methods.
-        """
-        return [obj.artifact for obj in self.get_item(VALIDATE, RESULT_NEFERTEM)]
+        Get libraries used by operations.
 
-    def get_nefertem_profile(self) -> list[NefertemProfile]:
-        """
-        Wrapper for plugins parsing methods.
-        """
-        return [obj.artifact for obj in self.get_item(PROFILE, RESULT_NEFERTEM)]
-
-    def get_rendered_schema(self) -> list[Any]:
-        """
-        Get a list of schemas ready to be persisted.
-        """
-        return listify(flatten_list([obj.artifact for obj in self.get_item(INFER, RESULT_RENDERED)]))
-
-    def get_rendered_report(self) -> list[Any]:
-        """
-        Get a list of reports ready to be persisted.
-        """
-        return listify(flatten_list([obj.artifact for obj in self.get_item(VALIDATE, RESULT_RENDERED)]))
-
-    def get_rendered_profile(self) -> list[Any]:
-        """
-        Get a list of profiles ready to be persisted.
-        """
-        return listify(flatten_list([obj.artifact for obj in self.get_item(PROFILE, RESULT_RENDERED)]))
-
-    def get_libraries(self) -> list[dict]:
-        """
-        Return libraries used by run.
+        Returns
+        -------
+        dict
+            Dictionary of libraries.
         """
         libs = {}
         for ops in [INFER, PROFILE, VALIDATE]:
             libs[ops] = []
-            for i in self.get_item(ops, RESULT_LIBRARY):
+            for i in self._registry.get_object(ops, RESULT_LIBRARY):
                 if dict(**i) not in libs[ops]:
                     libs[ops].append(i)
         return libs
@@ -329,10 +292,11 @@ class RunHandler:
         store = self._store_handler.get_md_store()
         store.log_metadata(src, dst, src_type, overwrite)
 
-    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
+    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict | None = None) -> None:
         """
         Method to persist artifacts in the default artifact store.
         """
+        metadata = metadata if metadata is not None else {}
         store = self._store_handler.get_def_store()
         store.persist_artifact(src, dst, src_name, metadata)
 
@@ -347,7 +311,7 @@ class RunHandler:
                 tmp_pth = data_reader.fetch_data(path)
                 tmp_pth = get_absolute_path(tmp_pth)
                 filename = get_name_from_uri(tmp_pth)
-                self.persist_artifact(tmp_pth, dst, filename, {})
+                self.persist_artifact(tmp_pth, dst, filename)
 
     def clean_all(self) -> None:
         """
