@@ -10,7 +10,6 @@ from typing import Any
 from nefertem.metadata.blob import BlobLog
 from nefertem.metadata.env import EnvLog
 from nefertem.utils.commons import (
-    DUMMY,
     INFER,
     NEFERTEM_VERSION,
     PROFILE,
@@ -23,7 +22,6 @@ from nefertem.utils.commons import (
     STATUS_INTERRUPTED,
     VALIDATE,
 )
-from nefertem.utils.exceptions import StoreError
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time
 
@@ -96,6 +94,10 @@ class Run:
     def _log_run(self) -> None:
         """
         Log run's metadata.
+
+        Returns
+        -------
+        None
         """
         metadata = self._get_blob(self.run_info.to_dict())
         self._log_metadata(metadata, "run")
@@ -103,67 +105,58 @@ class Run:
     def _log_env(self) -> None:
         """
         Log run's enviroment details.
+
+        Returns
+        -------
+        None
         """
-        env_data = EnvLog().to_dict()
-        metadata = self._get_blob(env_data)
+        metadata = self._get_blob(EnvLog().to_dict())
         self._log_metadata(metadata, "run_env")
 
     def _get_blob(self, blob: dict | None = None) -> dict:
         """
         Return structured blob to log.
+
+        Returns
+        -------
+        dict
+            Return a structured blob.
         """
         blob = blob if blob is not None else {}
-        return BlobLog(
-            self.run_info.run_id,
-            self.run_info.experiment_name,
-            NEFERTEM_VERSION,
-            blob,
-        ).to_dict()
+        return BlobLog(self.run_info.run_id, self.run_info.experiment_name, NEFERTEM_VERSION, blob).to_dict()
 
     def _log_metadata(self, metadata: dict, src_type: str) -> None:
         """
         Log generic metadata.
+
+        Returns
+        -------
+        None
         """
         self._run_handler.log_metadata(metadata, self.run_info.run_meta_path, src_type, self._overwrite)
 
     def _log_artifact(self, src_name: str | None = None) -> None:
         """
         Log artifact metadata.
-        """
-        uri = self.run_info.run_art_path
-        metadata = self._get_blob({"uri": uri, "name": src_name})
-        self._log_metadata(metadata, "artifact")
-
-    def _render_artifact_name(self, filename: str) -> str:
-        """
-        Return a modified filename to avoid overwriting
-        in persistence.
-        """
-        if filename not in self._filenames:
-            self._filenames[filename] = 0
-        else:
-            self._filenames[filename] += 1
-
-        fnm = Path(filename).stem
-        ext = Path(filename).suffix
-
-        return f"{fnm}_{self._filenames[filename]}{ext}"
-
-    def _persist_artifacts(self, objects: list[RenderTuple]) -> None:
-        """
-        Persist artifacts in the artifact store.
-
-        Parameters
-        ----------
-        list[RenderTuple]
-            List of tuples containing the objects to persist and the filenames.
 
         Returns
         -------
         None
         """
-        for obj in objects:
-            self._persist_artifact(obj)
+        metadata = self._get_blob({"uri": self.run_info.run_art_path, "name": src_name})
+        self._log_metadata(metadata, "artifact")
+
+    def _render_artifact_name(self, filename: str) -> str:
+        """
+        Return a modified filename to avoid overwriting in persistence.
+
+        Returns
+        -------
+        str
+            Return a modified filename.
+        """
+        self._filenames[filename] = self._filenames.get(filename, 1) + 1
+        return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
 
     def _persist_artifact(self, obj: RenderTuple) -> None:
         """
@@ -182,16 +175,13 @@ class Run:
         self._run_handler.persist_artifact(obj.object, self.run_info.run_art_path, src_name)
         self._log_artifact(src_name)
 
-    def _check_metadata_uri(self) -> None:
-        """
-        Check metadata uri existence.
-        """
-        if self.run_info.run_meta_path == DUMMY:
-            raise StoreError("Please configure a metadata store.")
-
     def _get_libraries(self) -> None:
         """
         Return the list of libraries used by the run.
+
+        Returns
+        -------
+        None
         """
         self.run_info.run_libraries = self._run_handler.get_libs()
 
@@ -206,7 +196,7 @@ class Run:
         Parameters
         ----------
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
 
@@ -230,7 +220,7 @@ class Run:
         Parameters
         ----------
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
 
@@ -254,17 +244,16 @@ class Run:
         Parameters
         ----------
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
         only_nt : bool
-            Flag to return only the Nefertem report, by default False
+            Flag to return only the Nefertem report.
 
         Returns
         -------
         Any
-            Return a list of NefertemSchemas and the
-            corresponding list of framework results.
+            Return a list of NefertemSchemas and the corresponding list of framework results.
         """
         schema = self.infer_wrapper(parallel, num_worker)
         schema_nt = self.infer_nefertem(parallel, num_worker)
@@ -275,19 +264,25 @@ class Run:
     def log_schema(self) -> None:
         """
         Log NefertemSchemas.
+
+        Returns
+        -------
+        None
         """
-        self._check_metadata_uri()
-        objects = self._run_handler.get_item(INFER, RESULT_NEFERTEM)
-        for obj in objects:
+        for obj in self._run_handler.get_item(INFER, RESULT_NEFERTEM):
             metadata = self._get_blob(obj.to_dict())
             self._log_metadata(metadata, "schema")
 
     def persist_schema(self) -> None:
         """
         Persist frameworks schemas.
+
+        Returns
+        -------
+        None
         """
-        objects = self._run_handler.get_item(INFER, RESULT_RENDERED)
-        self._persist_artifacts(objects)
+        for obj in self._run_handler.get_item(INFER, RESULT_RENDERED):
+            self._persist_artifact(obj)
 
     ############################
     # Validation
@@ -314,7 +309,7 @@ class Run:
             'partial' return the errors count and a list of errors (max 100),
             'full' returns errors count and the list of all encountered errors.
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
 
@@ -352,7 +347,7 @@ class Run:
             'partial' return the errors count and a list of errors (max 100),
             'full' returns errors count and the list of all encountered errors.
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
 
@@ -391,17 +386,16 @@ class Run:
             'partial' return the errors count and a list of errors (max 100),
             'full' returns errors count and the list of all encountered errors.
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
         only_nt : bool
-            Flag to return only the Nefertem report, by default False
+            Flag to return only the Nefertem report.
 
         Returns
         -------
         Any
-            Return a list of "NefertemReport" and the
-            corresponding list of framework results.
+            Return a list of "NefertemReport" and the corresponding list of framework results.
 
         """
         report = self.validate_wrapper(constraints, error_report, parallel, num_worker)
@@ -413,19 +407,25 @@ class Run:
     def log_report(self) -> None:
         """
         Log NefertemReports.
+
+        Returns
+        -------
+        None
         """
-        self._check_metadata_uri()
-        objects = self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM)
-        for obj in objects:
+        for obj in self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM):
             metadata = self._get_blob(obj.to_dict())
             self._log_metadata(metadata, "report")
 
     def persist_report(self) -> None:
         """
         Persist frameworks reports.
+
+        Returns
+        -------
+        None
         """
-        objects = self._run_handler.get_item(VALIDATE, RESULT_RENDERED)
-        self._persist_artifacts(objects)
+        for obj in self._run_handler.get_item(VALIDATE, RESULT_RENDERED):
+            self._persist_artifact(obj)
 
     ############################
     # Profiling
@@ -442,7 +442,7 @@ class Run:
         metrics: list[Metric]
             Optional list of metrics to evaluate over resources.
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
 
@@ -470,7 +470,7 @@ class Run:
         metrics: list[Metric]
             Optional list of metrics to evaluate over resources.
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
 
@@ -498,17 +498,16 @@ class Run:
         metrics: list[Metric]
             Optional list of metrics to evaluate over resources.
         parallel : bool
-            Flag to execute operation in parallel, by default False
+            Flag to execute operation in parallel.
         num_worker : int
             Number of workers to execute operation in parallel, by default 10
         only_nt : bool
-            Flag to return only the Nefertem report, by default False
+            Flag to return only the Nefertem report.
 
         Returns
         -------
         Any
-            Return a list of NefertemProfile and the
-            corresponding list of framework results.
+            Return a list of NefertemProfile and the corresponding list of framework results.
 
         """
         profile = self.profile_wrapper(metrics, parallel, num_worker)
@@ -520,19 +519,25 @@ class Run:
     def log_profile(self) -> None:
         """
         Log NefertemProfiles.
+
+        Returns
+        -------
+        None
         """
-        self._check_metadata_uri()
-        objects = self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
-        for obj in objects:
+        for obj in self._run_handler.get_item(PROFILE, RESULT_NEFERTEM):
             metadata = self._get_blob(obj.to_dict())
             self._log_metadata(metadata, "profile")
 
     def persist_profile(self) -> None:
         """
         Persist frameworks profiles.
+
+        Returns
+        -------
+        None
         """
-        objects = self._run_handler.get_item(PROFILE, RESULT_RENDERED)
-        self._persist_artifacts(objects)
+        for obj in self._run_handler.get_item(PROFILE, RESULT_RENDERED):
+            self._persist_artifact(obj)
 
     ############################
     # Data
@@ -548,6 +553,9 @@ class Run:
         In the case of remote or s3 origin, the persistence format will be the same
         as the artifacts present in the storage.
 
+        Returns
+        -------
+        None
         """
         self._run_handler.persist_data(self.run_info.resources, self.run_info.run_art_path)
 
