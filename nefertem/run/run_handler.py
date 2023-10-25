@@ -33,37 +33,6 @@ if typing.TYPE_CHECKING:
     from nefertem.run.run_config import RunConfig
 
 
-class RunHandlerRegistry(dict):
-    """
-    Generic registry object to store objects
-    based on operations.
-    """
-
-    def __init__(self) -> None:
-        """
-        Constructor.
-        """
-        for ops in [INFER, VALIDATE, PROFILE]:
-            self[ops] = {}
-            for res in [RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]:
-                self[ops][res] = []
-
-    def register(self, ops: str, _type: str, _object: Any) -> None:
-        """
-        Register an object on the registry based on operation and result typology.
-        """
-        if isinstance(_object, list):
-            self[ops][_type].extend(_object)
-        else:
-            self[ops][_type].append(_object)
-
-    def get_object(self, ops: str, _type: str) -> list:
-        """
-        Return object from registry.
-        """
-        return self.get(ops).get(_type, [])
-
-
 class RunHandler:
     """
     Run handler.
@@ -76,7 +45,26 @@ class RunHandler:
     def __init__(self, config: RunConfig, store_handler: StoreHandler) -> None:
         self._config = config
         self._store_handler = store_handler
-        self._registry = RunHandlerRegistry()
+        self._registry = {}
+
+        self._setup()
+
+    #############################
+    # Setup
+    #############################
+
+    def _setup(self) -> None:
+        """
+        Setup registry.
+
+        Returns
+        -------
+        None
+        """
+        for ops in [INFER, VALIDATE, PROFILE]:
+            self._registry[ops] = {}
+            for res in [RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]:
+                self._registry[ops][res] = []
 
     #############################
     # Run methods
@@ -232,16 +220,19 @@ class RunHandler:
     # Registry methods
     #############################
 
-    def _register_results(
-        self,
-        operation: str,
-        result: dict,
-    ) -> None:
+    def _register_results(self, operation: str, result: dict) -> None:
         """
         Register results.
+
+        Returns
+        -------
+        None
         """
         for key, value in result.items():
-            self._registry.register(operation, key, value)
+            if isinstance(value, list):
+                self._registry[operation][key].extend(value)
+            else:
+                self._registry[operation][key].append(value)
 
     def get_item(self, operation: str, item_type: str) -> list[Any]:
         """
@@ -259,7 +250,7 @@ class RunHandler:
         list[Any]
             List of object.
         """
-        objects = self._registry.get_object(operation, item_type)
+        objects = self._registry.get(operation).get(item_type, [])
 
         # Get artifacts and nefertem report
         if item_type in [RESULT_ARTIFACT, RESULT_NEFERTEM]:
@@ -280,7 +271,7 @@ class RunHandler:
         libs = {}
         for ops in [INFER, PROFILE, VALIDATE]:
             libs[ops] = []
-            for i in self._registry.get_object(ops, RESULT_LIBRARY):
+            for i in self._registry.get(ops).get(RESULT_LIBRARY, []):
                 if dict(**i) not in libs[ops]:
                     libs[ops].append(i)
         return libs
