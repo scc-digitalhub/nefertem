@@ -4,7 +4,8 @@ import pytest
 import ydata_profiling
 from ydata_profiling import ProfileReport
 
-from nefertem.plugins.profiling.ydata import ProfileBuilderYdataProfiling, ProfilePluginYdataProfiling
+from nefertem.plugins.profiling.ydata_profiling.builder import ProfileBuilderYdataProfiling
+from nefertem.plugins.profiling.ydata_profiling.plugin import ProfilePluginYdataProfiling
 from nefertem.utils.commons import LIBRARY_YDATA_PROFILING, PANDAS_DATAFRAME_FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,

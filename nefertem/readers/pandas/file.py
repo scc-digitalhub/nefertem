@@ -1,16 +1,11 @@
 """
 PandasDataFrameReader module.
 """
-from __future__ import annotations
+import pandas as pd
 
-import typing
-
-from nefertem.plugins.utils.frictionless_utils import describe_resource
 from nefertem.readers.base.file import FileReader
+from nefertem.readers.utils import describe_resource
 from nefertem.utils.utils import listify
-
-if typing.TYPE_CHECKING:
-    import pandas as pd
 
 
 class PandasDataFrameFileReader(FileReader):
@@ -43,7 +38,7 @@ class PandasDataFrameFileReader(FileReader):
 
         if file_format == "csv":
             csv_args = {
-                "sep": resource.get("dialect", {}).get("delimiter", ","),
+                "sep": resource.get("dialect", {}).get("csv", {}).get("delimiter", ","),
                 "encoding": resource.get("encoding"),
             }
             list_df = [pd.read_csv(i, **csv_args) for i in paths]

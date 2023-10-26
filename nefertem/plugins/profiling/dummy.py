@@ -8,11 +8,11 @@ import typing
 
 from nefertem.metadata.reports.profile import NefertemProfile
 from nefertem.plugins.profiling.base import Profiling, ProfilingPluginBuilder
-from nefertem.plugins.utils.plugin_utils import exec_decorator
+from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
     from nefertem.resources.data_resource import DataResource
 
 

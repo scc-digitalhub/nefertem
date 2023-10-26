@@ -7,11 +7,11 @@ import typing
 
 from nefertem.metadata.reports.schema import NefertemSchema
 from nefertem.plugins.inference.base import Inference, InferencePluginBuilder
-from nefertem.plugins.utils.plugin_utils import exec_decorator
+from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
 
 
 class InferencePluginDummy(Inference):

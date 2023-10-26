@@ -5,7 +5,7 @@ import pytest
 from nefertem.client.store_handler import StoreHandler
 from nefertem.plugins.base import Plugin
 from nefertem.plugins.factory import builder_factory
-from nefertem.plugins.utils.plugin_utils import Result
+from nefertem.plugins.utils import Result
 from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
 from nefertem.utils.commons import (
     INFER,

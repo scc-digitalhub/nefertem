@@ -1,19 +1,14 @@
 """
 PandasDataFrameReader module.
 """
-from __future__ import annotations
-
-import typing
 from typing import Any
 
+import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
 from nefertem.readers.base.native import NativeReader
 from nefertem.utils.exceptions import StoreError
-
-if typing.TYPE_CHECKING:
-    import pandas as pd
 
 
 class PandasDataFrameSQLReader(NativeReader):

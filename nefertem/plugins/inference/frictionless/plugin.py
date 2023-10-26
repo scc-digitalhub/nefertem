@@ -1,5 +1,5 @@
 """
-Frictionless implementation of inference plugin.
+Frictionless inference plugin module.
 """
 from __future__ import annotations
 
@@ -9,19 +9,13 @@ import frictionless
 from frictionless import Schema
 
 from nefertem.metadata.reports.schema import NefertemSchema
-from nefertem.plugins.inference.base import Inference, InferencePluginBuilder
-from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.plugins.inference.base import Inference
+from nefertem.plugins.utils import exec_decorator
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
-
-
-####################
-# PLUGIN
-####################
 
 
 class InferencePluginFrictionless(Inference):
@@ -101,28 +95,3 @@ class InferencePluginFrictionless(Inference):
         Get library version.
         """
         return frictionless.__version__
-
-
-####################
-# BUILDER
-####################
-
-
-class InferenceBuilderFrictionless(InferencePluginBuilder):
-    """
-    Inference plugin builder.
-    """
-
-    def build(self, resources: list[DataResource]) -> list[InferencePluginFrictionless]:
-        """
-        Build a plugin.
-        """
-        plugins = []
-        for res in resources:
-            resource = self._get_resource_deepcopy(res)
-            store = self._get_resource_store(resource)
-            data_reader = self._get_data_reader(BASE_FILE_READER, store)
-            plugin = InferencePluginFrictionless()
-            plugin.setup(data_reader, resource, self.exec_args)
-            plugins.append(plugin)
-        return plugins

@@ -9,21 +9,14 @@ import frictionless
 from frictionless import Resource
 
 from nefertem.metadata.reports.profile import NefertemProfile
-from nefertem.plugins.profiling.base import Profiling, ProfilingPluginBuilder
-from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.plugins.profiling.base import Profiling
+from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.profiling.base import Metric
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
     from nefertem.readers.base.file import FileReader
     from nefertem.resources.data_resource import DataResource
-
-
-####################
-# PLUGIN
-####################
 
 
 class ProfilePluginFrictionless(Profiling):
@@ -100,40 +93,3 @@ class ProfilePluginFrictionless(Profiling):
         Get library version.
         """
         return frictionless.__version__
-
-
-####################
-# BUILDER
-####################
-
-
-class ProfileBuilderFrictionless(ProfilingPluginBuilder):
-    """
-    Profile plugin builder.
-    """
-
-    def build(
-        self, resources: list[DataResource], metrics: list[Metric] | None = None
-    ) -> list[ProfilePluginFrictionless]:
-        """
-        Build a plugin. Metrics are not supported
-        """
-        plugins = []
-        for res in resources:
-            resource = self._get_resource_deepcopy(res)
-            store = self._get_resource_store(resource)
-            data_reader = self._get_data_reader(BASE_FILE_READER, store)
-            plugin = ProfilePluginFrictionless()
-            plugin.setup(data_reader, resource, self.exec_args)
-            plugins.append(plugin)
-        return plugins
-
-    @staticmethod
-    def _filter_metrics(*args) -> None:
-        """
-        Placeholder methods.
-
-        Returns
-        -------
-        None
-        """

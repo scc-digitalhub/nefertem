@@ -1,33 +1,23 @@
 """
 Utils functions for data reader.
 """
-from __future__ import annotations
-
-import typing
-
-from nefertem.readers.registry import REGISTRY
-
-if typing.TYPE_CHECKING:
-    from nefertem.readers.base.base import DataReader
-    from nefertem.stores.artifact.objects.base import ArtifactStore
+from frictionless import Detector, Resource
 
 
-def get_reader(reader_type: str) -> DataReader:
+def describe_resource(pth: str) -> dict:
     """
-    Registry getter.
-    """
-    try:
-        return REGISTRY[reader_type]
-    except KeyError:
-        raise KeyError(f"Reader {reader_type} not found. Check installed libraries.")
+    Describe a resource using frictionless.
 
+    With bigger buffer/sample we should avoid error encoding detection.
 
-def build_reader(
-    reader_type: str,
-    store: ArtifactStore,
-    **kwargs,
-) -> DataReader:
+    Parameters
+    ----------
+    pth: str
+        Path to resource.
+
+    Returns
+    -------
+    dict
+        Resource description.
     """
-    Reader builder.
-    """
-    return get_reader(reader_type)(store, **kwargs)
+    return Resource.describe(source=pth, detector=Detector(buffer_size=20000, sample_size=1250)).to_dict()

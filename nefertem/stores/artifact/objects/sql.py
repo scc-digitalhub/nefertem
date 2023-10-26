@@ -98,11 +98,12 @@ class SQLArtifactStore(ArtifactStore):
         """
         Fetch a native resource.
 
-        Raises
-        ------
-        NotImplementedError
-            This method is not implemented.
+        Returns
+        -------
+        str
+            The connection string.
         """
+        return self._get_connection_string()
 
     ############################
     # Private helper methods

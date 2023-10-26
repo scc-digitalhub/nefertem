@@ -1,17 +1,13 @@
 """
 PolarsDataFrameReader module.
 """
-from __future__ import annotations
-
-import typing
 from pathlib import Path
 
-from nefertem.plugins.utils.frictionless_utils import describe_resource
-from nefertem.readers.base.file import FileReader
-from nefertem.utils.utils import listify
+import polars as pl
 
-if typing.TYPE_CHECKING:
-    import polars as pl
+from nefertem.readers.base.file import FileReader
+from nefertem.readers.utils import describe_resource
+from nefertem.utils.utils import listify
 
 
 class PolarsDataFrameFileReader(FileReader):

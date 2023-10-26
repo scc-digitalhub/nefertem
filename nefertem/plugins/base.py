@@ -8,14 +8,14 @@ from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from typing import Any
 
-from nefertem.plugins.utils.plugin_utils import RenderTuple
-from nefertem.readers.utils import build_reader
+from nefertem.plugins.utils import RenderTuple
+from nefertem.readers.builder import build_reader
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
     from nefertem.readers.base.base import DataReader
     from nefertem.resources.data_resource import DataResource
     from nefertem.stores.artifact.objects.base import ArtifactStore

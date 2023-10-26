@@ -1,7 +1,8 @@
 import pytest
 
-from nefertem.plugins.utils.frictionless_utils import describe_resource, frictionless_schema_converter
-from nefertem.plugins.validation.frictionless import ConstraintFrictionless
+from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
+from nefertem.plugins.validation.frictionless.utils import frictionless_schema_converter
+from nefertem.readers.utils import describe_resource
 
 
 def test_frictionless_schema_converter():

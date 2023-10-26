@@ -31,7 +31,7 @@ if typing.TYPE_CHECKING:
     from nefertem.metadata.reports.schema import NefertemSchema
     from nefertem.metadata.run_info import RunInfo
     from nefertem.plugins.profiling.base import Metric
-    from nefertem.plugins.utils.plugin_utils import RenderTuple
+    from nefertem.plugins.utils import RenderTuple
     from nefertem.plugins.validation.base import Constraint
     from nefertem.run.run_handler import RunHandler
 
@@ -155,7 +155,7 @@ class Run:
         str
             Return a modified filename.
         """
-        self._filenames[filename] = self._filenames.get(filename, 1) + 1
+        self._filenames[filename] = self._filenames.get(filename, 0) + 1
         return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
 
     def _persist_artifact(self, obj: RenderTuple) -> None:

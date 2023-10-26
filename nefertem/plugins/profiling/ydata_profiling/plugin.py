@@ -9,85 +9,16 @@ import typing
 import ydata_profiling
 from ydata_profiling import ProfileReport
 
-from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
-from nefertem.plugins.profiling.base import Profiling, ProfilingPluginBuilder
-from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER
+from nefertem.metadata.reports.profile import NefertemProfile
+from nefertem.plugins.profiling.base import Profiling
+from nefertem.plugins.profiling.ydata_profiling.utils import PROFILE_COLUMNS, PROFILE_FIELDS
+from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.profiling.base import Metric
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
     from nefertem.readers.base.native import NativeReader
     from nefertem.resources.data_resource import DataResource
-
-# Columns/fields to parse from profile
-PROFILE_COLUMNS = ["analysis", "table", "variables"]
-PROFILE_FIELDS = [
-    "n_distinct",
-    "p_distinct",
-    "is_unique",
-    "n_unique",
-    "p_unique",
-    "type",
-    "hashable",
-    "n_missing",
-    "n",
-    "p_missing",
-    "count",
-    "memory_size",
-]
-PROFILE_DATASET_METRICS = [
-    "n",
-    "n_var",
-    "memory_size",
-    "record_size",
-    "n_cells_missing",
-    "n_vars_with_missing",
-    "n_vars_all_missing",
-    "p_cells_missing",
-    "n_duplicates",
-    "p_duplicates",
-]
-PROFILE_FIELD_METRICS = [
-    "n_distinct",
-    "p_distinct",
-    "is_unique",
-    "n_unique",
-    "p_unique",
-    "type",
-    "hashable",
-    "n_missing",
-    "n",
-    "p_missing",
-    "count",
-    "memory_size",
-    "n_negative",
-    "p_negative",
-    "n_infinite",
-    "n_zeros",
-    "mean",
-    "std",
-    "variance",
-    "min",
-    "max",
-    "kurtosis",
-    "skewness",
-    "sum",
-    "mad",
-    "chi_squared_statistic",
-    "chi_squared_pvalue",
-    "range",
-    "iqr",
-    "cv",
-    "p_zeros",
-    "p_infinite",
-]
-
-
-####################
-# PLUGIN
-####################
 
 
 class ProfilePluginYdataProfiling(Profiling):
@@ -147,33 +78,13 @@ class ProfilePluginYdataProfiling(Profiling):
             # Get fields, stats and duration
             fields = args.get("variables", {})
             stats = args.get("table", {})
-            metrics, field_metrics = self._extract_metrics(args)
+
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = {}
             stats = {}
-            metrics = []
-            field_metrics = {}
 
-        return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), duration, stats, fields, metrics, field_metrics
-        )
-
-    def _extract_metrics(self, args) -> (list, dict):
-        metrics = []
-        field_metrics = {}
-        table = args.get("table", {})
-        var = args.get("variables", {})
-
-        for m in PROFILE_DATASET_METRICS:
-            metrics.append(NefertemProfileMetric(m, m, "ydata_profiling", None, table[m]))
-        for key in var:
-            field_metrics[key] = []
-            for m in PROFILE_FIELD_METRICS:
-                v = var.get(key, {}).get(m, None)
-                if v is not None:
-                    field_metrics[key].append(NefertemProfileMetric(m, m, "ydata_profiling", None, v))
-        return (metrics, field_metrics)
+        return NefertemProfile(self.get_lib_name(), self.get_lib_version(), duration, stats, fields)
 
     @exec_decorator
     def render_artifact(self, result: Result) -> list[tuple]:
@@ -213,40 +124,3 @@ class ProfilePluginYdataProfiling(Profiling):
         Get library version.
         """
         return ydata_profiling.__version__
-
-
-####################
-# BUILDER
-####################
-
-
-class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
-    """
-    Profile plugin builder.
-    """
-
-    def build(
-        self, resources: list[DataResource], metrics: list[Metric] | None = None
-    ) -> list[ProfilePluginYdataProfiling]:
-        """
-        Build a plugin.
-        """
-        plugins = []
-        for res in resources:
-            resource = self._get_resource_deepcopy(res)
-            store = self._get_resource_store(resource)
-            data_reader = self._get_data_reader(PANDAS_DATAFRAME_FILE_READER, store)
-            plugin = ProfilePluginYdataProfiling()
-            plugin.setup(data_reader, resource, self.exec_args)
-            plugins.append(plugin)
-        return plugins
-
-    @staticmethod
-    def _filter_metrics(*args) -> None:
-        """
-        Placeholder methods.
-
-        Returns
-        -------
-        None
-        """

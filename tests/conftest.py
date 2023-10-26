@@ -10,12 +10,12 @@ import duckdb
 import pytest
 from moto import mock_s3
 
-from nefertem.plugins.utils.plugin_utils import Result
-from nefertem.plugins.validation.duckdb import ConstraintDuckDB
-from nefertem.plugins.validation.evidently import ConstraintEvidently, EvidentlyElement, MetricEvidently
-from nefertem.plugins.validation.frictionless import ConstraintFrictionless, ConstraintFullFrictionless
-from nefertem.plugins.validation.sqlalchemy import ConstraintSqlAlchemy
-from nefertem.readers.utils import build_reader
+from nefertem.plugins.utils import Result
+from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
+from nefertem.plugins.validation.evidently.constraints import ConstraintEvidently, EvidentlyElement, MetricEvidently
+from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
+from nefertem.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy
+from nefertem.readers.builder import build_reader
 from nefertem.resources.data_resource import DataResource
 from nefertem.run.run_config import RunConfig
 from nefertem.stores.builder import StoreBuilder

@@ -1,16 +1,12 @@
 """
 PolarsDataFrameReader module.
 """
-from __future__ import annotations
-
-import typing
 from typing import Any
+
+import polars as pl
 
 from nefertem.readers.base.native import NativeReader
 from nefertem.utils.exceptions import StoreError
-
-if typing.TYPE_CHECKING:
-    import polars as pl
 
 
 class PolarsDataFrameSQLReader(NativeReader):
@@ -33,7 +29,7 @@ class PolarsDataFrameSQLReader(NativeReader):
         Use polars to read data from db.
         """
         try:
-            return pl.read_database(query, conn_str)
+            return pl.read_database(query, conn_str, engine="adbc")
         except Exception as ex:
             raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
 

@@ -1,8 +1,9 @@
 import pytest
 import sqlalchemy
 
-from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.sqlalchemy import ValidationBuilderSqlAlchemy, ValidationPluginSqlAlchemy
+from nefertem.plugins.utils import ValidationReport
+from nefertem.plugins.validation.sqlalchemy.builder import ValidationBuilderSqlAlchemy
+from nefertem.plugins.validation.sqlalchemy.plugin import ValidationPluginSqlAlchemy
 from nefertem.utils.commons import LIBRARY_SQLALCHEMY, PANDAS_DATAFRAME_SQL_READER, VALIDATE
 from tests.conftest import (
     CONST_SQLALCHEMY_01,

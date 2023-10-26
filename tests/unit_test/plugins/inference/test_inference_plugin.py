@@ -1,5 +1,5 @@
 from nefertem.plugins.inference.base import Inference
-from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
+from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 

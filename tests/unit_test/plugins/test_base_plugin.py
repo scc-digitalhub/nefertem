@@ -10,7 +10,7 @@ from nefertem.resources.data_resource import DataResource
 from nefertem.utils.exceptions import StoreError
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
 
 
 class SamplePlugin(Plugin):

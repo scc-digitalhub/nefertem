@@ -4,8 +4,9 @@ from pathlib import Path
 import duckdb
 import pytest
 
-from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.duckdb import ValidationBuilderDuckDB, ValidationPluginDuckDB
+from nefertem.plugins.utils import ValidationReport
+from nefertem.plugins.validation.duckdb.builder import ValidationBuilderDuckDB
+from nefertem.plugins.validation.duckdb.plugin import ValidationPluginDuckDB
 from nefertem.utils.commons import DEFAULT_DIRECTORY, LIBRARY_DUCKDB, PANDAS_DATAFRAME_DUCKDB_READER, VALIDATE
 from tests.conftest import (
     CONST_DUCKDB_01,

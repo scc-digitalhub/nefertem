@@ -8,7 +8,7 @@ import typing
 from typing import Any
 
 from nefertem.plugins.factory import builder_factory
-from nefertem.readers.utils import build_reader
+from nefertem.readers.builder import build_reader
 from nefertem.utils.commons import (
     BASE_FILE_READER,
     INFER,

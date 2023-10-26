@@ -4,7 +4,8 @@ import evidently
 import pytest
 from evidently.report import Report
 
-from nefertem.plugins.profiling.evidently import ProfileBuilderEvidently, ProfilePluginEvidently
+from nefertem.plugins.profiling.evidently.builder import ProfileBuilderEvidently
+from nefertem.plugins.profiling.evidently.plugin import ProfilePluginEvidently
 from nefertem.utils.commons import LIBRARY_EVIDENTLY, PANDAS_DATAFRAME_FILE_READER, PROFILE
 from tests.conftest import METRIC_EVIDENTLY_01
 from tests.unit_test.plugins.utils_plugin_tests import (

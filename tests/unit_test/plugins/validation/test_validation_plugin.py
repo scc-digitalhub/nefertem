@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from nefertem.plugins.utils.plugin_utils import Result, exec_decorator
+from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.plugins.validation.base import Validation
 from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 

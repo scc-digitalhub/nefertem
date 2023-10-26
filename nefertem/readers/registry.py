@@ -27,7 +27,7 @@ try:
 
     REGISTRY[PANDAS_DATAFRAME_FILE_READER] = PandasDataFrameFileReader
 except ImportError:
-    ...
+    raise
 
 try:
     from nefertem.readers.pandas.sql import PandasDataFrameSQLReader

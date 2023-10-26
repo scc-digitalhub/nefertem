@@ -7,12 +7,12 @@ import typing
 from collections import namedtuple
 
 from nefertem.metadata.reports.report import NefertemReport
-from nefertem.plugins.utils.plugin_utils import exec_decorator
+from nefertem.plugins.utils import exec_decorator
 from nefertem.plugins.validation.base import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
+    from nefertem.plugins.utils import Result
 
 DummyConstraint = namedtuple("DummyConstraint", ["name", "resources"], defaults=["", [""]])
 

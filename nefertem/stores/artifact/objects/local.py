@@ -75,6 +75,7 @@ class LocalArtifactStore(ArtifactStore):
 
         # Dictionary
         elif isinstance(src, dict) and src_name is not None:
+            print(src)
             write_json(src, dst)
 
         # StringIO/BytesIO buffer

@@ -1,30 +1,15 @@
-"""
-Evidently implementation of profiling plugin.
-"""
-from __future__ import annotations
-
 import importlib
-import typing
 
 import evidently
 from evidently.report import Report
-from pydantic import BaseModel, Field
 
 from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
-from nefertem.plugins.profiling.base import Metric, Profiling, ProfilingPluginBuilder
-from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.plugins.profiling.base import Profiling
+from nefertem.plugins.profiling.evidently.metrics import MetricEvidently
+from nefertem.plugins.utils import Result, exec_decorator
+from nefertem.readers.base.file import FileReader
+from nefertem.resources.data_resource import DataResource
 from nefertem.utils.io_utils import write_bytesio
-
-if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
-    from nefertem.readers.base.file import FileReader
-    from nefertem.resources.data_resource import DataResource
-
-
-####################
-# PLUGIN
-####################
 
 
 class ProfilePluginEvidently(Profiling):
@@ -160,93 +145,3 @@ class ProfilePluginEvidently(Profiling):
         Get library version.
         """
         return evidently.__version__
-
-
-####################
-# BUILDER
-####################
-
-
-class ProfileBuilderEvidently(ProfilingPluginBuilder):
-    """
-    Evidently profile plugin builder.
-    """
-
-    def build(self, resources: list[DataResource], metrics: list[Metric] | None = None) -> list[ProfilePluginEvidently]:
-        """
-        Build a plugin for every metric element.
-        """
-        if metrics is None or len(metrics) == 0:
-            return []
-
-        f_metrics = self._filter_metrics(metrics)
-        plugins = []
-        for metric in f_metrics:
-            data_reader = None
-            curr_resource = None
-            ref_data_reader = None
-            ref_resource = None
-            for resource in resources:
-                if resource.name == metric.resource:
-                    store = self._get_resource_store(resource)
-                    data_reader = self._get_data_reader(BASE_FILE_READER, store)
-                    curr_resource = resource
-                elif resource.name == metric.reference_resource:
-                    store = self._get_resource_store(resource)
-                    ref_data_reader = self._get_data_reader(BASE_FILE_READER, store)
-                    ref_resource = resource
-
-            if curr_resource is not None:
-                plugin = ProfilePluginEvidently()
-                plugin.setup(data_reader, resource, metric, self.exec_args, ref_data_reader, ref_resource)
-                plugins.append(plugin)
-
-        return plugins
-
-    @staticmethod
-    def _filter_metrics(metrics: list[Metric]) -> list[Metric]:
-        """
-        Filter out MetricEvidently.
-        """
-        if metrics is None:
-            return []
-        return [m for m in metrics if m.type == evidently]
-
-    def destroy(self) -> None:
-        """
-        Destory plugins.
-        """
-
-
-####################
-# METRIC
-####################
-
-
-class Element(BaseModel):
-    """
-    Evidently single test
-    """
-
-    type: str
-    """Evidently test/metric type (fully qualified class name)."""
-    values: dict | None = None
-    """Custom parameters for the test/metric."""
-
-
-class MetricEvidently(Metric):
-    """
-    Evidently metric input model.
-    """
-
-    type: str = Field("evidently", Literal=True)
-    """Metric input type ("Evidently")."""
-
-    resource: str
-    """Resource to profile."""
-
-    reference_resource: str | None = None
-    """Resource to use as reference."""
-
-    metrics: list[Element]
-    """Evidently tests."""

@@ -1,30 +1,13 @@
-"""
-Frictionless implementation of validation plugin.
-"""
-from __future__ import annotations
-
-import typing
-from typing import Any
-
 import frictionless
 from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
-from pydantic import Field
 
 from nefertem.metadata.reports.report import NefertemReport
-from nefertem.plugins.utils.plugin_utils import exec_decorator
-from nefertem.plugins.validation.base import Constraint, Validation, ValidationPluginBuilder
-from nefertem.utils.commons import BASE_FILE_READER
-
-if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils.plugin_utils import Result
-    from nefertem.readers.base.file import FileReader
-    from nefertem.resources.data_resource import DataResource
-
-
-####################
-# PLUGIN
-####################
+from nefertem.plugins.utils import Result, exec_decorator
+from nefertem.plugins.validation.base import Validation
+from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
+from nefertem.readers.base.file import FileReader
+from nefertem.resources.data_resource import DataResource
 
 
 class ValidationPluginFrictionless(Validation):
@@ -167,89 +150,3 @@ class ValidationPluginFrictionless(Validation):
         Get library version.
         """
         return frictionless.__version__
-
-
-####################
-# BUILDER
-####################
-
-
-class ValidationBuilderFrictionless(ValidationPluginBuilder):
-    """
-    Validation plugin builder.
-    """
-
-    def build(
-        self,
-        resources: list[DataResource],
-        constraints: list[Constraint],
-        error_report: str,
-    ) -> list[ValidationPluginFrictionless]:
-        """
-        Build a plugin for every resource and every constraint.
-        """
-        f_constraints = self._filter_constraints(constraints)
-        plugins = []
-        for res in resources:
-            resource = self._get_resource_deepcopy(res)
-            for const in f_constraints:
-                if resource.name in const.resources:
-                    store = self._get_resource_store(resource)
-                    data_reader = self._get_data_reader(BASE_FILE_READER, store)
-                    plugin = ValidationPluginFrictionless()
-                    plugin.setup(data_reader, resource, const, error_report, self.exec_args)
-                    plugins.append(plugin)
-
-        return plugins
-
-    @staticmethod
-    def _filter_constraints(
-        constraints: list[Constraint],
-    ) -> list[ConstraintFrictionless | ConstraintFullFrictionless]:
-        """
-        Filter out ConstraintFrictionless and ConstraintFullFrictionless.
-        """
-        return [const for const in constraints if const.type in ("frictionless", "frictionless_full")]
-
-    def destroy(self) -> None:
-        """
-        Destroy builder.
-        """
-
-
-####################
-# CONSTRAINT
-####################
-
-
-class ConstraintFrictionless(Constraint):
-    """
-    Frictionless constraint.
-    """
-
-    type: str = Field("frictionless", Literal=True)
-    """Constraint type ("frictionless")."""
-
-    field: str
-    """Field to validate."""
-
-    fieldType: str
-    """Datatype of the field to validate."""
-
-    constraint: str
-    """Frictionless constraint typology."""
-
-    value: Any
-    """Value of the constraint."""
-
-
-class ConstraintFullFrictionless(Constraint):
-    """
-    Frictionless full schema constraint.
-    """
-
-    type: str = Field("frictionless_full", Literal=True)
-    """Constraint type ("frictionless_schema")."""
-
-    tableSchema: dict
-    """Table schema to validate a resource."""

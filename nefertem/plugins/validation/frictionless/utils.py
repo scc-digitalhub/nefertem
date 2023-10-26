@@ -1,11 +1,6 @@
-"""
-Frictionless utils module.
-"""
-from __future__ import annotations
+from frictionless import Schema
 
-from frictionless import Detector, Resource, Schema
-
-from nefertem.plugins.validation.frictionless import ConstraintFrictionless
+from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
 
 
 def frictionless_schema_converter(schema: Schema | dict, resource_name: str) -> list[ConstraintFrictionless]:
@@ -81,15 +76,3 @@ def frictionless_schema_converter(schema: Schema | dict, resource_name: str) -> 
                 cnt += 1
 
     return constraints
-
-
-# With bigger buffer/sample we should avoid error encoding detection
-custom_frictionless_detector = Detector(buffer_size=20000, sample_size=1250)
-
-
-def describe_resource(pth: str) -> dict:
-    """
-    Describe a resource using frictionless.
-    """
-    desc = Resource.describe(source=pth, expand=True, detector=custom_frictionless_detector)
-    return desc.to_dict()

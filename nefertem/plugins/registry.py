@@ -39,9 +39,9 @@ plugin_registry.register(VALIDATE, DUMMY, ValidationBuilderDummy)
 
 # frictionless imports
 try:
-    from nefertem.plugins.inference.frictionless import InferenceBuilderFrictionless
-    from nefertem.plugins.profiling.frictionless import ProfileBuilderFrictionless
-    from nefertem.plugins.validation.frictionless import ValidationBuilderFrictionless
+    from nefertem.plugins.inference.frictionless.builder import InferenceBuilderFrictionless
+    from nefertem.plugins.profiling.frictionless.builder import ProfileBuilderFrictionless
+    from nefertem.plugins.validation.frictionless.builder import ValidationBuilderFrictionless
 
     plugin_registry.register(INFER, "frictionless", InferenceBuilderFrictionless)
     plugin_registry.register(PROFILE, "frictionless", ProfileBuilderFrictionless)
@@ -52,17 +52,17 @@ except ImportError:
 
 
 # ydata_profiling imports
-# try:
-#     from nefertem.plugins.profiling.ydata import ProfileBuilderYdataProfiling
+try:
+    from nefertem.plugins.profiling.ydata_profiling.builder import ProfileBuilderYdataProfiling
 
-#     plugin_registry.register(PROFILE, "ydata", ProfileBuilderYdataProfiling)
+    plugin_registry.register(PROFILE, "ydata_profiling", ProfileBuilderYdataProfiling)
 
-# except ImportError:
-#     ...
+except ImportError:
+    ...
 
 # duckdb imports
 try:
-    from nefertem.plugins.validation.duckdb import ValidationBuilderDuckDB
+    from nefertem.plugins.validation.duckdb.builder import ValidationBuilderDuckDB
 
     plugin_registry.register(VALIDATE, "duckdb", ValidationBuilderDuckDB)
 
@@ -72,7 +72,7 @@ except ImportError:
 
 # sqlalchemy imports
 try:
-    from nefertem.plugins.validation.sqlalchemy import ValidationBuilderSqlAlchemy
+    from nefertem.plugins.validation.sqlalchemy.builder import ValidationBuilderSqlAlchemy
 
     plugin_registry.register(VALIDATE, "sqlalchemy", ValidationBuilderSqlAlchemy)
 
