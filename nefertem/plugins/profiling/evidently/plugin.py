@@ -2,8 +2,9 @@ import importlib
 
 import evidently
 from evidently.report import Report
+from nefertem.metadata.nefertem import NefertemProfile
 
-from nefertem.metadata.reports.profile import NefertemProfile, NefertemProfileMetric
+from nefertem.metadata.nefertem import NefertemProfileMetric
 from nefertem.plugins.profiling.base import Profiling
 from nefertem.plugins.profiling.evidently.metrics import MetricEvidently
 from nefertem.plugins.utils import Result, exec_decorator

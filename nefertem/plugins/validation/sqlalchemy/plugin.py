@@ -8,7 +8,7 @@ from typing import Any
 
 import sqlalchemy
 
-from nefertem.metadata.reports.report import NefertemReport
+from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import ValidationReport, exec_decorator
 from nefertem.plugins.validation.base import Validation
 from nefertem.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy

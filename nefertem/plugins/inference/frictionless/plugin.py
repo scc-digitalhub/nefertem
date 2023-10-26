@@ -8,7 +8,7 @@ import typing
 import frictionless
 from frictionless import Schema
 
-from nefertem.metadata.reports.schema import NefertemSchema
+from nefertem.metadata.nefertem import NefertemSchema
 from nefertem.plugins.inference.base import Inference
 from nefertem.plugins.utils import exec_decorator
 

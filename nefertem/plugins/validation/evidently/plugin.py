@@ -3,7 +3,7 @@ import importlib
 import evidently
 from evidently.test_suite import TestSuite
 
-from nefertem.metadata.reports.report import NefertemReport
+from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.plugins.validation.base import Validation
 from nefertem.plugins.validation.evidently.constraints import ConstraintEvidently

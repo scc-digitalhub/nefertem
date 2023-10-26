@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from psutil import virtual_memory
 
-from nefertem.metadata.metadata import Metadata
+from nefertem.metadata.base import Metadata
 
 
 @dataclass

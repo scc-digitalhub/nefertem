@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.metadata.reports.schema import NefertemSchema
+from nefertem.metadata.nefertem import NefertemSchema
 from nefertem.plugins.inference.base import Inference, InferencePluginBuilder
 from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.commons import DUMMY

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.metadata.metadata import Metadata
+from nefertem.metadata.base import Metadata
 from nefertem.utils.utils import get_time
 
 if typing.TYPE_CHECKING:
@@ -70,11 +70,11 @@ class RunInfo(Metadata):
         return {
             "experiment_name": self.experiment_name,
             "run_id": self.run_id,
-            "run_config": self.run_config.dict(exclude_none=True),
+            "run_config": self.run_config.model_dump(exclude_none=True),
             "run_libraries": self.run_libraries,
             "run_meta_path": self.run_meta_path,
             "run_art_path": self.run_art_path,
-            "resources": [i.dict(exclude_none=True) for i in self.resources],
+            "resources": [i.model_dump(exclude_none=True) for i in self.resources],
             "created": self.created,
             "begin_status": self.begin_status,
             "started": self.started,

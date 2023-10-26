@@ -9,7 +9,7 @@ import typing
 import ydata_profiling
 from ydata_profiling import ProfileReport
 
-from nefertem.metadata.reports.profile import NefertemProfile
+from nefertem.metadata.nefertem import NefertemProfile
 from nefertem.plugins.profiling.base import Profiling
 from nefertem.plugins.profiling.ydata_profiling.utils import PROFILE_COLUMNS, PROFILE_FIELDS
 from nefertem.plugins.utils import exec_decorator

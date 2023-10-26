@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.metadata.reports.profile import NefertemProfile
+from nefertem.metadata.nefertem import NefertemProfile
 from nefertem.plugins.profiling.base import Profiling, ProfilingPluginBuilder
 from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.commons import DUMMY

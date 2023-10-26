@@ -3,7 +3,7 @@ BlobLog module.
 """
 from dataclasses import dataclass
 
-from nefertem.metadata.metadata import Metadata
+from nefertem.metadata.base import Metadata
 
 
 @dataclass

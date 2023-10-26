@@ -26,9 +26,9 @@ from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time
 
 if typing.TYPE_CHECKING:
-    from nefertem.metadata.reports.profile import NefertemProfile
-    from nefertem.metadata.reports.report import NefertemReport
-    from nefertem.metadata.reports.schema import NefertemSchema
+    from nefertem.metadata.nefertem import NefertemProfile
+    from nefertem.metadata.nefertem import NefertemReport
+    from nefertem.metadata.nefertem import NefertemSchema
     from nefertem.metadata.run_info import RunInfo
     from nefertem.plugins.profiling.base import Metric
     from nefertem.plugins.utils import RenderTuple

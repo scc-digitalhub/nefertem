@@ -2,7 +2,7 @@ import frictionless
 from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
 
-from nefertem.metadata.reports.report import NefertemReport
+from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.plugins.validation.base import Validation
 from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless

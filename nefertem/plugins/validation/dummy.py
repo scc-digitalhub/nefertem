@@ -6,7 +6,7 @@ from __future__ import annotations
 import typing
 from collections import namedtuple
 
-from nefertem.metadata.reports.report import NefertemReport
+from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import exec_decorator
 from nefertem.plugins.validation.base import Validation, ValidationPluginBuilder
 from nefertem.utils.commons import DUMMY
