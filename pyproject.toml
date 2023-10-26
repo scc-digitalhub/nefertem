@@ -18,16 +18,17 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "boto3==1.22.8",
-    "botocore==1.25.8",
-    "frictionless==5.14.0",
+    "boto3==1.28.71",
+    "frictionless==5.16.0",
     "psycopg2-binary==2.9.3",
     "pyarrow==11.0.0",
-    "pydantic==1.10.13",
+    "pydantic==2.4.2",
     "requests==2.31.0",
     "SQLAlchemy==2.0.22",
     "pandas==2.0.3",
     "psutil==5.9.6",
+    "adbc-driver-manager==0.7.0",
+    "polars==0.19.11",
 ]
 
 requires-python = ">=3.10"
@@ -35,17 +36,15 @@ requires-python = ">=3.10"
 [project.optional-dependencies]
 all = [
     "duckdb==0.9.1",
-    "ydata-profiling==4.6.0",
-    "polars==0.19.11",
+    "ydata-profiling==4.6.1",
     "evidently==0.4.0",
-    "adbc-driver-manager==0.7.0"
 ]
 duckdb = [
     "duckdb==0.9.1",
 
 ]
 ydata-profiling = [
-    "ydata-profiling==4.6.0",
+    "ydata-profiling==4.6.1",
 
 ]
 evidently = [
