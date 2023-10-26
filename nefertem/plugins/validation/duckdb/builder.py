@@ -8,7 +8,7 @@ import duckdb
 from nefertem.plugins.validation.base import Constraint, ValidationPluginBuilder
 from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
 from nefertem.plugins.validation.duckdb.plugin import ValidationPluginDuckDB
-from nefertem.readers.base.native import NativeReader
+from nefertem.readers.file.native import NativeReader
 from nefertem.resources.data_resource import DataResource
 from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.commons import (

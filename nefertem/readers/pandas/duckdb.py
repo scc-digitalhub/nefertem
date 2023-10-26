@@ -8,14 +8,14 @@ from typing import Any
 
 import duckdb
 
-from nefertem.readers.base.native import NativeReader
+from nefertem.readers.base import DataReader
 from nefertem.utils.exceptions import StoreError
 
 if typing.TYPE_CHECKING:
     import pandas as pd
 
 
-class PandasDataFrameDuckDBReader(NativeReader):
+class PandasDataFrameDuckDBReader(DataReader):
     """
     PandasDataFrameDuckDBReader class.
 

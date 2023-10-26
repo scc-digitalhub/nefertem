@@ -17,7 +17,7 @@ from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
-    from nefertem.readers.base.native import NativeReader
+    from nefertem.readers.file.native import NativeReader
     from nefertem.resources.data_resource import DataResource
 
 

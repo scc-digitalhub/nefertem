@@ -16,7 +16,7 @@ from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
-    from nefertem.readers.base.base import DataReader
+    from nefertem.readers.base import DataReader
     from nefertem.resources.data_resource import DataResource
     from nefertem.stores.artifact.objects.base import ArtifactStore
 

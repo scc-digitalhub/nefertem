@@ -7,11 +7,11 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
-from nefertem.readers.base.native import NativeReader
+from nefertem.readers.base import DataReader
 from nefertem.utils.exceptions import StoreError
 
 
-class PandasDataFrameSQLReader(NativeReader):
+class PandasDataFrameSQLReader(DataReader):
     """
     PandasDataFrameSQLReader class.
 
@@ -22,7 +22,7 @@ class PandasDataFrameSQLReader(NativeReader):
         """
         Fetch resource from backend.
         """
-        conn_string = super().fetch_data(src)
+        conn_string = self.store.fetch_native(src)
         return self._read_df_from_db(conn_string, query)
 
     @staticmethod

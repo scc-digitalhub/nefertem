@@ -5,11 +5,11 @@ from typing import Any
 
 import polars as pl
 
-from nefertem.readers.base.native import NativeReader
+from nefertem.readers.base import DataReader
 from nefertem.utils.exceptions import StoreError
 
 
-class PolarsDataFrameSQLReader(NativeReader):
+class PolarsDataFrameSQLReader(DataReader):
     """
     PolarsDataFrameSQLReader class.
 
@@ -20,7 +20,7 @@ class PolarsDataFrameSQLReader(NativeReader):
         """
         Fetch resource from backend.
         """
-        conn_string = super().fetch_data(src)
+        conn_string = self.store.fetch_native(src)
         return self._read_df_from_db(conn_string, query)
 
     @staticmethod

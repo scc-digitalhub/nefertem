@@ -8,7 +8,7 @@ from nefertem.metadata.nefertem import NefertemProfileMetric
 from nefertem.plugins.profiling.base import Profiling
 from nefertem.plugins.profiling.evidently.metrics import MetricEvidently
 from nefertem.plugins.utils import Result, exec_decorator
-from nefertem.readers.base.file import FileReader
+from nefertem.readers.file.file import FileReader
 from nefertem.resources.data_resource import DataResource
 from nefertem.utils.io_utils import write_bytesio
 

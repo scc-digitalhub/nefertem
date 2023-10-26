@@ -7,7 +7,7 @@ import typing
 
 import duckdb
 
-from nefertem.readers.base.native import NativeReader
+from nefertem.readers.file.native import NativeReader
 from nefertem.utils.exceptions import StoreError
 
 if typing.TYPE_CHECKING:

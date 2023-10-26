@@ -6,7 +6,7 @@ from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.plugins.validation.base import Validation
 from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
-from nefertem.readers.base.file import FileReader
+from nefertem.readers.file.file import FileReader
 from nefertem.resources.data_resource import DataResource
 
 

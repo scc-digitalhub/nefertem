@@ -1,7 +1,7 @@
 """
 FileReader module.
 """
-from nefertem.readers.base.base import DataReader
+from nefertem.readers.base import DataReader
 
 
 class FileReader(DataReader):

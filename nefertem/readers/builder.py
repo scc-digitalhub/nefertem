@@ -1,4 +1,4 @@
-from nefertem.readers.base.base import DataReader
+from nefertem.readers.base import DataReader
 from nefertem.readers.registry import REGISTRY
 from nefertem.stores.artifact.objects.base import ArtifactStore
 

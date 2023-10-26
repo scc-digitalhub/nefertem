@@ -16,7 +16,7 @@ from nefertem.plugins.validation.sqlalchemy.utils import evaluate_validity
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
-    from nefertem.readers.base.native import NativeReader
+    from nefertem.readers.file.native import NativeReader
 
 
 class ValidationPluginSqlAlchemy(Validation):

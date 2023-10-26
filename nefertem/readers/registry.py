@@ -3,8 +3,8 @@ DataReader registry.
 """
 
 # Base imports
-from nefertem.readers.base.file import FileReader
-from nefertem.readers.base.native import NativeReader
+from nefertem.readers.file.file import FileReader
+from nefertem.readers.file.native import NativeReader
 from nefertem.utils.commons import BASE_FILE_READER, BASE_NATIVE_READER
 
 # Registry of data readers

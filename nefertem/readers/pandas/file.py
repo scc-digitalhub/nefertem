@@ -3,12 +3,12 @@ PandasDataFrameReader module.
 """
 import pandas as pd
 
-from nefertem.readers.base.file import FileReader
+from nefertem.readers.base import DataReader
 from nefertem.readers.utils import describe_resource
 from nefertem.utils.utils import listify
 
 
-class PandasDataFrameFileReader(FileReader):
+class PandasDataFrameFileReader(DataReader):
     """
     PandasDataFrameFileReader class.
 
@@ -19,15 +19,9 @@ class PandasDataFrameFileReader(FileReader):
         """
         Fetch resource from backend.
         """
-        path = super().fetch_data(src)
-        res = self._describe_resource(path)
+        path = self.store.fetch_file(src)
+        res = describe_resource(path)
         return self._read_df_from_path(res)
-
-    def _describe_resource(self, src: str) -> dict:
-        """
-        Describe resource.
-        """
-        return describe_resource(src)
 
     def _read_df_from_path(self, resource: dict) -> pd.DataFrame:
         """
