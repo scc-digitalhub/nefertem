@@ -99,3 +99,28 @@ class Client:
             Run object.
         """
         return self._run_builder.create_run(resources, run_config, experiment, run_id, overwrite)
+
+
+def create_client(
+    metadata_store_path: str | None = None,
+    stores: list[dict] | None = None,
+    tmp_dir: str | None = None,
+) -> Client:
+    """
+    Create a new Client object.
+
+    Parameters
+    ----------
+    metadata_store_path : str
+        Path to the metadata store.
+    stores : list[dict]
+        List of dict containing configuration for the artifact stores.
+    tmp_dir : str
+        Default local temporary folder where to store input data".
+
+    Returns
+    -------
+    Client
+        Client object.
+    """
+    return Client(metadata_store_path, stores, tmp_dir)
