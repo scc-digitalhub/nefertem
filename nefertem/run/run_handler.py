@@ -27,8 +27,6 @@ from nefertem.utils.utils import flatten_list, listify
 if typing.TYPE_CHECKING:
     from nefertem.client.store_handler import StoreHandler
     from nefertem.plugins.base import Plugin, PluginBuilder
-    from nefertem.plugins.profiling.base import Metric
-    from nefertem.plugins.validation.base import Constraint
     from nefertem.resources.data_resource import DataResource
     from nefertem.run.run_config import RunConfig
 
@@ -91,7 +89,7 @@ class RunHandler:
     def validate(
         self,
         resources: list[DataResource],
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str,
         parallel: bool = False,
         num_worker: int = 10,
@@ -100,7 +98,6 @@ class RunHandler:
         Wrapper for plugins validate methods.
         """
         self._parse_report_arg(error_report)
-        constraints = listify(constraints)
         builders = builder_factory(
             self._config.validation,
             VALIDATE,
@@ -122,14 +119,13 @@ class RunHandler:
     def profile(
         self,
         resources: list[DataResource],
-        metrics: list[Metric] | None = None,
+        metrics: list[dict],
         parallel: bool = False,
         num_worker: int = 10,
     ) -> None:
         """
         Wrapper for plugins profile methods.
         """
-        metrics = listify(metrics)
         builders = builder_factory(
             self._config.profiling,
             PROFILE,

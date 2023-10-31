@@ -1,10 +1,16 @@
 """
 Frictionless inference plugin builder module.
 """
+from __future__ import annotations
+
+import typing
+
 from nefertem.plugins.inference.base import InferencePluginBuilder
 from nefertem.plugins.inference.frictionless.plugin import InferencePluginFrictionless
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import BASE_FILE_READER
+
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
 
 
 class InferenceBuilderFrictionless(InferencePluginBuilder):

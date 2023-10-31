@@ -57,9 +57,9 @@ def frictionless_schema_converter(schema: Schema | dict, resource_name: str) -> 
             constraints.append(c)
             cnt += 1
 
-        c_list = field.get("constraints", {})
-        if c_list:
-            for k, v in c_list.items():
+        const = field.get("constraints", {})
+        if const:
+            for k, v in const.items():
                 name = f'{field.get("name", "")}_{str(cnt)}'
                 c = ConstraintFrictionless(
                     type="frictionless",

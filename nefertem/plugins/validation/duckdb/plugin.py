@@ -11,11 +11,11 @@ import duckdb
 from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import ValidationReport, exec_decorator
 from nefertem.plugins.validation.base import Validation
-from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
 from nefertem.plugins.validation.duckdb.utils import evaluate_validity
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
+    from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
     from nefertem.readers.file.native import NativeReader
 
 

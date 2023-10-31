@@ -1,7 +1,13 @@
-from nefertem.plugins.profiling.base import Metric, ProfilingPluginBuilder
+from __future__ import annotations
+
+import typing
+
+from nefertem.plugins.profiling.base import ProfilingPluginBuilder
 from nefertem.plugins.profiling.ydata_profiling.plugin import ProfilePluginYdataProfiling
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER
+
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
@@ -9,9 +15,7 @@ class ProfileBuilderYdataProfiling(ProfilingPluginBuilder):
     Profile plugin builder.
     """
 
-    def build(
-        self, resources: list[DataResource], metrics: list[Metric] | None = None
-    ) -> list[ProfilePluginYdataProfiling]:
+    def build(self, resources: list[DataResource], *args) -> list[ProfilePluginYdataProfiling]:
         """
         Build a plugin.
         """

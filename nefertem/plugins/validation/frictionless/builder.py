@@ -1,8 +1,14 @@
-from nefertem.plugins.validation.base import Constraint, ValidationPluginBuilder
+from __future__ import annotations
+
+import typing
+
+from nefertem.plugins.validation.base import ValidationPluginBuilder
 from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
 from nefertem.plugins.validation.frictionless.plugin import ValidationPluginFrictionless
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import BASE_FILE_READER
+
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
 
 
 class ValidationBuilderFrictionless(ValidationPluginBuilder):
@@ -13,7 +19,7 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
     def build(
         self,
         resources: list[DataResource],
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str,
     ) -> list[ValidationPluginFrictionless]:
         """
@@ -34,13 +40,17 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
         return plugins
 
     @staticmethod
-    def _filter_constraints(
-        constraints: list[Constraint],
-    ) -> list[ConstraintFrictionless | ConstraintFullFrictionless]:
+    def _filter_constraints(constraints: list[dict]) -> list[ConstraintFrictionless | ConstraintFullFrictionless]:
         """
-        Filter out ConstraintFrictionless and ConstraintFullFrictionless.
+        Build constraints.
         """
-        return [const for const in constraints if const.type in ("frictionless", "frictionless_full")]
+        const = []
+        for c in constraints:
+            if c.get("type") == "frictionless":
+                const.append(ConstraintFrictionless(**c))
+            elif c.get("type") == "frictionless_full":
+                const.append(ConstraintFullFrictionless(**c))
+        return const
 
     def destroy(self) -> None:
         """

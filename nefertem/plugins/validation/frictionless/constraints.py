@@ -37,5 +37,5 @@ class ConstraintFullFrictionless(Constraint):
     type: str = Field("frictionless_full", Literal=True)
     """Constraint type ("frictionless_schema")."""
 
-    tableSchema: dict
+    table_schema: dict
     """Table schema to validate a resource."""

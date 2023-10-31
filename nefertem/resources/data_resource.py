@@ -37,5 +37,5 @@ class DataResource(BaseModel):
     description: str | None = None
     """A description of the DataResource."""
 
-    tableSchema: str | dict | None = None
+    table_schema: str | dict | None = None
     """Resource table schema or path to table schema."""

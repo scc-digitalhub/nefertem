@@ -1,7 +1,13 @@
-from nefertem.plugins.profiling.base import Metric, ProfilingPluginBuilder
+from __future__ import annotations
+
+import typing
+
+from nefertem.plugins.profiling.base import ProfilingPluginBuilder
 from nefertem.plugins.profiling.frictionless.plugin import ProfilePluginFrictionless
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import BASE_FILE_READER
+
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfileBuilderFrictionless(ProfilingPluginBuilder):
@@ -9,9 +15,7 @@ class ProfileBuilderFrictionless(ProfilingPluginBuilder):
     Profile plugin builder.
     """
 
-    def build(
-        self, resources: list[DataResource], metrics: list[Metric] | None = None
-    ) -> list[ProfilePluginFrictionless]:
+    def build(self, resources: list[DataResource], *args) -> list[ProfilePluginFrictionless]:
         """
         Build a plugin. Metrics are not supported
         """

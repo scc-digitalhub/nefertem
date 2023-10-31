@@ -1,12 +1,17 @@
 """
 Evidently profile plugin builder module.
 """
-import evidently
+from __future__ import annotations
 
-from nefertem.plugins.profiling.base import Metric, ProfilingPluginBuilder
+import typing
+
+from nefertem.plugins.profiling.base import ProfilingPluginBuilder
+from nefertem.plugins.profiling.evidently.metrics import MetricEvidently
 from nefertem.plugins.profiling.evidently.plugin import ProfilePluginEvidently
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import BASE_FILE_READER
+
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfileBuilderEvidently(ProfilingPluginBuilder):
@@ -14,13 +19,10 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
     Evidently profile plugin builder.
     """
 
-    def build(self, resources: list[DataResource], metrics: list[Metric] | None = None) -> list[ProfilePluginEvidently]:
+    def build(self, resources: list[DataResource], metrics: list[dict]) -> list[ProfilePluginEvidently]:
         """
         Build a plugin for every metric element.
         """
-        if metrics is None or len(metrics) == 0:
-            return []
-
         f_metrics = self._filter_metrics(metrics)
         plugins = []
         for metric in f_metrics:
@@ -46,13 +48,15 @@ class ProfileBuilderEvidently(ProfilingPluginBuilder):
         return plugins
 
     @staticmethod
-    def _filter_metrics(metrics: list[Metric]) -> list[Metric]:
+    def _filter_metrics(metrics: list[dict]) -> list[MetricEvidently]:
         """
-        Filter out MetricEvidently.
+        Build metrics.
         """
-        if metrics is None:
-            return []
-        return [m for m in metrics if m.type == evidently]
+        mets = []
+        for met in metrics:
+            if met.get("type") == "evidently":
+                mets.append(MetricEvidently(**met))
+        return mets
 
     def destroy(self) -> None:
         """

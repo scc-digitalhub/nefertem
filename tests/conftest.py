@@ -312,7 +312,7 @@ CONST_FRICT_FULL_01 = ConstraintFullFrictionless(
     title="Test frictionless constraint",
     name="test-const-frict-01",
     resources=["res_test_01"],
-    tableSchema={
+    table_schema={
         "fields": [
             {"name": "col1", "type": "string"},
             {"name": "col2", "type": "number"},

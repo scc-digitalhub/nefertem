@@ -84,7 +84,7 @@ class TestValidationPluginFrictionless:
                 # Deepcopy plugin, otherwise setting constraint
                 # influence subsequent tests
                 plg = deepcopy(setted_plugin)
-                plg.constraint.tableSchema = "error"
+                plg.constraint.table_schema = "error"
                 plg._rebuild_constraints(None)
 
     def test_get_schema(self, plugin, data_path_csv, data_path_parquet):

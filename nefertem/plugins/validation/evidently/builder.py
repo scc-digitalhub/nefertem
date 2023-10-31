@@ -1,4 +1,4 @@
-from nefertem.plugins.validation.base import Constraint, ValidationPluginBuilder
+from nefertem.plugins.validation.base import ValidationPluginBuilder
 from nefertem.plugins.validation.evidently.constraints import ConstraintEvidently
 from nefertem.plugins.validation.evidently.plugin import ValidationPluginEvidently
 from nefertem.resources.data_resource import DataResource
@@ -13,7 +13,7 @@ class ValidationBuilderEvidently(ValidationPluginBuilder):
     def build(
         self,
         resources: list[DataResource],
-        constraints: list[ConstraintEvidently],
+        constraints: list[dict],
         error_report: str,
     ) -> list[ValidationPluginEvidently]:
         """
@@ -52,13 +52,15 @@ class ValidationBuilderEvidently(ValidationPluginBuilder):
         return plugins
 
     @staticmethod
-    def _filter_constraints(
-        constraints: list[Constraint],
-    ) -> list[ConstraintEvidently]:
+    def _filter_constraints(constraints: list[dict]) -> list[ConstraintEvidently]:
         """
-        Filter out ConstraintEvidently.
+        Build constraints.
         """
-        return [const for const in constraints if const.type == "evidently"]
+        const = []
+        for c in constraints:
+            if c.get("type") == "evidently":
+                const.append(ConstraintEvidently(**c))
+        return const
 
     def destroy(self, *args) -> None:
         """

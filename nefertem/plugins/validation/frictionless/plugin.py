@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import typing
+
 import frictionless
 from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
@@ -5,9 +9,11 @@ from frictionless.exception import FrictionlessException
 from nefertem.metadata.nefertem import NefertemReport
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.plugins.validation.base import Validation
-from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
-from nefertem.readers.file.file import FileReader
-from nefertem.resources.data_resource import DataResource
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
+    from nefertem.readers.file.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class ValidationPluginFrictionless(Validation):
@@ -25,7 +31,7 @@ class ValidationPluginFrictionless(Validation):
         self,
         data_reader: FileReader,
         resource: DataResource,
-        constraint: ConstraintFrictionless,
+        constraint: ConstraintFrictionless | ConstraintFullFrictionless,
         error_report: str,
         exec_args: dict,
     ) -> None:
@@ -76,7 +82,7 @@ class ValidationPluginFrictionless(Validation):
             return Schema(schema)
 
         # Otherwise return the full table schema
-        return Schema(self.constraint.tableSchema)
+        return Schema(self.constraint.table_schema)
 
     @staticmethod
     def _get_schema(data_path: str) -> dict:

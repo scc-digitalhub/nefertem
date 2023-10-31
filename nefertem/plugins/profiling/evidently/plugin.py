@@ -1,16 +1,21 @@
+from __future__ import annotations
+
 import importlib
+import typing
+from typing import Any
 
 import evidently
 from evidently.report import Report
-from nefertem.metadata.nefertem import NefertemProfile
 
-from nefertem.metadata.nefertem import NefertemProfileMetric
+from nefertem.metadata.nefertem import NefertemProfile, NefertemProfileMetric
 from nefertem.plugins.profiling.base import Profiling
-from nefertem.plugins.profiling.evidently.metrics import MetricEvidently
 from nefertem.plugins.utils import Result, exec_decorator
-from nefertem.readers.file.file import FileReader
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.io_utils import write_bytesio
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.profiling.evidently.metrics import MetricEvidently
+    from nefertem.readers.file.file import FileReader
+    from nefertem.resources.data_resource import DataResource
 
 
 class ProfilePluginEvidently(Profiling):
@@ -60,7 +65,7 @@ class ProfilePluginEvidently(Profiling):
         report.run(current_data=data, reference_data=reference_data)
         return report
 
-    def _rebuild_metrics(self) -> list[any]:
+    def _rebuild_metrics(self) -> list[Any]:
         """
         Rebuild metrics converting to Evidently metrics.
         """

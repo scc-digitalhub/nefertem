@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import shutil
+import typing
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -8,9 +11,6 @@ import duckdb
 from nefertem.plugins.validation.base import Constraint, ValidationPluginBuilder
 from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
 from nefertem.plugins.validation.duckdb.plugin import ValidationPluginDuckDB
-from nefertem.readers.file.native import NativeReader
-from nefertem.resources.data_resource import DataResource
-from nefertem.stores.artifact.objects.base import ArtifactStore
 from nefertem.utils.commons import (
     DEFAULT_DIRECTORY,
     PANDAS_DATAFRAME_DUCKDB_READER,
@@ -18,6 +18,11 @@ from nefertem.utils.commons import (
     POLARS_DATAFRAME_FILE_READER,
 )
 from nefertem.utils.utils import build_uuid, flatten_list, listify
+
+if typing.TYPE_CHECKING:
+    from nefertem.readers.file.native import NativeReader
+    from nefertem.resources.data_resource import DataResource
+    from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
 class ValidationBuilderDuckDB(ValidationPluginBuilder):
@@ -28,7 +33,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
     def build(
         self,
         resources: list[DataResource],
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str,
     ) -> list[ValidationPluginDuckDB]:
         """
@@ -59,13 +64,15 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         self.con = duckdb.connect(database=str(self.tmp_db), read_only=False)
 
     @staticmethod
-    def _filter_constraints(
-        constraints: list[Constraint],
-    ) -> list[ConstraintDuckDB]:
+    def _filter_constraints(constraints: list[dict]) -> list[ConstraintDuckDB]:
         """
-        Filter out ConstraintDuckDB.
+        Build constraints.
         """
-        return [const for const in constraints if const.type == "duckdb"]
+        const = []
+        for c in constraints:
+            if c.get("type") == "duckdb":
+                const.append(ConstraintDuckDB(**c))
+        return const
 
     @staticmethod
     def _filter_resources(resources: list[DataResource], constraints: list[Constraint]) -> list[DataResource]:

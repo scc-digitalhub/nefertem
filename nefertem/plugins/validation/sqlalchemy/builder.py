@@ -1,12 +1,17 @@
+from __future__ import annotations
+
+import typing
 from copy import deepcopy
 
 from nefertem.plugins.validation.base import Constraint, ValidationPluginBuilder
 from nefertem.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy
 from nefertem.plugins.validation.sqlalchemy.plugin import ValidationPluginSqlAlchemy
-from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import PANDAS_DATAFRAME_SQL_READER
 from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list
+
+if typing.TYPE_CHECKING:
+    from nefertem.resources.data_resource import DataResource
 
 
 class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
@@ -17,7 +22,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
     def build(
         self,
         resources: list[DataResource],
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str,
     ) -> list[ValidationPluginSqlAlchemy]:
         """
@@ -50,13 +55,15 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
             raise ValidationError("There must be at least a SQLStore to use sqlalchemy validator.")
 
     @staticmethod
-    def _filter_constraints(
-        constraints: list[Constraint],
-    ) -> list[ConstraintSqlAlchemy]:
+    def _filter_constraints(constraints: list[dict]) -> list[ConstraintSqlAlchemy]:
         """
-        Filter out ConstraintSqlAlchemy.
+        Build constraints.
         """
-        return [const for const in constraints if const.type == "sqlalchemy"]
+        const = []
+        for c in constraints:
+            if c.get("type") == "sqlalchemy":
+                const.append(ConstraintSqlAlchemy(**c))
+        return const
 
     def _filter_resources(self, resources: list[DataResource], constraints: list[Constraint]) -> list[DataResource]:
         """

@@ -26,13 +26,9 @@ from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time
 
 if typing.TYPE_CHECKING:
-    from nefertem.metadata.nefertem import NefertemProfile
-    from nefertem.metadata.nefertem import NefertemReport
-    from nefertem.metadata.nefertem import NefertemSchema
+    from nefertem.metadata.nefertem import NefertemProfile, NefertemReport, NefertemSchema
     from nefertem.metadata.run_info import RunInfo
-    from nefertem.plugins.profiling.base import Metric
     from nefertem.plugins.utils import RenderTuple
-    from nefertem.plugins.validation.base import Constraint
     from nefertem.run.run_handler import RunHandler
 
 
@@ -290,7 +286,7 @@ class Run:
 
     def validate_wrapper(
         self,
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str | None = "partial",
         parallel: bool = False,
         num_worker: int | None = 10,
@@ -300,7 +296,7 @@ class Run:
 
         Parameters
         ----------
-        constraints : list[Constraint]
+        constraints : list[dict]
             list of constraint to validate resources.
         error_report : str
             Flag to render the error output of the nefertem report.
@@ -328,7 +324,7 @@ class Run:
 
     def validate_nefertem(
         self,
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str | None = "partial",
         parallel: bool = False,
         num_worker: int | None = 10,
@@ -338,7 +334,7 @@ class Run:
 
         Parameters
         ----------
-        constraints : list[Constraint]
+        constraints : list[dict]
             list of constraint to validate resources.
         error_report : str
             Flag to render the error output of the nefertem report.
@@ -366,7 +362,7 @@ class Run:
 
     def validate(
         self,
-        constraints: list[Constraint],
+        constraints: list[dict],
         error_report: str | None = "partial",
         parallel: bool = False,
         num_worker: int | None = 10,
@@ -377,7 +373,7 @@ class Run:
 
         Parameters
         ----------
-        constraints : list[Constraint]
+        constraints : list[dict]
             list of constraint to validate resources.
         error_report : str
             Flag to render the error output of the nefertem report.
@@ -431,15 +427,13 @@ class Run:
     # Profiling
     ############################
 
-    def profile_wrapper(
-        self, metrics: list[Metric] | None = None, parallel: bool = False, num_worker: int = 10
-    ) -> list[Any]:
+    def profile_wrapper(self, metrics: list[dict], parallel: bool = False, num_worker: int = 10) -> list[Any]:
         """
         Execute profiling on resources with profiling frameworks.
 
         Parameters
         ----------
-        metrics: list[Metric]
+        metrics: list[dict]
             Optional list of metrics to evaluate over resources.
         parallel : bool
             Flag to execute operation in parallel.
@@ -460,14 +454,14 @@ class Run:
         return self._run_handler.get_item(PROFILE, RESULT_ARTIFACT)
 
     def profile_nefertem(
-        self, metrics: list[Metric] | None = None, parallel: bool = False, num_worker: int = 10
+        self, metrics: list[dict], parallel: bool = False, num_worker: int = 10
     ) -> list[NefertemProfile]:
         """
         Execute profiling on resources with Nefertem.
 
         Parameters
         ----------
-        metrics: list[Metric]
+        metrics: list[dict]
             Optional list of metrics to evaluate over resources.
         parallel : bool
             Flag to execute operation in parallel.
@@ -487,15 +481,13 @@ class Run:
         self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
         return self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
 
-    def profile(
-        self, metrics: list[Metric] | None = None, parallel: bool = False, num_worker: int = 10, only_nt: bool = False
-    ) -> Any:
+    def profile(self, metrics: list[dict], parallel: bool = False, num_worker: int = 10, only_nt: bool = False) -> Any:
         """
         Execute profiling on resources.
 
         Parameters
         ----------
-        metrics: list[Metric]
+        metrics: list[dict]
             Optional list of metrics to evaluate over resources.
         parallel : bool
             Flag to execute operation in parallel.
