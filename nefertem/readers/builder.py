@@ -1,6 +1,13 @@
-from nefertem.readers.base import DataReader
+from __future__ import annotations
+
+import importlib
+import typing
+
 from nefertem.readers.registry import REGISTRY
-from nefertem.stores.artifact.objects.base import ArtifactStore
+
+if typing.TYPE_CHECKING:
+    from nefertem.readers.base import DataReader
+    from nefertem.stores.artifact.objects.base import ArtifactStore
 
 
 def build_reader(reader_type: str, store: ArtifactStore, **kwargs) -> DataReader:
@@ -22,6 +29,8 @@ def build_reader(reader_type: str, store: ArtifactStore, **kwargs) -> DataReader
         Reader instance.
     """
     try:
-        return REGISTRY[reader_type](store, **kwargs)
-    except KeyError:
+        module = importlib.import_module(REGISTRY[reader_type][0])
+        reader = getattr(module, REGISTRY[reader_type][1])
+        return reader(store, **kwargs)
+    except (KeyError, ModuleNotFoundError, AttributeError, ImportError):
         raise KeyError(f"Reader {reader_type} not found. Check installed libraries.")

@@ -3,60 +3,43 @@ DataReader registry.
 """
 
 # Base imports
-from nefertem.readers.file.file import FileReader
-from nefertem.readers.file.native import NativeReader
-from nefertem.utils.commons import BASE_FILE_READER, BASE_NATIVE_READER
+from nefertem.utils.commons import (
+    BASE_FILE_READER,
+    BASE_NATIVE_READER,
+    PANDAS_DATAFRAME_DUCKDB_READER,
+    PANDAS_DATAFRAME_FILE_READER,
+    PANDAS_DATAFRAME_SQL_READER,
+    POLARS_DATAFRAME_DUCKDB_READER,
+    POLARS_DATAFRAME_FILE_READER,
+    POLARS_DATAFRAME_SQL_READER,
+)
 
 # Registry of data readers
 REGISTRY = {
-    BASE_FILE_READER: FileReader,
-    BASE_NATIVE_READER: NativeReader,
+    BASE_FILE_READER: ["nefertem.readers.file.file", "FileReader"],
+    BASE_NATIVE_READER: ["nefertem.readers.file.native", "NativeReader"],
+    PANDAS_DATAFRAME_DUCKDB_READER: [
+        "nefertem.readers.pandas.duckdb",
+        "PandasDataFrameDuckDBReader",
+    ],
+    PANDAS_DATAFRAME_FILE_READER: [
+        "nefertem.readers.pandas.file",
+        "PandasDataFrameFileReader",
+    ],
+    PANDAS_DATAFRAME_SQL_READER: [
+        "nefertem.readers.pandas.sql",
+        "PandasDataFrameSQLReader",
+    ],
+    POLARS_DATAFRAME_DUCKDB_READER: [
+        "nefertem.readers.polars.duckdb",
+        "PolarsDataFrameDuckDBReader",
+    ],
+    POLARS_DATAFRAME_FILE_READER: [
+        "nefertem.readers.polars.file",
+        "PolarsDataFrameFileReader",
+    ],
+    POLARS_DATAFRAME_SQL_READER: [
+        "nefertem.readers.polars.sql",
+        "PolarsDataFrameSQLReader",
+    ],
 }
-
-try:
-    from nefertem.readers.pandas.duckdb import PandasDataFrameDuckDBReader
-    from nefertem.utils.commons import PANDAS_DATAFRAME_DUCKDB_READER
-
-    REGISTRY[PANDAS_DATAFRAME_DUCKDB_READER] = PandasDataFrameDuckDBReader
-except ImportError:
-    ...
-
-try:
-    from nefertem.readers.pandas.file import PandasDataFrameFileReader
-    from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER
-
-    REGISTRY[PANDAS_DATAFRAME_FILE_READER] = PandasDataFrameFileReader
-except ImportError:
-    raise
-
-try:
-    from nefertem.readers.pandas.sql import PandasDataFrameSQLReader
-    from nefertem.utils.commons import PANDAS_DATAFRAME_SQL_READER
-
-    REGISTRY[PANDAS_DATAFRAME_SQL_READER] = PandasDataFrameSQLReader
-except ImportError:
-    ...
-
-try:
-    from nefertem.readers.polars.duckdb import PolarsDataFrameDuckDBReader
-    from nefertem.utils.commons import POLARS_DATAFRAME_DUCKDB_READER
-
-    REGISTRY[POLARS_DATAFRAME_DUCKDB_READER] = PolarsDataFrameDuckDBReader
-except ImportError:
-    ...
-
-try:
-    from nefertem.readers.polars.file import PolarsDataFrameFileReader
-    from nefertem.utils.commons import POLARS_DATAFRAME_FILE_READER
-
-    REGISTRY[POLARS_DATAFRAME_FILE_READER] = PolarsDataFrameFileReader
-except ImportError:
-    ...
-
-try:
-    from nefertem.readers.polars.sql import PolarsDataFrameSQLReader
-    from nefertem.utils.commons import POLARS_DATAFRAME_SQL_READER
-
-    REGISTRY[POLARS_DATAFRAME_SQL_READER] = PolarsDataFrameSQLReader
-except ImportError:
-    ...
