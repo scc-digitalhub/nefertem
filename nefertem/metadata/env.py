@@ -3,14 +3,12 @@ EnvLog module.
 """
 import os
 import platform
-from dataclasses import dataclass
 
 from psutil import virtual_memory
 
 from nefertem.metadata.base import Metadata
 
 
-@dataclass
 class EnvLog(Metadata):
     """
     Basic log structure for execution enviroment.
@@ -29,11 +27,11 @@ class EnvLog(Metadata):
         RAM memory in GB.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, run_id: str, experiment_name: str, nefertem_version: str) -> None:
         """
         Constructor.
         """
-        super().__init__()
+        super().__init__(run_id, experiment_name, nefertem_version)
         self.platform = platform.platform()
         self.python_version = platform.python_version()
         self.cpu_model = platform.processor()
@@ -52,3 +50,6 @@ class EnvLog(Metadata):
         """
         mem = virtual_memory().total
         return str(round(mem / (1024.0**3))) + " GB"
+
+    def to_dict(self) -> dict:
+        return self.__dict__

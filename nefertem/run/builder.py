@@ -1,17 +1,23 @@
 """
 RunBuilder module.
 """
+from __future__ import annotations
+
+import importlib
+import typing
+
 from pydantic import ValidationError
 
-from nefertem.metadata.run_info import RunInfo
 from nefertem.resources.data_resource import DataResource
 from nefertem.run.config import RunConfig
-from nefertem.run.handler import RunHandler
-from nefertem.run.run import Run
+from nefertem.run.run_info import RunInfo
 from nefertem.stores.builder import get_output_store
-from nefertem.utils.commons import DEFAULT_EXPERIMENT
+from nefertem.utils.commons import DEFAULT_EXPERIMENT, NEFERTEM_VERSION, RUN_OBJECT, RUN_HANDLER_OBJECT
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.utils import build_uuid
+
+if typing.TYPE_CHECKING:
+    from nefertem.run.run import Run
 
 
 class RunBuilder:
@@ -82,10 +88,23 @@ class RunBuilder:
         run_md_uri = str(store.metadata_path)
         run_art_uri = str(store.artifact_path)
 
+        # Get run and run handler specific operations
+        ClsHandler = self._get_object(cfg.operation, RUN_HANDLER_OBJECT)
+        ClsRun = self._get_object(cfg.operation, RUN_OBJECT)
+
         # Create run
-        run_handler = RunHandler(cfg)
-        run_info = RunInfo(experiment, res, run_id, cfg, run_md_uri, run_art_uri)
-        return Run(run_info, run_handler, tmp_dir, overwrite)
+        run_handler = ClsHandler(cfg)
+        run_info = RunInfo(
+            run_id=run_id,
+            experiment_name=experiment,
+            nefertem_version=NEFERTEM_VERSION,
+            tmp_path=tmp_dir,
+            resources=res,
+            run_config=cfg,
+            run_meta_path=run_md_uri,
+            run_art_path=run_art_uri,
+        )
+        return ClsRun(run_info, run_handler)
 
     @staticmethod
     def _validate_resources(resources: list[dict]) -> list[DataResource]:
@@ -160,3 +179,35 @@ class RunBuilder:
             return RunConfig(**run_config)
         except (TypeError, ValidationError):
             raise RunError("Invalid run config!")
+
+    def _get_object(self, operation: str, obj: str) -> type:
+        """
+        Get run handler class.
+
+        Parameters
+        ----------
+        operation : str
+            Operation to perform.
+        obj : str
+            Object type to get.
+
+        Returns
+        -------
+        type
+            Run handler class.
+
+        Raises
+        ------
+        RunError
+            If run handler class does not exist.
+        """
+        try:
+            module = importlib.import_module(f"nefertem_{operation}")
+            mapper = getattr(module, "MAPPER")
+            submodule = importlib.import_module(mapper[obj][0])
+            return getattr(submodule, mapper[obj][1])
+        except AttributeError:
+            raise RunError(f"Run handler for operation {operation} does not exist!")
+
+
+run_builder = RunBuilder()

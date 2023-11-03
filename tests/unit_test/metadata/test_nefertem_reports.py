@@ -1,4 +1,6 @@
-from nefertem.metadata.nefertem import NefertemProfile, NefertemReport, NefertemSchema
+from nefertem_inference.metadata.report import NefertemSchema
+
+from nefertem.metadata.report import NefertemProfile, NefertemReport
 
 
 class TestNefertemReports:

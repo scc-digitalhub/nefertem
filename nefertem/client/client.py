@@ -7,12 +7,12 @@ from __future__ import annotations
 
 import typing
 
-if typing.TYPE_CHECKING:
-    from nefertem.run.run import Run
-
-from nefertem.run.builder import RunBuilder
+from nefertem.run.builder import run_builder
 from nefertem.stores.builder import store_builder
 from nefertem.utils.commons import DEFAULT_DIRECTORY, DEFAULT_EXPERIMENT
+
+if typing.TYPE_CHECKING:
+    from nefertem.run.run import Run
 
 
 class Client:
@@ -114,29 +114,4 @@ class Client:
         Run
             Run object.
         """
-        return RunBuilder().create_run(resources, run_config, self._tmp_dir, experiment, run_id, overwrite)
-
-
-def create_client(
-    output_path: str | None = None,
-    stores: list[dict] | None = None,
-    tmp_dir: str | None = None,
-) -> Client:
-    """
-    Create a new Client object.
-
-    Parameters
-    ----------
-    output_path : str
-        Path to the metadata store.
-    stores : list[dict]
-        List of dict containing configuration for the artifact stores.
-    tmp_dir : str
-        Default local temporary folder where to store input data".
-
-    Returns
-    -------
-    Client
-        Client object.
-    """
-    return Client(output_path, stores, tmp_dir)
+        return run_builder.create_run(resources, run_config, self._tmp_dir, experiment, run_id, overwrite)

@@ -1,0 +1,85 @@
+"""
+Dummy implementation of inference plugin.
+"""
+from __future__ import annotations
+
+import typing
+
+from nefertem_infer.builder import InferencePluginBuilder
+from nefertem_infer.plugin import InferencePlugin
+from nefertem_inference.metadata.report import NefertemSchema
+
+from nefertem.plugins.utils import exec_decorator
+from nefertem.utils.commons import DUMMY
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils import Result
+
+
+class InferencePluginDummy(InferencePlugin):
+    """
+    Dummy implementation of inference plugin.
+    """
+
+    def setup(self, *args) -> None:
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """
+
+    @exec_decorator
+    def infer(self) -> dict:
+        """
+        Do nothing.
+        """
+        return {}
+
+    @exec_decorator
+    def render_nefertem(self, *args) -> NefertemSchema:
+        """
+        Return a NefertemSchema.
+        """
+        return NefertemSchema(self.get_lib_name(), self.get_lib_version(), 0.0, [])
+
+    @exec_decorator
+    def render_artifact(self, result: Result) -> list[tuple]:
+        """
+        Return a dummy schema to be persisted as artifact.
+        """
+        artifacts = []
+        if result.artifact is None:
+            _object = {"errors": result.errors}
+        else:
+            _object = dict(result.artifact)
+        filename = self._fn_schema.format(f"{DUMMY}.json")
+        artifacts.append(self.get_render_tuple(_object, filename))
+        return artifacts
+
+    @staticmethod
+    def get_lib_name() -> str:
+        """
+        Get library name.
+        """
+        return DUMMY
+
+    @staticmethod
+    def get_lib_version() -> str:
+        """
+        Get library version.
+        """
+        return DUMMY
+
+
+class InferenceBuilderDummy(InferencePluginBuilder):
+    """
+    Inference plugin builder.
+    """
+
+    def build(self, *args) -> list[InferencePluginDummy]:
+        """
+        Build a plugin.
+        """
+        return [InferencePluginDummy()]

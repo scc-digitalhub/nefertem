@@ -22,15 +22,15 @@ class ExecConfig(BaseModel):
 
 
 class RunConfig(BaseModel):
-    """
-    Run configuration object.
-    """
 
-    validation: list[ExecConfig] | None = [ExecConfig()]
-    """List of validation configuration."""
+    operation: str
+    """Operation to perform."""
 
-    inference: list[ExecConfig] | None = [ExecConfig()]
-    """List of inference configuration."""
+    exec_config: list[ExecConfig]
+    """Execution configuration."""
 
-    profiling: list[ExecConfig] | None = [ExecConfig()]
-    """List of profiling configuration."""
+    parallel: bool = False
+    """Flag to execute operation in parallel."""
+
+    num_worker: int = 10
+    """Number of workers to execute operation in parallel, by default 10"""

@@ -5,6 +5,11 @@ Module for common terms definition.
 # Nefertem version
 NEFERTEM_VERSION: str = "1.0.0"
 
+# Mapper operations
+RUN_OBJECT = "run"
+RUN_HANDLER_OBJECT = "run_handler"
+
+
 # Data readers type
 BASE_FILE_READER: str = "FileReader"
 BASE_NATIVE_READER: str = "NativeReader"
