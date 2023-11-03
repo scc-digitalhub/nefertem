@@ -35,8 +35,8 @@ Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-* ``run.log_schema()``, log ``NefertemSchema`` into the ``MetadataStore``
-* ``run.infer()``, persist artifact into the default ``ArtifactStore``
+* ``run.log_schema()``, log ``NefertemSchema`` into the ``OutputStore``
+* ``run.infer()``, persist artifact into the default ``InputStore``
 
 
 Supported libraries

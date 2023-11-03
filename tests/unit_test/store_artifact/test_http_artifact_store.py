@@ -1,4 +1,4 @@
-class TestHTTPArtifactStore:
+class TestHTTPInputStore:
     def test_persist_artifact(self):
         ...
 

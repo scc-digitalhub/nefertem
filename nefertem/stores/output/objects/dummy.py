@@ -1,10 +1,10 @@
 """
 Dummy metadata store module.
 """
-from nefertem.stores.metadata.objects.base import MetadataStore
+from nefertem.stores.output.objects.base import OutputStore
 
 
-class DummyMetadataStore(MetadataStore):
+class DummyOutputStore(OutputStore):
     """
     Dummy metadata store object implementation.
 
@@ -32,16 +32,7 @@ class DummyMetadataStore(MetadataStore):
         None
         """
 
-    def _build_source_destination(self, *args) -> None:
-        """
-        Placeholder method.
-
-        Returns
-        -------
-        None
-        """
-
-    def get_run_path(self, *args) -> None:
+    def persist_artifact(self, *args) -> None:
         """
         Placeholder method.
 

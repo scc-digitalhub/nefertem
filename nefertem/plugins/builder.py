@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
     from nefertem.plugins.plugin import Plugin
     from nefertem.readers.base import DataReader
     from nefertem.resources.data_resource import DataResource
-    from nefertem.stores.artifact.objects.base import ArtifactStore
+    from nefertem.stores.input.objects.base import InputStore
 
 
 class PluginBuilder:
@@ -19,7 +19,7 @@ class PluginBuilder:
     Abstract PluginBuilder class.
     """
 
-    def __init__(self, stores: list[ArtifactStore], exec_args: dict) -> None:
+    def __init__(self, stores: list[InputStore], exec_args: dict) -> None:
         self.stores = stores
         self.exec_args = exec_args
 
@@ -36,7 +36,7 @@ class PluginBuilder:
         """
         return deepcopy(resource)
 
-    def _get_resource_store(self, resource: DataResource) -> ArtifactStore:
+    def _get_resource_store(self, resource: DataResource) -> InputStore:
         """
         Get the resource store.
         """
@@ -48,7 +48,7 @@ class PluginBuilder:
             )
 
     @staticmethod
-    def _get_data_reader(type: str, store: ArtifactStore) -> DataReader:
+    def _get_data_reader(type: str, store: InputStore) -> DataReader:
         """
         Get data reader.
         """

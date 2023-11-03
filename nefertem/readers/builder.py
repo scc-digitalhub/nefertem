@@ -7,10 +7,10 @@ from nefertem.readers.registry import REGISTRY
 
 if typing.TYPE_CHECKING:
     from nefertem.readers.base import DataReader
-    from nefertem.stores.artifact.objects.base import ArtifactStore
+    from nefertem.stores.input.objects.base import InputStore
 
 
-def build_reader(reader_type: str, store: ArtifactStore, **kwargs) -> DataReader:
+def build_reader(reader_type: str, store: InputStore, **kwargs) -> DataReader:
     """
     Reader builder.
 
@@ -18,7 +18,7 @@ def build_reader(reader_type: str, store: ArtifactStore, **kwargs) -> DataReader
     ----------
     reader_type: str
         Reader type.
-    store: ArtifactStore
+    store: InputStore
         Store to read from.
     kwargs: dict
         Reader kwargs.

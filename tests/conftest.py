@@ -17,7 +17,7 @@ from nefertem.plugins.validation.frictionless.constraints import ConstraintFrict
 from nefertem.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy
 from nefertem.readers.builder import build_reader
 from nefertem.resources.data_resource import DataResource
-from nefertem.run.run_config import RunConfig
+from nefertem.run.config import RunConfig
 from nefertem.stores.builder import StoreBuilder
 from nefertem.utils.commons import LIBRARY_DUCKDB, LIBRARY_EVIDENTLY, LIBRARY_GREAT_EXPECTATIONS, LIBRARY_SQLALCHEMY
 from nefertem.utils.utils import listify
@@ -171,7 +171,7 @@ def store_builder():
 
 @pytest.fixture
 def store(store_cfg, store_builder):
-    return store_builder.build_artifact_store(store_cfg)
+    return store_builder.build_input_store(store_cfg)
 
 
 # ---------------

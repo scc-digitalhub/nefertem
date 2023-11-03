@@ -2,8 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.client.store_handler import StoreHandler
-from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
+from nefertem.run.handler import RunHandler, RunHandlerRegistry
 from nefertem.utils.commons import MT_NT_REPORT, RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 

@@ -9,7 +9,7 @@ from nefertem.utils.uri_utils import build_key, get_name_from_uri
 from tests.conftest import S3_BUCKET, S3_FILENAME, TEST_FILENAME
 
 
-class TestS3ArtifactStore:
+class TestS3InputStore:
     def test_persist_artifact(self, store, temp_file, stringio, bytesio, dictionary, s3):
         dst = "artifact/test/test/"
         src_name = "persist.txt"

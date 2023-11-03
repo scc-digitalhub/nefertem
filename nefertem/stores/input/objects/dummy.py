@@ -1,7 +1,7 @@
 """
 Dummy artifact store module.
 """
-from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
+from nefertem.stores.input.objects.base import InputStore, StoreConfig
 
 
 class DummyStoreConfig(StoreConfig):
@@ -10,7 +10,7 @@ class DummyStoreConfig(StoreConfig):
     """
 
 
-class DummyArtifactStore(ArtifactStore):
+class DummyInputStore(InputStore):
     """
     Dummy artifact store object implementation.
 
@@ -20,16 +20,15 @@ class DummyArtifactStore(ArtifactStore):
     def __init__(
         self,
         name: str,
-        store_type: str,
         uri: str,
+        store_type: str,
         temp_dir: str,
-        is_default: bool,
         config: dict,
     ) -> None:
         """
         Constructor.
         """
-        super().__init__(name, store_type, uri, temp_dir, is_default)
+        super().__init__(name, uri, store_type, temp_dir)
         self.config = config
 
     def persist_artifact(self, *args) -> None:

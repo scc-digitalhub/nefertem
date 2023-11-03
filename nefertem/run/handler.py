@@ -19,30 +19,37 @@ from nefertem.utils.commons import (
     RESULT_RENDERED,
     VALIDATE,
 )
+from nefertem.stores.builder import get_input_store, get_output_store, get_all_input_stores
 from nefertem.utils.exceptions import RunError
-from nefertem.utils.file_utils import get_absolute_path
+from nefertem.utils.file_utils import get_absolute_path, clean_all
 from nefertem.utils.uri_utils import get_name_from_uri
 from nefertem.utils.utils import flatten_list, listify
 
 if typing.TYPE_CHECKING:
-    from nefertem.client.store_handler import StoreHandler
     from nefertem.plugins.base import Plugin, PluginBuilder
     from nefertem.resources.data_resource import DataResource
-    from nefertem.run.run_config import RunConfig
+    from nefertem.run.config import RunConfig
 
 
 class RunHandler:
     """
     Run handler.
 
-    This class create a layer of abstraction between the Run
-    and its plugins.
+    This class create a layer of abstraction between the Run and its plugins.
 
+    Attributes
+    ----------
+    _config : RunConfig
+        Run configuration.
+    _tmp_dir : str
+        Temporary directory to store artifacts.
+    _registry : dict
+        Resul registry.
     """
 
-    def __init__(self, config: RunConfig, store_handler: StoreHandler) -> None:
+    def __init__(self, config: RunConfig, tmp_dir: str) -> None:
         self._config = config
-        self._store_handler = store_handler
+        self._tmp_dir = tmp_dir
         self._registry = {}
 
         self._setup()
@@ -80,7 +87,7 @@ class RunHandler:
         builders = builder_factory(
             self._config.inference,
             INFER,
-            self._store_handler.get_all_art_stores(),
+            get_all_input_stores(),
         )
         plugins = self._create_plugins(builders, resources)
         self._scheduler(plugins, INFER, parallel, num_worker)
@@ -97,24 +104,16 @@ class RunHandler:
         """
         Wrapper for plugins validate methods.
         """
-        self._parse_report_arg(error_report)
+        if error_report not in ("count", "partial", "full"):
+            raise RunError("Available options for error_report are 'count', 'partial', 'full'.")
         builders = builder_factory(
             self._config.validation,
             VALIDATE,
-            self._store_handler.get_all_art_stores(),
+            get_all_input_stores(),
         )
         plugins = self._create_plugins(builders, resources, constraints, error_report)
         self._scheduler(plugins, VALIDATE, parallel, num_worker)
         self._destroy_builders(builders)
-
-    @staticmethod
-    def _parse_report_arg(error_report: str) -> None:
-        """
-        Check error_report argument and raise
-        if differs from options.
-        """
-        if error_report not in ("count", "partial", "full"):
-            raise RunError("Available options for error_report are 'count', 'partial', 'full'.")
 
     def profile(
         self,
@@ -129,7 +128,7 @@ class RunHandler:
         builders = builder_factory(
             self._config.profiling,
             PROFILE,
-            self._store_handler.get_all_art_stores(),
+            get_all_input_stores(),
         )
         plugins = self._create_plugins(builders, resources, metrics)
         self._scheduler(plugins, PROFILE, parallel, num_worker)
@@ -272,27 +271,24 @@ class RunHandler:
                     libs[ops].append(i)
         return libs
 
-    def log_metadata(self, src: dict, dst: str, src_type: str, overwrite: bool) -> None:
+    def log_metadata(self, src: dict, src_type: str, overwrite: bool) -> None:
         """
         Method to log metadata in the metadata store.
         """
-        store = self._store_handler.get_md_store()
-        store.log_metadata(src, dst, src_type, overwrite)
+        get_output_store().log_metadata(src, src_type, overwrite)
 
-    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict | None = None) -> None:
+    def persist_artifact(self, src: Any, src_name: str) -> None:
         """
         Method to persist artifacts in the default artifact store.
         """
-        metadata = metadata if metadata is not None else {}
-        store = self._store_handler.get_def_store()
-        store.persist_artifact(src, dst, src_name, metadata)
+        get_output_store().persist_artifact(src, src_name)
 
     def persist_data(self, resources: list[DataResource], dst: str) -> None:
         """
         Persist input data as artifact.
         """
         for res in resources:
-            store = self._store_handler.get_art_store(res.store)
+            store = get_input_store(res.store)
             data_reader = build_reader(BASE_FILE_READER, store)
             for path in listify(res.path):
                 tmp_pth = data_reader.fetch_data(path)
@@ -304,4 +300,9 @@ class RunHandler:
         """
         Clean up.
         """
-        self._store_handler.clean_all()
+        for store in get_all_input_stores():
+            store.clean_paths()
+        try:
+            clean_all(self._tmp_dir)
+        except FileNotFoundError:
+            pass

@@ -7,10 +7,10 @@ import typing
 
 from pydantic import ValidationError
 
-from nefertem.stores.artifact.objects.base import StoreParameters
-from nefertem.stores.artifact.registry import artstore_registry
+from nefertem.stores.input.objects.base import StoreParameters
+from nefertem.stores.input.registry import input_store_registry
 from nefertem.stores.kinds import StoreKinds
-from nefertem.stores.metadata.registry import mdstore_registry
+from nefertem.stores.output.registry import mdstore_registry
 from nefertem.utils.commons import DUMMY
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import get_absolute_path, get_path
@@ -18,8 +18,8 @@ from nefertem.utils.uri_utils import map_uri_scheme, rebuild_uri
 from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:
-    from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
-    from nefertem.stores.metadata.objects.base import MetadataStore
+    from nefertem.stores.input.objects.base import InputStore, StoreConfig
+    from nefertem.stores.output.objects.base import OutputStore
 
 
 class StoreBuilder:
@@ -27,29 +27,35 @@ class StoreBuilder:
     StoreBuilder class.
     """
 
-    def build_metadata_store(self, path: str | None = None) -> MetadataStore:
+    def __init__(self) -> None:
         """
-        Method to create a metadata stores. If the path is None, the method creates a dummy
-        metadata store.
+        Constructor.
+        """
+        self._stores: dict = {}
+        self._output_store: OutputStore | None = None
+
+    def build_output_store(self, path: str | None = None) -> None:
+        """
+        Method to create an output stores. If the path is None, the method creates a dummy
+        output store.
 
         Parameters
         ----------
         path: str
-            Path to the metadata store.
+            Output path.
 
         Returns
         -------
-        MetadataStore
-            Metadata store object.
+        None
         """
         if path is None:
             return mdstore_registry[StoreKinds.DUMMY.value](DUMMY)
-        uri = get_absolute_path(path, "metadata")
-        return mdstore_registry[StoreKinds.LOCAL.value](uri)
+        if self._output_store is None:
+            self._output_store = mdstore_registry[StoreKinds.LOCAL.value](path)
 
-    def build_artifact_store(self, tmp_dir: str, config: dict | None = None) -> ArtifactStore:
+    def build_input_store(self, tmp_dir: str, config: dict | None = None) -> None:
         """
-        Method to create a artifact stores.
+        Method to create an input stores.
 
         Parameters
         ----------
@@ -60,11 +66,12 @@ class StoreBuilder:
 
         Returns
         -------
-        ArtifactStore
-            Artifact store object.
+        None
         """
         params = self._parse_parameters(tmp_dir, config)
-        return self._get_store(params)
+        if params["name"] in self._stores:
+            raise StoreError(f"Store {params['name']} already exists.")
+        self._stores[params["name"]] = self._get_store(params)
 
     def _parse_parameters(self, tmp_dir: str, config: dict | None = None) -> dict:
         """
@@ -86,10 +93,9 @@ class StoreBuilder:
         store_type = map_uri_scheme(cfg.uri)
         return {
             "name": cfg.name,
+            "uri": cfg.uri,
             "store_type": store_type,
-            "uri": self._resolve_uri(store_type, cfg.uri),
             "temp_dir": get_path(tmp_dir, build_uuid()),
-            "is_default": cfg.is_default,
             "config": self._validate_config(store_type, cfg.config),
         }
 
@@ -143,14 +149,14 @@ class StoreBuilder:
             If the store configuration is invalid.
         """
         try:
-            return artstore_registry[store_type]["model"](**config)
+            return input_store_registry[store_type]["model"](**config)
         except (ValidationError, TypeError):
             raise StoreError("Invalid store configuration.")
         except KeyError:
             raise StoreError("Invalid store type.")
 
     @staticmethod
-    def _get_store(params: dict) -> ArtifactStore:
+    def _get_store(params: dict) -> InputStore:
         """
         Validate store configuration.
 
@@ -171,31 +177,108 @@ class StoreBuilder:
         """
         try:
             store_type = params["store_type"]
-            return artstore_registry[store_type]["store"](**params)
+            return input_store_registry[store_type]["store"](**params)
         except TypeError:
             raise StoreError("Something went wrong.")
         except KeyError:
             raise StoreError("Invalid store type.")
 
-    @staticmethod
-    def _resolve_uri(store_type: str, uri: str) -> str:
+    def get_input_store(self, name: str) -> InputStore:
         """
-        Resolve artifact URI location.
+        Get store by name.
 
         Parameters
         ----------
-        store_type : str
-            Store type.
-        uri : str
-            Artifact URI.
+        name : str
+            Store name.
 
         Returns
         -------
-        str
-            Resolved URI.
+        InputStore
+            Artifact store object.
+
+        Raises
+        ------
+        StoreError
+            If the store is not found.
         """
-        if store_type == StoreKinds.LOCAL.value:
-            return get_absolute_path(uri, "artifact")
-        if store_type == StoreKinds.S3.value:
-            return rebuild_uri(uri, "artifact")
-        return uri
+        store = self._stores.get(name)
+        if store is None:
+            raise StoreError(f"Store {name} not found.")
+        return store
+
+    def get_all_input_stores(self) -> list[InputStore]:
+        """
+        Get all stores.
+
+        Returns
+        -------
+        list
+            List of artifact store objects.
+        """
+        stores = list(self._stores.values())
+        if not stores:
+            raise StoreError("No stores found.")
+        return stores
+
+    def get_output_store(self) -> OutputStore:
+        """
+        Get output store.
+
+        Returns
+        -------
+        OutputStore
+            Metadata store object.
+
+        Raises
+        ------
+        StoreError
+            If the store is not found.
+        """
+        if self._output_store is None:
+            raise StoreError("Output store not found.")
+        return self._output_store
+
+
+store_builder = StoreBuilder()
+
+
+def get_input_store(name: str) -> InputStore:
+    """
+    Wrapper for StoreBuilder.get_input_store.
+
+    Parameters
+    ----------
+    name : str
+        Store name.
+
+    Returns
+    -------
+    InputStore
+        Artifact store object.
+    """
+    return store_builder.get_input_store(name)
+
+
+def get_all_input_stores() -> list[InputStore]:
+    """
+    Wrapper for StoreBuilder.get_all_input_stores.
+
+    Returns
+    -------
+    list
+        List of artifact store objects.
+    """
+    return store_builder.get_all_input_stores()
+
+
+def get_output_store() -> OutputStore:
+    """
+    Wrapper for StoreBuilder.get_output_store.
+
+    Returns
+    -------
+    OutputStore
+        Metadata store object.
+    """
+    return store_builder.get_output_store()

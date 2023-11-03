@@ -1,9 +1,9 @@
 import pytest
 
-from nefertem.stores.artifact.objects.dummy import DummyArtifactStore
+from nefertem.stores.input.objects.dummy import DummyInputStore
 
 
-class TestDummyArtifactStore:
+class TestDummyInputStore:
     def test_persist_artifact(self, store):
         assert store.persist_artifact() is None
 
@@ -34,4 +34,4 @@ class TestDummyArtifactStore:
 
 @pytest.fixture
 def store():
-    return DummyArtifactStore("", "", "", "")
+    return DummyInputStore("", "", "", "")

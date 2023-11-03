@@ -1,0 +1,66 @@
+"""
+LocalInputStore module.
+"""
+from io import BytesIO, StringIO
+from pathlib import Path
+from typing import Any
+
+from nefertem.stores.input.objects.base import InputStore, StoreConfig
+from nefertem.utils.file_utils import check_dir, check_path, copy_file, get_path, make_dir
+from nefertem.utils.io_utils import write_json, write_object
+
+
+class LocalStoreConfig(StoreConfig):
+    """
+    Local store configuration class.
+    """
+
+
+class LocalInputStore(InputStore):
+    """
+    Implementation of a local artifact store object that allows the user to
+    interact with the local filesystem.
+    """
+
+    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: LocalStoreConfig) -> None:
+        """
+        Constructor.
+        """
+        super().__init__(name, uri, store_type, temp_dir)
+        self.config = config
+
+    ############################
+    # Read methods
+    ############################
+
+    def fetch_file(self, src: str) -> str:
+        """
+        Return the path where a resource it is stored.
+
+        Parameters
+        ----------
+        src : str
+            The name of the file.
+
+        Returns
+        -------
+        str
+            The location of the requested file.
+        """
+        return src
+
+    def fetch_native(self, src: str) -> str:
+        """
+        Return a native format path for a resource.
+
+        Parameters
+        ----------
+        src : str
+            The name of the file.
+
+        Returns
+        -------
+        str
+            The location of the requested file.
+        """
+        return src

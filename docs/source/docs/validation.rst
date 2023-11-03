@@ -34,8 +34,8 @@ Execution method tells plugings to execute validation over a resource. All this 
 Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``run.log_report()``, log ``NefertemReport`` into the ``MetadataStore``
-* ``run.validate()``, persist artifact into the default ``ArtifactStore``
+* ``run.log_report()``, log ``NefertemReport`` into the ``OutputStore``
+* ``run.validate()``, persist artifact into the default ``InputStore``
 
 
 Supported libraries
@@ -82,7 +82,7 @@ DuckDB
 SQLAlchemy
 ^^^^^^^^^^
 
-The ``sqlalchemy`` validator executes query defined in a *constraints* on the database side. To execute a validation without execution errors, there MUST be at least one user defined ``SQLArtifactStore`` passed to a ``Client`` and a ``DataResource`` associated with that store.
+The ``sqlalchemy`` validator executes query defined in a *constraints* on the database side. To execute a validation without execution errors, there MUST be at least one user defined ``SQLInputStore`` passed to a ``Client`` and a ``DataResource`` associated with that store.
 
 .. code-block:: python
 

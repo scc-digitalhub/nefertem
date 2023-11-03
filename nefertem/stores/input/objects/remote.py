@@ -3,7 +3,7 @@ Implementation of REST artifact store.
 """
 import requests
 
-from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
+from nefertem.stores.input.objects.base import InputStore, StoreConfig
 from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import get_name_from_uri
 
@@ -23,7 +23,7 @@ class RemoteStoreConfig(StoreConfig):
     """Bearer token."""
 
 
-class RemoteArtifactStore(ArtifactStore):
+class RemoteInputStore(InputStore):
     """
     Rest artifact store object.
 
@@ -31,35 +31,16 @@ class RemoteArtifactStore(ArtifactStore):
 
     """
 
-    def __init__(
-        self,
-        name: str,
-        store_type: str,
-        uri: str,
-        temp_dir: str,
-        is_default: bool,
-        config: RemoteStoreConfig,
-    ) -> None:
+    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: RemoteStoreConfig) -> None:
         """
         Constructor.
         """
-        super().__init__(name, store_type, uri, temp_dir, is_default)
+        super().__init__(name, uri, store_type, temp_dir)
         self.config = config
 
     ############################
-    # I/O methods
+    # Read methods
     ############################
-
-    def persist_artifact(self, *args) -> None:
-        """
-        Persist an artfact.
-
-        Raises
-        ------
-        NotImplementedError
-            This method is not implemented.
-        """
-        raise NotImplementedError("HTTP store does not support persistence.")
 
     def fetch_file(self, src: str) -> str:
         """

@@ -5,7 +5,7 @@ import re
 
 import polars as pl
 
-from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
+from nefertem.stores.input.objects.base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import get_path
 
@@ -34,7 +34,7 @@ class SQLStoreConfig(StoreConfig):
     """SQL database name."""
 
 
-class SQLArtifactStore(ArtifactStore):
+class SQLInputStore(InputStore):
     """
     SQL artifact store object.
 
@@ -42,19 +42,11 @@ class SQLArtifactStore(ArtifactStore):
 
     """
 
-    def __init__(
-        self,
-        name: str,
-        store_type: str,
-        uri: str,
-        temp_dir: str,
-        is_default: bool,
-        config: SQLStoreConfig,
-    ) -> None:
+    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: SQLStoreConfig) -> None:
         """
         Constructor.
         """
-        super().__init__(name, store_type, uri, temp_dir, is_default)
+        super().__init__(name, uri, store_type, temp_dir)
         self.config = config
 
     def persist_artifact(self, *args) -> None:

@@ -10,19 +10,19 @@ They can be configured using a specific ``StoreConfig`` object that accepts the 
 * ``type``, required, specific store type to be instantiated
 * ``uri``, required, URI location of artifacts/metadata
 * ``title``, optional, human readable description for the store
-* ``isDefault``, optional, set an ``ArtifactStore`` as the one where artifact are persisted, ignored by ``MetadataStore``
+* ``isDefault``, optional, set an ``InputStore`` as the one where artifact are persisted, ignored by ``OutputStore``
 * ``config``, optional, use to configure credentials, please see `Authentication <./authentication.md>`_ documentation for more information
 
 There are two types of store:
 
 
-* ``MetadataStore``
-* ``ArtifactStore``
+* ``OutputStore``
+* ``InputStore``
 
-MetadataStore
+OutputStore
 -------------
 
-The ``MetadataStore`` is used by the library to log metadata into a specified backend.
+The ``OutputStore`` is used by the library to log metadata into a specified backend.
 
 Example configuration:
 
@@ -35,19 +35,19 @@ Example configuration:
                                    name="local_md",
                                    uri="./ntruns")
 
-In this case we create a *local* ``MetadataStore`` that will log metadata locally.
-``MetadataStore`` supports the following types:
+In this case we create a *local* ``OutputStore`` that will log metadata locally.
+``OutputStore`` supports the following types:
 
 
 * *local*
 * *http* (DigitalHub store)
 
-ArtifactStore
+InputStore
 -------------
 
-The ``ArtifactStore`` is used by the library to fetch and persist artifact from various backend. It is configured like a ``MetadataStore``.
-If you configure more than one ``ArtifactStore``, at least one must be set as ``isDefault``.
-``ArtifactStore`` supports the following types:
+The ``InputStore`` is used by the library to fetch and persist artifact from various backend. It is configured like a ``OutputStore``.
+If you configure more than one ``InputStore``, at least one must be set as ``isDefault``.
+``InputStore`` supports the following types:
 
 
 * *local*

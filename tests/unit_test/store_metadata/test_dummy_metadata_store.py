@@ -1,9 +1,9 @@
 import pytest
 
-from nefertem.stores.metadata.objects.dummy import DummyMetadataStore
+from nefertem.stores.output.objects.dummy import DummyOutputStore
 
 
-class TestDummyMetadataStore:
+class TestDummyOutputStore:
     def test_init_run(self, store):
         assert store.init_run("exp1", "run1", True) is None
 
@@ -18,5 +18,5 @@ class TestDummyMetadataStore:
 
 
 @pytest.fixture
-def store() -> DummyMetadataStore:
-    return DummyMetadataStore("_dummy")
+def store() -> DummyOutputStore:
+    return DummyOutputStore("_dummy")

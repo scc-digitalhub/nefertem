@@ -92,7 +92,7 @@ In this example we configure an *inference* operation using a ``dict``. The argu
 
 * ``library``, mandatory, defines the framework used in the operation
 * ``execArgs``, optional, arguments passed to the operation performed by the framework
-* ``fetchMode``, optional, format used to store/fetch artifacts from ``ArtifactStore``
+* ``fetchMode``, optional, format used to store/fetch artifacts from ``InputStore``
 
 Run execution
 -------------

@@ -10,9 +10,9 @@ import typing
 if typing.TYPE_CHECKING:
     from nefertem.run.run import Run
 
-from nefertem.client.run_builder import RunBuilder
-from nefertem.client.store_handler import StoreHandler
-from nefertem.utils.commons import DEFAULT_EXPERIMENT
+from nefertem.run.builder import RunBuilder
+from nefertem.stores.builder import store_builder
+from nefertem.utils.commons import DEFAULT_EXPERIMENT, DEFAULT_DIRECTORY
 
 
 class Client:
@@ -46,12 +46,28 @@ class Client:
 
     def __init__(
         self,
-        metadata_store_path: str | None = None,
+        output_path: str | None = None,
         stores: list[dict] | None = None,
         tmp_dir: str | None = None,
     ) -> None:
-        self._store_handler = StoreHandler(metadata_store_path, stores, tmp_dir)
-        self._run_builder = RunBuilder(self._store_handler)
+        self._tmp_dir = tmp_dir if tmp_dir is not None else DEFAULT_DIRECTORY
+        self._setup_stores(output_path, stores)
+
+    def _setup_stores(self, path: str | None = None, configs: list[dict] | None = None) -> None:
+        """
+        Build stores according to configurations provided by user
+        and register them into the store registry.
+        """
+
+        # Build metadata store
+        store_builder.build_output_store(path)
+
+        # Build artifact stores
+        try:
+            for cfg in configs:
+                store_builder.build_input_store(self._tmp_dir, cfg)
+        except TypeError:
+            pass
 
     def add_store(self, config: dict) -> None:
         """
@@ -66,7 +82,7 @@ class Client:
         -------
         None
         """
-        self._store_handler.add_artifact_store(config)
+        store_builder.build_input_store(self._tmp_dir, config)
 
     def create_run(
         self,
@@ -98,11 +114,11 @@ class Client:
         Run
             Run object.
         """
-        return self._run_builder.create_run(resources, run_config, experiment, run_id, overwrite)
+        return RunBuilder().create_run(resources, run_config, self._tmp_dir, experiment, run_id, overwrite)
 
 
 def create_client(
-    metadata_store_path: str | None = None,
+    output_path: str | None = None,
     stores: list[dict] | None = None,
     tmp_dir: str | None = None,
 ) -> Client:
@@ -111,7 +127,7 @@ def create_client(
 
     Parameters
     ----------
-    metadata_store_path : str
+    output_path : str
         Path to the metadata store.
     stores : list[dict]
         List of dict containing configuration for the artifact stores.
@@ -123,4 +139,4 @@ def create_client(
     Client
         Client object.
     """
-    return Client(metadata_store_path, stores, tmp_dir)
+    return Client(output_path, stores, tmp_dir)

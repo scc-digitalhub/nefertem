@@ -29,7 +29,7 @@ if typing.TYPE_CHECKING:
     from nefertem.metadata.nefertem import NefertemProfile, NefertemReport, NefertemSchema
     from nefertem.metadata.run_info import RunInfo
     from nefertem.plugins.utils import RenderTuple
-    from nefertem.run.run_handler import RunHandler
+    from nefertem.run.handler import RunHandler
 
 
 class Run:

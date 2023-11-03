@@ -2,12 +2,10 @@
 Abstract class for artifact store.
 """
 from abc import ABCMeta, abstractmethod
-from typing import Any
 
 from pydantic import BaseModel
 
 from nefertem.utils.logger import LOGGER
-from nefertem.utils.uri_utils import rebuild_uri
 
 
 class StoreConfig(BaseModel):
@@ -27,19 +25,15 @@ class StoreParameters(BaseModel):
     """Store id."""
 
     uri: str
-    """Store URI."""
-
-    is_default: bool = False
-    """Determine if a Store is the default one."""
+    """Store uri."""
 
     config: dict | None = {}
     """Dictionary containing the configuration for the backend."""
 
 
-class ArtifactStore(metaclass=ABCMeta):
+class InputStore(metaclass=ABCMeta):
     """
-    Abstract artifact class that defines methods to persist/fetch
-    artifacts into/from different storage backends.
+    Abstract class that defines methods to fetch artifacts from different storage backends.
 
     Attributes
     ----------
@@ -47,32 +41,20 @@ class ArtifactStore(metaclass=ABCMeta):
         Name of store.
     type : str
         Type of store, e.g. s3, sql, local.
-    artifact_uri : str
-        An URI string that points to the storage.
     temp_dir : str
         Temporary download path.
     config : dict, default = None
         A dictionary with the credentials/configurations for the backend storage.
-    is_default : bool
-        Flag to indicate if this is the default store.
     """
 
-    def __init__(
-        self,
-        name: str,
-        store_type: str,
-        uri: str,
-        temp_dir: str,
-        is_default: bool,
-    ) -> None:
+    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str) -> None:
         """
         Constructor.
         """
         self.name = name
-        self.store_type = store_type
         self.uri = uri
+        self.store_type = store_type
         self.temp_dir = temp_dir
-        self.is_default = is_default
 
         # Path registry
         self._cache = {}
@@ -80,11 +62,9 @@ class ArtifactStore(metaclass=ABCMeta):
         # Logger
         self.logger = LOGGER
 
-    @abstractmethod
-    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
-        """
-        Method to persist an artifact.
-        """
+    ############################
+    # Read methods
+    ############################
 
     @abstractmethod
     def fetch_file(self, src: str) -> str:
@@ -98,11 +78,9 @@ class ArtifactStore(metaclass=ABCMeta):
         Return a native format path for a resource.
         """
 
-    def get_run_path(self, exp_name: str, run_id: str) -> str:
-        """
-        Return the path of the artifact store for the Run.
-        """
-        return rebuild_uri(self.uri, exp_name, run_id)
+    ############################
+    # Cache methods
+    ############################
 
     def _get_resource(self, key: str) -> str | None:
         """

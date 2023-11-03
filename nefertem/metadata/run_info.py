@@ -11,7 +11,7 @@ from nefertem.utils.utils import get_time
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource
-    from nefertem.run.run_config import RunConfig
+    from nefertem.run.config import RunConfig
 
 
 class RunInfo(Metadata):

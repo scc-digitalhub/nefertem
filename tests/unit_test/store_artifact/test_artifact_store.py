@@ -1,10 +1,10 @@
 import pytest
 
-from nefertem.stores.artifact.objects.base import ArtifactStore
+from nefertem.stores.input.objects.base import InputStore
 from tests.conftest import TEST_FILENAME
 
 
-class TestArtifactStore:
+class TestInputStore:
     def test_get_run_artifacts_uri(self, store):
         assert store.get_run_path("test", "test") == "test/test"
 
@@ -25,7 +25,7 @@ class TestArtifactStore:
         assert not store._get_resource(TEST_FILENAME)
 
 
-class ArtifactStoreSample(ArtifactStore):
+class InputStoreSample(InputStore):
     def persist_artifact(self, *args, **kwargs):
         ...
 
@@ -44,4 +44,4 @@ class ArtifactStoreSample(ArtifactStore):
 
 @pytest.fixture
 def store():
-    return ArtifactStoreSample("", "", "", "")
+    return InputStoreSample("", "", "", "")

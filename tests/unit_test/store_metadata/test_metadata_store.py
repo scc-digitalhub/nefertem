@@ -1,4 +1,4 @@
-class TestMetadataStore:
+class TestOutputStore:
     def test_init_run(self):
         ...
 

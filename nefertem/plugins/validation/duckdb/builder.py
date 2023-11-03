@@ -22,7 +22,7 @@ from nefertem.utils.utils import build_uuid, flatten_list, listify
 if typing.TYPE_CHECKING:
     from nefertem.readers.file.native import NativeReader
     from nefertem.resources.data_resource import DataResource
-    from nefertem.stores.artifact.objects.base import ArtifactStore
+    from nefertem.stores.input.objects.base import InputStore
 
 
 class ValidationBuilderDuckDB(ValidationPluginBuilder):
@@ -91,7 +91,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         df = self._get_data(data_reader, listify(resource.path))  # noqa pylint: disable=no-member
         self.con.execute(f"CREATE TABLE IF NOT EXISTS {resource.name} AS SELECT * FROM df;")
 
-    def _get_reader(self, store: ArtifactStore) -> NativeReader:
+    def _get_reader(self, store: InputStore) -> NativeReader:
         """
         Get reader. Preference goes to polars, otherwise, use pandas.
         """

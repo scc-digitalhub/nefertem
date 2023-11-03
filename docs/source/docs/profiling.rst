@@ -2,8 +2,8 @@
 Profiling
 =========
 
-The profiling is the process where a framework try to profile a ``DataResource`` 
-optionally in accordance to a given ``Metric`` model specification. If 
+The profiling is the process where a framework try to profile a ``DataResource``
+optionally in accordance to a given ``Metric`` model specification. If
 ``Metric`` model is not specified, the profiling evaluates built-in set of properties
 and metrics.
 
@@ -32,13 +32,13 @@ Execution method tells plugings to execute profiling over a resource. All this m
 
 * ``run.profile()``, execute both framework profiling and nefertem profile parsing
 * ``run.profile_wrapper()``, execute only framework profiling, return a specific framework artifact
-* ``run.profile_nefertem()``, execute both framework profiling and nefertem profile parsing, return a ``NefertemProfile``. ``NefertemProfile`` object contains *metrics* list with results of the the evaluated metrics and *field_metrics* dictionary containing the list of metric results for each field (if applicable). 
+* ``run.profile_nefertem()``, execute both framework profiling and nefertem profile parsing, return a ``NefertemProfile``. ``NefertemProfile`` object contains *metrics* list with results of the the evaluated metrics and *field_metrics* dictionary containing the list of metric results for each field (if applicable).
 
 Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``run.log_profile()``, log ``NefertemProfile`` into the ``MetadataStore``
-* ``run.profile()``, persist artifact into the default ``ArtifactStore``
+* ``run.log_profile()``, log ``NefertemProfile`` into the ``OutputStore``
+* ``run.profile()``, persist artifact into the default ``InputStore``
 
 Supported libraries
 -------------------

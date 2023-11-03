@@ -3,7 +3,7 @@ import pytest
 from tests.conftest import TEST_FILENAME
 
 
-class TestLocalArtifactStore:
+class TestLocalInputStore:
     def test_persist_artifact(self, store, temp_file, stringio, bytesio, dictionary, temp_folder):
         src_name = "persist.txt"
         pth = temp_folder / src_name

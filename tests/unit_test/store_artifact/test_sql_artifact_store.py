@@ -1,4 +1,4 @@
-class TestSQLArtifactStore:
+class TestSQLInputStore:
     def test_persist_artifact(self):
         ...
 

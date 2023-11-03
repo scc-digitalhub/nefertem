@@ -11,7 +11,7 @@ import boto3
 import botocore.client
 from botocore.exceptions import ClientError
 
-from nefertem.stores.artifact.objects.base import ArtifactStore, StoreConfig
+from nefertem.stores.input.objects.base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import check_path, get_path
 from nefertem.utils.io_utils import wrap_string, write_bytesio
@@ -39,7 +39,7 @@ class S3StoreConfig(StoreConfig):
     """S3 bucket name."""
 
 
-class S3ArtifactStore(ArtifactStore):
+class S3InputStore(InputStore):
     """
     S3 artifact store object.
 
@@ -47,73 +47,16 @@ class S3ArtifactStore(ArtifactStore):
 
     """
 
-    def __init__(
-        self,
-        name: str,
-        store_type: str,
-        uri: str,
-        temp_dir: str,
-        is_default: bool,
-        config: S3StoreConfig,
-    ) -> None:
+    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: S3StoreConfig) -> None:
         """
         Constructor.
         """
-        super().__init__(name, store_type, uri, temp_dir, is_default)
+        super().__init__(name, uri, store_type, temp_dir)
         self.config = config
 
     ############################
-    # I/O methods
+    # Read methods
     ############################
-
-    def persist_artifact(self, src: Any, dst: str, src_name: str, metadata: dict) -> None:
-        """
-        Persist an artifact on S3 based storage.
-
-        Parameters:
-        -----------
-        src : Any
-            The source object to be persisted. It can be a file path as a string or Path object,
-            a dictionary containing key-value pairs, or a buffer like StringIO/BytesIO.
-
-        dst : str
-            The destination partition for the artifact.
-
-        src_name : str
-            The name of the source object.
-
-        metadata : dict
-            Additional information to be stored with the artifact.
-
-        Raises:
-        -------
-        NotImplementedError :
-            If the source object is not a file path, dictionary, StringIO/BytesIO buffer.
-
-        Returns:
-        --------
-        None
-        """
-        # Build the key for the artifact
-        key = build_key(dst, src_name)
-
-        # Local file
-        if isinstance(src, (str, Path)) and check_path(src):
-            return self._upload_file(str(src), key, metadata)
-
-        # Dictionary
-        if isinstance(src, dict) and src_name is not None:
-            # Convert the dictionary to JSON string and write it to BytesIO buffer
-            bytesio = write_bytesio(json.dumps(src))
-            return self._upload_fileobj(bytesio, key, metadata)
-
-        # StringIO/BytesIO buffer
-        if isinstance(src, (BytesIO, StringIO)) and src_name is not None:
-            # Wrap the buffer in a BufferedIOBase object and upload it
-            bytesio = wrap_string(src)
-            return self._upload_fileobj(bytesio, key, metadata)
-
-        raise NotImplementedError
 
     def fetch_file(self, src: str) -> str:
         """
@@ -292,45 +235,3 @@ class S3ArtifactStore(ArtifactStore):
             Params={"Bucket": bucket, "Key": src},
             ExpiresIn=7200,
         )
-
-    def _upload_file(self, src: str, key: str, metadata: dict) -> None:
-        """
-        Upload file to S3.
-
-        Parameters
-        ----------
-        src : str
-            The path to the file that needs to be uploaded to S3.
-        key : str
-            The key under which the file needs to be saved in S3.
-        metadata : dict
-            A dictionary containing metadata to be associated with the uploaded object.
-
-        Returns
-        -------
-        None
-        """
-        client, bucket = self._check_factory()
-        ex_args = {"Metadata": metadata}
-        client.upload_file(Filename=src, Bucket=bucket, Key=key, ExtraArgs=ex_args)
-
-    def _upload_fileobj(self, obj: BytesIO, key: str, metadata: dict) -> None:
-        """
-        Upload a file object to S3.
-
-        Parameters
-        ----------
-        obj : BytesIO
-            A file object representing the data to be uploaded to S3.
-        key : str
-            The key under which the file object needs to be saved in S3.
-        metadata : dict
-            A dictionary containing metadata to be associated with the uploaded object.
-
-        Returns
-        -------
-        None
-        """
-        client, bucket = self._check_factory()
-        ex_args = {"Metadata": metadata}
-        client.upload_fileobj(obj, Bucket=bucket, Key=key, ExtraArgs=ex_args)

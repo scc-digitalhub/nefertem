@@ -41,8 +41,8 @@ Execution method tell plugings to execute profiling over a resource. All this me
 Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``run.log_profile()``, log ``NefertemProfile`` into the ``MetadataStore``
-* ``run.profile()``, persist artifact into the default ``ArtifactStore``
+* ``run.log_profile()``, log ``NefertemProfile`` into the ``OutputStore``
+* ``run.profile()``, persist artifact into the default ``InputStore``
 
 
 Frictionless

@@ -5,10 +5,10 @@
 # from nefertem.client.store_handler import (
 #     StoreHandler,
 # )
-# from nefertem.stores.artifact.objects.base import ArtifactStore
-# from nefertem.stores.artifact.objects.dummy import DummyArtifactStore
-# from nefertem.stores.metadata.objects.base import MetadataStore
-# from nefertem.stores.metadata.objects.dummy import DummyMetadataStore
+# from nefertem.stores.artifact.objects.base import InputStore
+# from nefertem.stores.artifact.objects.dummy import DummyInputStore
+# from nefertem.stores.metadata.objects.base import OutputStore
+# from nefertem.stores.metadata.objects.dummy import DummyOutputStore
 # from nefertem.utils.commons import DUMMY
 # from nefertem.utils.exceptions import StoreError
 
@@ -16,19 +16,19 @@
 # class TestStoreHandler:
 #     def test_setup(self, temp_data):
 #         handler = StoreHandler(tmp_dir=temp_data)
-#         assert isinstance(handler.get_md_store(), MetadataStore)
-#         assert isinstance(handler.get_art_store(DUMMY), ArtifactStore)
-#         assert isinstance(handler.get_def_store(), ArtifactStore)
+#         assert isinstance(handler.get_md_store(), OutputStore)
+#         assert isinstance(handler.get_art_store(DUMMY), InputStore)
+#         assert isinstance(handler.get_def_store(), InputStore)
 
 #     def test_add_metadata_store(self, temp_data, mds_cfg):
 #         handler = StoreHandler(tmp_dir=temp_data)
 #         handler._add_metadata_store(mds_cfg)
-#         assert isinstance(handler.get_md_store(), MetadataStore)
+#         assert isinstance(handler.get_md_store(), OutputStore)
 
 #     def test_add_artifact_store(self, temp_data, st_loc1_cfg):
 #         handler = StoreHandler(tmp_dir=temp_data)
 #         handler.add_artifact_store(st_loc1_cfg)
-#         assert isinstance(handler.get_art_store(st_loc1_cfg.name), ArtifactStore)
+#         assert isinstance(handler.get_art_store(st_loc1_cfg.name), InputStore)
 #         with pytest.raises(StoreError):
 #             handler.add_artifact_store(st_loc1_cfg)
 
@@ -49,16 +49,16 @@
 #             handler._update_default_store()
 
 #     def test_get_md_store(self, temp_data):
-#         assert isinstance(StoreHandler(tmp_dir=temp_data).get_md_store(), DummyMetadataStore)
+#         assert isinstance(StoreHandler(tmp_dir=temp_data).get_md_store(), DummyOutputStore)
 
 #     def test_get_art_store(self, temp_data):
 #         assert isinstance(
 #             StoreHandler(tmp_dir=temp_data).get_art_store(DUMMY),
-#             DummyArtifactStore,
+#             DummyInputStore,
 #         )
 
 #     def test_get_def_store(self, temp_data):
-#         assert isinstance(StoreHandler(tmp_dir=temp_data).get_def_store(), DummyArtifactStore)
+#         assert isinstance(StoreHandler(tmp_dir=temp_data).get_def_store(), DummyInputStore)
 
 #     def test_get_all_art_stores(self, temp_data):
 #         assert isinstance(StoreHandler(tmp_dir=temp_data).get_all_art_stores(), list)
