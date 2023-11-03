@@ -8,9 +8,8 @@ import typing
 from typing import Any
 
 from nefertem.plugins.factory import builder_factory
-from nefertem.readers.builder import build_reader
+from nefertem.stores.builder import get_all_input_stores
 from nefertem.utils.commons import (
-    BASE_FILE_READER,
     INFER,
     PROFILE,
     RESULT_ARTIFACT,
@@ -19,10 +18,7 @@ from nefertem.utils.commons import (
     RESULT_RENDERED,
     VALIDATE,
 )
-from nefertem.stores.builder import get_input_store, get_output_store, get_all_input_stores
 from nefertem.utils.exceptions import RunError
-from nefertem.utils.file_utils import get_absolute_path, clean_all
-from nefertem.utils.uri_utils import get_name_from_uri
 from nefertem.utils.utils import flatten_list, listify
 
 if typing.TYPE_CHECKING:
@@ -47,9 +43,8 @@ class RunHandler:
         Resul registry.
     """
 
-    def __init__(self, config: RunConfig, tmp_dir: str) -> None:
+    def __init__(self, config: RunConfig) -> None:
         self._config = config
-        self._tmp_dir = tmp_dir
         self._registry = {}
 
         self._setup()
@@ -91,7 +86,6 @@ class RunHandler:
         )
         plugins = self._create_plugins(builders, resources)
         self._scheduler(plugins, INFER, parallel, num_worker)
-        self._destroy_builders(builders)
 
     def validate(
         self,
@@ -113,7 +107,8 @@ class RunHandler:
         )
         plugins = self._create_plugins(builders, resources, constraints, error_report)
         self._scheduler(plugins, VALIDATE, parallel, num_worker)
-        self._destroy_builders(builders)
+        for builder in builders:
+            builder.destroy()
 
     def profile(
         self,
@@ -132,7 +127,6 @@ class RunHandler:
         )
         plugins = self._create_plugins(builders, resources, metrics)
         self._scheduler(plugins, PROFILE, parallel, num_worker)
-        self._destroy_builders(builders)
 
     #############################
     # Execution methods
@@ -203,14 +197,6 @@ class RunHandler:
         """
         return plugin.execute()
 
-    @staticmethod
-    def _destroy_builders(builders: list[PluginBuilder]) -> None:
-        """
-        Destroy builders.
-        """
-        for builder in builders:
-            builder.destroy()
-
     #############################
     # Registry methods
     #############################
@@ -270,39 +256,3 @@ class RunHandler:
                 if dict(**i) not in libs[ops]:
                     libs[ops].append(i)
         return libs
-
-    def log_metadata(self, src: dict, src_type: str, overwrite: bool) -> None:
-        """
-        Method to log metadata in the metadata store.
-        """
-        get_output_store().log_metadata(src, src_type, overwrite)
-
-    def persist_artifact(self, src: Any, src_name: str) -> None:
-        """
-        Method to persist artifacts in the default artifact store.
-        """
-        get_output_store().persist_artifact(src, src_name)
-
-    def persist_data(self, resources: list[DataResource], dst: str) -> None:
-        """
-        Persist input data as artifact.
-        """
-        for res in resources:
-            store = get_input_store(res.store)
-            data_reader = build_reader(BASE_FILE_READER, store)
-            for path in listify(res.path):
-                tmp_pth = data_reader.fetch_data(path)
-                tmp_pth = get_absolute_path(tmp_pth)
-                filename = get_name_from_uri(tmp_pth)
-                self.persist_artifact(tmp_pth, dst, filename)
-
-    def clean_all(self) -> None:
-        """
-        Clean up.
-        """
-        for store in get_all_input_stores():
-            store.clean_paths()
-        try:
-            clean_all(self._tmp_dir)
-        except FileNotFoundError:
-            pass

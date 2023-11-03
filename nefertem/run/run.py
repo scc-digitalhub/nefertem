@@ -9,10 +9,11 @@ from typing import Any
 
 from nefertem.metadata.blob import BlobLog
 from nefertem.metadata.env import EnvLog
+from nefertem.readers.builder import build_reader
+from nefertem.stores.builder import get_all_input_stores, get_input_store, get_output_store
 from nefertem.utils.commons import (
-    INFER,
+    BASE_FILE_READER,
     NEFERTEM_VERSION,
-    PROFILE,
     RESULT_ARTIFACT,
     RESULT_NEFERTEM,
     RESULT_RENDERED,
@@ -20,13 +21,14 @@ from nefertem.utils.commons import (
     STATUS_FINISHED,
     STATUS_INIT,
     STATUS_INTERRUPTED,
-    VALIDATE,
 )
+from nefertem.utils.file_utils import clean_all, get_absolute_path
 from nefertem.utils.logger import LOGGER
-from nefertem.utils.utils import get_time
+from nefertem.utils.uri_utils import get_name_from_uri
+from nefertem.utils.utils import get_time, listify
 
 if typing.TYPE_CHECKING:
-    from nefertem.metadata.nefertem import NefertemProfile, NefertemReport, NefertemSchema
+    from nefertem.metadata.nefertem import NefertemSchema
     from nefertem.metadata.run_info import RunInfo
     from nefertem.plugins.utils import RenderTuple
     from nefertem.run.handler import RunHandler
@@ -76,9 +78,10 @@ class Run:
 
     """
 
-    def __init__(self, run_info: RunInfo, run_handler: RunHandler, overwrite: bool) -> None:
+    def __init__(self, run_info: RunInfo, run_handler: RunHandler, tmp_dir: str, overwrite: bool) -> None:
         self.run_info = run_info
         self._run_handler = run_handler
+        self._tmp_dir = tmp_dir
         self._overwrite = overwrite
 
         self._filenames = {}
@@ -121,16 +124,6 @@ class Run:
         blob = blob if blob is not None else {}
         return BlobLog(self.run_info.run_id, self.run_info.experiment_name, NEFERTEM_VERSION, blob).to_dict()
 
-    def _log_metadata(self, metadata: dict, src_type: str) -> None:
-        """
-        Log generic metadata.
-
-        Returns
-        -------
-        None
-        """
-        self._run_handler.log_metadata(metadata, self.run_info.run_meta_path, src_type, self._overwrite)
-
     def _log_artifact(self, src_name: str | None = None) -> None:
         """
         Log artifact metadata.
@@ -140,7 +133,17 @@ class Run:
         None
         """
         metadata = self._get_blob({"uri": self.run_info.run_art_path, "name": src_name})
-        self._log_metadata(metadata, "artifact")
+        get_output_store().log_metadata(metadata, "artifact")
+
+    def _log_metadata(self, src: dict, src_type: str) -> None:
+        """
+        Log generic metadata.
+
+        Returns
+        -------
+        None
+        """
+        get_output_store().log_metadata(src, src_type)
 
     def _render_artifact_name(self, filename: str) -> str:
         """
@@ -168,7 +171,7 @@ class Run:
         None
         """
         src_name = self._render_artifact_name(obj.filename)
-        self._run_handler.persist_artifact(obj.object, self.run_info.run_art_path, src_name)
+        get_output_store().persist_artifact(obj.object, src_name)
         self._log_artifact(src_name)
 
     def _get_libraries(self) -> None:
@@ -180,356 +183,6 @@ class Run:
         None
         """
         self.run_info.run_libraries = self._run_handler.get_libs()
-
-    ############################
-    # Inferece
-    ############################
-
-    def infer_wrapper(self, parallel: bool = False, num_worker: int = 10) -> list[Any]:
-        """
-        Execute schema inference on resources with inference frameworks.
-
-        Parameters
-        ----------
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-
-        Returns
-        -------
-        list[Any]
-            Return a list of framework results.
-
-        """
-        schemas = self._run_handler.get_item(INFER, RESULT_ARTIFACT)
-        if schemas:
-            return schemas
-
-        self._run_handler.infer(self.run_info.resources, parallel, num_worker)
-        return self._run_handler.get_item(INFER, RESULT_ARTIFACT)
-
-    def infer_nefertem(self, parallel: bool = False, num_worker: int = 10) -> list[NefertemSchema]:
-        """
-        Execute schema inference on resources with Nefertem.
-
-        Parameters
-        ----------
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-
-        Returns
-        -------
-        list[NefertemSchema]
-            Return a list of NefertemSchemas.
-
-        """
-        schemas = self._run_handler.get_item(INFER, RESULT_NEFERTEM)
-        if schemas:
-            return schemas
-
-        self._run_handler.infer(self.run_info.resources, parallel, num_worker)
-        return self._run_handler.get_item(INFER, RESULT_NEFERTEM)
-
-    def infer(self, parallel: bool = False, num_worker: int = 10, only_nt: bool = False) -> Any:
-        """
-        Execute schema inference on resources.
-
-        Parameters
-        ----------
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-        only_nt : bool
-            Flag to return only the Nefertem report.
-
-        Returns
-        -------
-        Any
-            Return a list of NefertemSchemas and the corresponding list of framework results.
-        """
-        schema = self.infer_wrapper(parallel, num_worker)
-        schema_nt = self.infer_nefertem(parallel, num_worker)
-        if only_nt:
-            return None, schema_nt
-        return schema, schema_nt
-
-    def log_schema(self) -> None:
-        """
-        Log NefertemSchemas.
-
-        Returns
-        -------
-        None
-        """
-        for obj in self._run_handler.get_item(INFER, RESULT_NEFERTEM):
-            metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, "schema")
-
-    def persist_schema(self) -> None:
-        """
-        Persist frameworks schemas.
-
-        Returns
-        -------
-        None
-        """
-        for obj in self._run_handler.get_item(INFER, RESULT_RENDERED):
-            self._persist_artifact(obj)
-
-    ############################
-    # Validation
-    ############################
-
-    def validate_wrapper(
-        self,
-        constraints: list[dict],
-        error_report: str | None = "partial",
-        parallel: bool = False,
-        num_worker: int | None = 10,
-    ) -> list[Any]:
-        """
-        Execute validation on resources with validation frameworks.
-
-        Parameters
-        ----------
-        constraints : list[dict]
-            list of constraint to validate resources.
-        error_report : str
-            Flag to render the error output of the nefertem report.
-            Accepts 'count', 'partial' or 'full'.
-            'count' returns the errors count of the validation,
-            'partial' return the errors count and a list of errors (max 100),
-            'full' returns errors count and the list of all encountered errors.
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-
-        Returns
-        -------
-        list[Any]
-            Return a list of framework results.
-
-        """
-        reports = self._run_handler.get_item(VALIDATE, RESULT_ARTIFACT)
-        if reports:
-            return reports
-
-        self._run_handler.validate(self.run_info.resources, constraints, error_report, parallel, num_worker)
-        return self._run_handler.get_item(VALIDATE, RESULT_ARTIFACT)
-
-    def validate_nefertem(
-        self,
-        constraints: list[dict],
-        error_report: str | None = "partial",
-        parallel: bool = False,
-        num_worker: int | None = 10,
-    ) -> list[NefertemReport]:
-        """
-        Execute validation on resources with Nefertem.
-
-        Parameters
-        ----------
-        constraints : list[dict]
-            list of constraint to validate resources.
-        error_report : str
-            Flag to render the error output of the nefertem report.
-            Accepts 'count', 'partial' or 'full'.
-            'count' returns the errors count of the validation,
-            'partial' return the errors count and a list of errors (max 100),
-            'full' returns errors count and the list of all encountered errors.
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-
-        Returns
-        -------
-        list[NefertemReport]
-            Return a list of "NefertemReport".
-
-        """
-        reports = self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM)
-        if reports:
-            return reports
-
-        self._run_handler.validate(self.run_info.resources, constraints, error_report, parallel, num_worker)
-        return self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM)
-
-    def validate(
-        self,
-        constraints: list[dict],
-        error_report: str | None = "partial",
-        parallel: bool = False,
-        num_worker: int | None = 10,
-        only_nt: bool = False,
-    ) -> Any:
-        """
-        Execute validation on resources.
-
-        Parameters
-        ----------
-        constraints : list[dict]
-            list of constraint to validate resources.
-        error_report : str
-            Flag to render the error output of the nefertem report.
-            Accepts 'count', 'partial' or 'full'.
-            'count' returns the errors count of the validation,
-            'partial' return the errors count and a list of errors (max 100),
-            'full' returns errors count and the list of all encountered errors.
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-        only_nt : bool
-            Flag to return only the Nefertem report.
-
-        Returns
-        -------
-        Any
-            Return a list of "NefertemReport" and the corresponding list of framework results.
-
-        """
-        report = self.validate_wrapper(constraints, error_report, parallel, num_worker)
-        report_nt = self.validate_nefertem(constraints, error_report, parallel, num_worker)
-        if only_nt:
-            return None, report_nt
-        return report, report_nt
-
-    def log_report(self) -> None:
-        """
-        Log NefertemReports.
-
-        Returns
-        -------
-        None
-        """
-        for obj in self._run_handler.get_item(VALIDATE, RESULT_NEFERTEM):
-            metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, "report")
-
-    def persist_report(self) -> None:
-        """
-        Persist frameworks reports.
-
-        Returns
-        -------
-        None
-        """
-        for obj in self._run_handler.get_item(VALIDATE, RESULT_RENDERED):
-            self._persist_artifact(obj)
-
-    ############################
-    # Profiling
-    ############################
-
-    def profile_wrapper(self, metrics: list[dict], parallel: bool = False, num_worker: int = 10) -> list[Any]:
-        """
-        Execute profiling on resources with profiling frameworks.
-
-        Parameters
-        ----------
-        metrics: list[dict]
-            Optional list of metrics to evaluate over resources.
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-
-        Returns
-        -------
-        list[Any]
-            Return a list of framework results.
-
-        """
-        profiles = self._run_handler.get_item(PROFILE, RESULT_ARTIFACT)
-        if profiles:
-            return profiles
-
-        self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
-        return self._run_handler.get_item(PROFILE, RESULT_ARTIFACT)
-
-    def profile_nefertem(
-        self, metrics: list[dict], parallel: bool = False, num_worker: int = 10
-    ) -> list[NefertemProfile]:
-        """
-        Execute profiling on resources with Nefertem.
-
-        Parameters
-        ----------
-        metrics: list[dict]
-            Optional list of metrics to evaluate over resources.
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-
-        Returns
-        -------
-        list[NefertemProfile]
-            Return a list of NefertemProfile.
-
-        """
-        profiles = self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
-        if profiles:
-            return profiles
-
-        self._run_handler.profile(self.run_info.resources, metrics, parallel, num_worker)
-        return self._run_handler.get_item(PROFILE, RESULT_NEFERTEM)
-
-    def profile(self, metrics: list[dict], parallel: bool = False, num_worker: int = 10, only_nt: bool = False) -> Any:
-        """
-        Execute profiling on resources.
-
-        Parameters
-        ----------
-        metrics: list[dict]
-            Optional list of metrics to evaluate over resources.
-        parallel : bool
-            Flag to execute operation in parallel.
-        num_worker : int
-            Number of workers to execute operation in parallel, by default 10
-        only_nt : bool
-            Flag to return only the Nefertem report.
-
-        Returns
-        -------
-        Any
-            Return a list of NefertemProfile and the corresponding list of framework results.
-
-        """
-        profile = self.profile_wrapper(metrics, parallel, num_worker)
-        profile_nt = self.profile_nefertem(metrics, parallel, num_worker)
-        if only_nt:
-            return None, profile_nt
-        return profile, profile_nt
-
-    def log_profile(self) -> None:
-        """
-        Log NefertemProfiles.
-
-        Returns
-        -------
-        None
-        """
-        for obj in self._run_handler.get_item(PROFILE, RESULT_NEFERTEM):
-            metadata = self._get_blob(obj.to_dict())
-            self._log_metadata(metadata, "profile")
-
-    def persist_profile(self) -> None:
-        """
-        Persist frameworks profiles.
-
-        Returns
-        -------
-        None
-        """
-        for obj in self._run_handler.get_item(PROFILE, RESULT_RENDERED):
-            self._persist_artifact(obj)
 
     ############################
     # Data
@@ -549,7 +202,25 @@ class Run:
         -------
         None
         """
-        self._run_handler.persist_data(self.run_info.resources, self.run_info.run_art_path)
+        for res in self.run_info.resources:
+            store = get_input_store(res.store)
+            data_reader = build_reader(BASE_FILE_READER, store)
+            for path in listify(res.path):
+                tmp_pth = data_reader.fetch_data(path)
+                tmp_pth = get_absolute_path(tmp_pth)
+                filename = get_name_from_uri(tmp_pth)
+                get_output_store().persist_artifact(tmp_pth, filename)
+
+    def _clean_all(self) -> None:
+        """
+        Clean up.
+        """
+        for store in get_all_input_stores():
+            store.clean_paths()
+        try:
+            clean_all(self._tmp_dir)
+        except FileNotFoundError:
+            pass
 
     ############################
     # Context manager
@@ -579,7 +250,7 @@ class Run:
         self._log_run()
         LOGGER.info("Run finished. Clean up of temp resources.")
 
-        self._run_handler.clean_all()
+        self._clean_all()
 
     ############################
     # Dunder

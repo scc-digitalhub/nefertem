@@ -5,9 +5,9 @@ from pydantic import ValidationError
 
 from nefertem.metadata.run_info import RunInfo
 from nefertem.resources.data_resource import DataResource
-from nefertem.run.run import Run
 from nefertem.run.config import RunConfig
 from nefertem.run.handler import RunHandler
+from nefertem.run.run import Run
 from nefertem.stores.builder import get_output_store
 from nefertem.utils.commons import DEFAULT_EXPERIMENT
 from nefertem.utils.exceptions import RunError
@@ -79,13 +79,13 @@ class RunBuilder:
         # Initialize run and get metadata and artifacts URI
         store = get_output_store()
         store.init_run(experiment, run_id, overwrite)
-        run_md_uri = store.metadata_path
-        run_art_uri = store.artifact_path
+        run_md_uri = str(store.metadata_path)
+        run_art_uri = str(store.artifact_path)
 
         # Create run
-        run_handler = RunHandler(cfg, tmp_dir)
+        run_handler = RunHandler(cfg)
         run_info = RunInfo(experiment, res, run_id, cfg, run_md_uri, run_art_uri)
-        return Run(run_info, run_handler, overwrite)
+        return Run(run_info, run_handler, tmp_dir, overwrite)
 
     @staticmethod
     def _validate_resources(resources: list[dict]) -> list[DataResource]:

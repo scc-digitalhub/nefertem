@@ -13,8 +13,8 @@ from nefertem.stores.kinds import StoreKinds
 from nefertem.stores.output.registry import mdstore_registry
 from nefertem.utils.commons import DUMMY
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import get_absolute_path, get_path
-from nefertem.utils.uri_utils import map_uri_scheme, rebuild_uri
+from nefertem.utils.file_utils import get_path
+from nefertem.utils.uri_utils import map_uri_scheme
 from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:

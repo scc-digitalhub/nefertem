@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 
 from nefertem.run.builder import RunBuilder
 from nefertem.stores.builder import store_builder
-from nefertem.utils.commons import DEFAULT_EXPERIMENT, DEFAULT_DIRECTORY
+from nefertem.utils.commons import DEFAULT_DIRECTORY, DEFAULT_EXPERIMENT
 
 
 class Client:

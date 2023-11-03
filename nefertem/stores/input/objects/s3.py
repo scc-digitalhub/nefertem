@@ -2,10 +2,7 @@
 Implementation of S3 artifact store.
 """
 # pylint: disable=unused-import
-import json
-from io import BytesIO, StringIO
-from pathlib import Path
-from typing import Any, Type
+from typing import Type
 
 import boto3
 import botocore.client
@@ -13,9 +10,8 @@ from botocore.exceptions import ClientError
 
 from nefertem.stores.input.objects.base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import check_path, get_path
-from nefertem.utils.io_utils import wrap_string, write_bytesio
-from nefertem.utils.uri_utils import build_key, get_name_from_uri, get_uri_path
+from nefertem.utils.file_utils import get_path
+from nefertem.utils.uri_utils import get_name_from_uri, get_uri_path
 
 # Type aliases
 S3Client = Type["botocore.client.S3"]

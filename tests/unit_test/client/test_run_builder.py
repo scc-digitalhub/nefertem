@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.run.builder import RunBuilder
 from nefertem.client.store_handler import StoreHandler
+from nefertem.run.builder import RunBuilder
 from nefertem.run.run import Run
 from nefertem.utils.exceptions import RunError
 
