@@ -7,7 +7,7 @@ from nefertem_inference.metadata.report import NefertemSchema
 
 from nefertem.metadata.blob import BlobLog
 from nefertem.run.run import Run
-from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class RunInference(Run):
@@ -18,7 +18,7 @@ class RunInference(Run):
     -------
     infer
         Execute schema inference on resources.
-    infer_wrapper
+    infer_framework
         Execute schema inference on resources with inference frameworks.
     infer_nefertem
         Execute schema inference on resources with Nefertem.
@@ -30,11 +30,7 @@ class RunInference(Run):
         Persist input data as artifacts into default store.
     """
 
-    ############################
-    # Inferece
-    ############################
-
-    def infer_wrapper(self) -> list[Any]:
+    def infer_framework(self) -> list[Any]:
         """
         Execute schema inference on resources with inference frameworks.
 
@@ -44,12 +40,12 @@ class RunInference(Run):
             Return a list of framework results.
 
         """
-        schemas = self.run_handler.get_item(RESULT_ARTIFACT)
+        schemas = self.run_handler.get_item(RESULT_FRAMEWORK)
         if schemas:
             return schemas
 
         self.run_handler.run(self.run_info.resources)
-        return self.run_handler.get_item(RESULT_ARTIFACT)
+        return self.run_handler.get_item(RESULT_FRAMEWORK)
 
     def infer_nefertem(self) -> list[NefertemSchema]:
         """
@@ -68,25 +64,16 @@ class RunInference(Run):
         self.run_handler.run(self.run_info.resources)
         return self.run_handler.get_item(RESULT_NEFERTEM)
 
-    def infer(self, only_nt: bool = False) -> Any:
+    def infer(self) -> tuple[list[Any], list[NefertemSchema]]:
         """
         Execute schema inference on resources.
-
-        Parameters
-        ----------
-        only_nt : bool
-            Flag to return only the Nefertem report.
 
         Returns
         -------
         Any
             Return a list of NefertemSchemas and the corresponding list of framework results.
         """
-        schema = self.infer_wrapper()
-        schema_nt = self.infer_nefertem()
-        if only_nt:
-            return None, schema_nt
-        return schema, schema_nt
+        return self.infer_framework(), self.infer_nefertem()
 
     def log_schema(self) -> None:
         """

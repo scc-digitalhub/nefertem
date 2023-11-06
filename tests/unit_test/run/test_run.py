@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from nefertem.run.handler import RunHandler
-from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class TestRun:
@@ -53,7 +53,7 @@ class TestRun:
     def test_get_libraries(self, handler):
         pass
 
-    def test_infer_wrapper(self, handler):
+    def test_infer_framework(self, handler):
         pass
 
     def test_infer_nefertem(self, handler):
@@ -68,7 +68,7 @@ class TestRun:
     def test_persist_schema(self, handler):
         pass
 
-    def test_validate_wrapper(self, handler):
+    def test_validate_framework(self, handler):
         pass
 
     def test_validate_nefertem(self, handler):
@@ -83,7 +83,7 @@ class TestRun:
     def test_persist_report(self, handler):
         pass
 
-    def test_profile_wrapper(self, handler):
+    def test_profile_framework(self, handler):
         pass
 
     def test_profile_nefertem(self, handler):
@@ -115,7 +115,7 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_ARTIFACT: result_obj,
+        RESULT_FRAMEWORK: result_obj,
         RESULT_NEFERTEM: result_obj,
         RESULT_RENDERED: result_obj,
         RESULT_LIBRARY: [{"test": "test"}],

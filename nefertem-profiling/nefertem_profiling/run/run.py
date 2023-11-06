@@ -7,7 +7,7 @@ from nefertem_profiling.metadata.report import NefertemProfile
 
 from nefertem.metadata.blob import BlobLog
 from nefertem.run.run import Run
-from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class RunProfiling(Run):
@@ -18,7 +18,7 @@ class RunProfiling(Run):
     -------
     profile
         Execute profile profiling on resources.
-    profile_wrapper
+    profile_framework
         Execute profile profiling on resources with profiling frameworks.
     profile_nefertem
         Execute profile profiling on resources with Nefertem.
@@ -26,15 +26,13 @@ class RunProfiling(Run):
         Log NefertemProfiles.
     persist_profile
         Persist frameworks profiles.
-    persist_data
-        Persist input data as artifacts into default store.
     """
 
     ############################
     # Profiling
     ############################
 
-    def profile_wrapper(self, metrics: list[dict]) -> list[Any]:
+    def profile_framework(self, metrics: list[dict]) -> list[Any]:
         """
         Execute profiling on resources with profiling frameworks.
 
@@ -49,16 +47,14 @@ class RunProfiling(Run):
             Return a list of framework results.
 
         """
-        profiles = self.run_handler.get_item(RESULT_ARTIFACT)
+        profiles = self.run_handler.get_item(RESULT_FRAMEWORK)
         if profiles:
             return profiles
 
         self.run_handler.run(self.run_info.resources, metrics)
-        return self.run_handler.get_item(RESULT_ARTIFACT)
+        return self.run_handler.get_item(RESULT_FRAMEWORK)
 
-    def profile_nefertem(
-        self, metrics: list[dict]
-    ) -> list[NefertemProfile]:
+    def profile_nefertem(self, metrics: list[dict]) -> list[NefertemProfile]:
         """
         Execute profiling on resources with Nefertem.
 
@@ -80,7 +76,7 @@ class RunProfiling(Run):
         self.run_handler.run(self.run_info.resources, metrics)
         return self.run_handler.get_item(RESULT_NEFERTEM)
 
-    def profile(self, metrics: list[dict], only_nt: bool = False) -> Any:
+    def profile(self, metrics: list[dict]) -> tuple[list[Any], list[NefertemProfile]]:
         """
         Execute profiling on resources.
 
@@ -88,8 +84,6 @@ class RunProfiling(Run):
         ----------
         metrics: list[dict]
             Optional list of metrics to evaluate over resources.
-        only_nt : bool
-            Flag to return only the Nefertem report.
 
         Returns
         -------
@@ -97,11 +91,7 @@ class RunProfiling(Run):
             Return a list of NefertemProfile and the corresponding list of framework results.
 
         """
-        profile = self.profile_wrapper(metrics)
-        profile_nt = self.profile_nefertem(metrics)
-        if only_nt:
-            return None, profile_nt
-        return profile_nt
+        return self.profile_framework(metrics), self.profile_nefertem(metrics)
 
     def log_profile(self) -> None:
         """

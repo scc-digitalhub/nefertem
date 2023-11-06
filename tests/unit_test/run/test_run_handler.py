@@ -3,15 +3,15 @@ from pathlib import Path
 import pytest
 
 from nefertem.client.store_handler import StoreHandler
-from nefertem.plugins.base import Plugin
 from nefertem.plugins.factory import builder_factory
+from nefertem.plugins.plugin import Plugin
 from nefertem.plugins.utils import Result
 from nefertem.run.handler import RunHandler, RunHandlerRegistry
 from nefertem.utils.commons import (
     INFER,
     MT_NT_REPORT,
     PROFILE,
-    RESULT_ARTIFACT,
+    RESULT_FRAMEWORK,
     RESULT_LIBRARY,
     RESULT_NEFERTEM,
     RESULT_RENDERED,
@@ -24,7 +24,7 @@ from tests.conftest import CONST_FRICT_01
 class TestRunHandlerRegistry:
     def test_setup(self, registry):
         res_dict_ = {
-            RESULT_ARTIFACT: [],
+            RESULT_FRAMEWORK: [],
             RESULT_NEFERTEM: [],
             RESULT_RENDERED: [],
             RESULT_LIBRARY: [],
@@ -37,10 +37,10 @@ class TestRunHandlerRegistry:
         assert registry.registry == dict_
 
     def test_register(self, registry):
-        registry.register(VALIDATE, RESULT_ARTIFACT, ["test"])
-        assert registry.registry[VALIDATE][RESULT_ARTIFACT] == ["test"]
-        registry.register(VALIDATE, RESULT_ARTIFACT, "test2")
-        assert registry.registry[VALIDATE][RESULT_ARTIFACT] == [
+        registry.register(VALIDATE, RESULT_FRAMEWORK, ["test"])
+        assert registry.registry[VALIDATE][RESULT_FRAMEWORK] == ["test"]
+        registry.register(VALIDATE, RESULT_FRAMEWORK, "test2")
+        assert registry.registry[VALIDATE][RESULT_FRAMEWORK] == [
             "test",
             "test2",
         ]
@@ -49,11 +49,11 @@ class TestRunHandlerRegistry:
 
     def test_get_object(self, registry):
         print(registry.registry)
-        registry.register(VALIDATE, RESULT_ARTIFACT, ["test"])
+        registry.register(VALIDATE, RESULT_FRAMEWORK, ["test"])
         print(registry.registry)
-        x = registry.get_object(VALIDATE, RESULT_ARTIFACT)
+        x = registry.get_object(VALIDATE, RESULT_FRAMEWORK)
         assert x == ["test"]
-        x = registry.get_object("test", RESULT_ARTIFACT)
+        x = registry.get_object("test", RESULT_FRAMEWORK)
         assert x == []
 
 
@@ -203,7 +203,7 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_ARTIFACT: result_obj,
+        RESULT_FRAMEWORK: result_obj,
         RESULT_NEFERTEM: result_obj,
         RESULT_RENDERED: result_obj,
         RESULT_LIBRARY: [{"test": "test"}],

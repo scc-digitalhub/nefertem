@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any
 
 from nefertem.plugins.plugin import Plugin
-from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class InferencePlugin(Plugin, metaclass=ABCMeta):
@@ -27,7 +27,7 @@ class InferencePlugin(Plugin, metaclass=ABCMeta):
         self.logger.info(f"Render artifact - {plugin}")
         render_result = self.render_artifact(lib_result)
         return {
-            RESULT_ARTIFACT: lib_result,
+            RESULT_FRAMEWORK: lib_result,
             RESULT_NEFERTEM: nt_result,
             RESULT_RENDERED: render_result,
             RESULT_LIBRARY: self.get_library(),

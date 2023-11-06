@@ -7,9 +7,9 @@ import typing
 
 import frictionless
 from frictionless import Resource
-
 from nefertem_profiling.metadata.report import NefertemProfile
 from nefertem_profiling.plugins.plugin import ProfilingPlugin
+
 from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 

@@ -3,11 +3,21 @@ Plugin utils module.
 """
 import time
 from collections import namedtuple
+from enum import Enum
 from typing import Any, Callable
 
-from nefertem.utils.commons import STATUS_ERROR, STATUS_FINISHED, STATUS_INIT
-
 RenderTuple = namedtuple("RenderTuple", ("object", "filename"))
+
+
+class ExecutionStatus(Enum):
+    """
+    Enum class for execution status.
+    """
+
+    INIT = "created"
+    RUNNING = "executing"
+    FINISHED = "finished"
+    ERROR = "error"
 
 
 class Result:
@@ -17,7 +27,7 @@ class Result:
 
     def __init__(
         self,
-        status: str = STATUS_INIT,
+        status: str = ExecutionStatus.INIT.value,
         duration: float = None,
         errors: tuple = None,
         artifact: Any = None,
@@ -58,32 +68,14 @@ def exec_decorator(fnc: Callable) -> Result:
         """
         data = Result()
         start = time.perf_counter()
+        data.status = ExecutionStatus.RUNNING.value
         try:
             data.artifact = fnc(*args, **kwargs)
-            data.status = STATUS_FINISHED
+            data.status = ExecutionStatus.FINISHED.value
         except Exception as exc:
             data.errors = exc.args
-            data.status = STATUS_ERROR
+            data.status = ExecutionStatus.ERROR.value
         data.duration = round(time.perf_counter() - start, 2)
         return data
 
     return wrapper
-
-
-class ValidationReport:
-    """
-    Simple class to aggregate custom validation result.
-    """
-
-    def __init__(
-        self,
-        result: Any,
-        valid: bool,
-        error: list,
-    ) -> None:
-        self.result = result
-        self.valid = valid
-        self.error = error
-
-    def to_dict(self):
-        return {"result": self.result, "valid": self.valid, "error": self.error}

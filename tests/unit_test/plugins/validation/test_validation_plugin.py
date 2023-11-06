@@ -4,10 +4,10 @@ import pytest
 
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.plugins.validation.base import Validation
-from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
-class SamplePlugin(Validation):
+class SamplePlugin(ValidationPlugin):
     """
     Sample concrete plugin implementation for testing.
     """
@@ -48,11 +48,11 @@ class TestValidation:
 
         assert isinstance(result, dict)
 
-        keys = [RESULT_ARTIFACT, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]
+        keys = [RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]
         for k in keys:
             assert k in result
 
-        assert isinstance(result[RESULT_ARTIFACT], Result)
+        assert isinstance(result[RESULT_FRAMEWORK], Result)
         assert isinstance(result[RESULT_NEFERTEM], Result)
         assert isinstance(result[RESULT_RENDERED], Result)
         assert isinstance(result[RESULT_LIBRARY], dict)

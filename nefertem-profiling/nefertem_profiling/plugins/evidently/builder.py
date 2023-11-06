@@ -8,6 +8,7 @@ import typing
 from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 from nefertem_profiling.plugins.evidently.metrics import MetricEvidently
 from nefertem_profiling.plugins.evidently.plugin import ProfilingPluginEvidently
+
 from nefertem.utils.commons import BASE_FILE_READER
 
 if typing.TYPE_CHECKING:

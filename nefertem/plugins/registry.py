@@ -11,7 +11,7 @@ from nefertem.plugins.validation.dummy import ValidationBuilderDummy
 from nefertem.utils.commons import DUMMY, INFER, PROFILE, VALIDATE
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.base import PluginBuilder
+    from nefertem.plugins.plugin import PluginBuilder
 
 
 class Registry(dict):

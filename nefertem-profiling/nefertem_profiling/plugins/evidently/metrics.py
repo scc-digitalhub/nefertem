@@ -1,9 +1,8 @@
 """
 Evidently metric input model.
 """
-from pydantic import BaseModel, Field
-
 from nefertem_profiling.plugins.metric import Metric
+from pydantic import BaseModel, Field
 
 
 class Element(BaseModel):

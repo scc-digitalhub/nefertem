@@ -4,6 +4,7 @@ import typing
 
 from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 from nefertem_profiling.plugins.frictionless.plugin import ProfilingPluginFrictionless
+
 from nefertem.utils.commons import BASE_FILE_READER
 
 if typing.TYPE_CHECKING:

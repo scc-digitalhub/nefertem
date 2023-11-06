@@ -9,11 +9,12 @@ from typing import Any
 
 from nefertem.plugins.factory import builder_factory
 from nefertem.stores.builder import get_all_input_stores
-from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM
+from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM
 from nefertem.utils.utils import flatten_list, listify
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.base import Plugin, PluginBuilder
+    from nefertem.plugins.builder import PluginBuilder
+    from nefertem.plugins.plugin import Plugin
     from nefertem.run.config import RunConfig
 
 
@@ -187,7 +188,7 @@ class RunHandler:
         objects = self._registry.get(item_type, [])
 
         # Get artifacts and nefertem report
-        if item_type in [RESULT_ARTIFACT, RESULT_NEFERTEM]:
+        if item_type in [RESULT_FRAMEWORK, RESULT_NEFERTEM]:
             return [obj.artifact for obj in objects]
 
         # Get rendered

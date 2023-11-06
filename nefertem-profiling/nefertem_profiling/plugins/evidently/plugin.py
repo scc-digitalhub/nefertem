@@ -6,14 +6,15 @@ from typing import Any
 
 import evidently
 from evidently.report import Report
-
 from nefertem_profiling.metadata.report import NefertemProfile, NefertemProfileMetric
 from nefertem_profiling.plugins.plugin import ProfilingPlugin
+
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
     from nefertem_profiling.plugins.evidently.metrics import MetricEvidently
+
     from nefertem.readers.file.file import FileReader
     from nefertem.resources.data_resource import DataResource
 

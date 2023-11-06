@@ -7,11 +7,11 @@ import json
 import typing
 
 import ydata_profiling
-from ydata_profiling import ProfileReport
-
 from nefertem_profiling.metadata.report import NefertemProfile
 from nefertem_profiling.plugins.plugin import ProfilingPlugin
 from nefertem_profiling.plugins.ydata_profiling.utils import PROFILE_COLUMNS, PROFILE_FIELDS
+from ydata_profiling import ProfileReport
+
 from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 

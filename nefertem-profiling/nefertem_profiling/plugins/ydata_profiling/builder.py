@@ -4,6 +4,7 @@ import typing
 
 from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 from nefertem_profiling.plugins.ydata_profiling.plugin import ProfilingPluginYdataProfiling
+
 from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER
 
 if typing.TYPE_CHECKING:
