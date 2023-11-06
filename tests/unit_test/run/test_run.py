@@ -2,21 +2,21 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.run.handler import RunHandler, RunHandlerRegistry
-from nefertem.utils.commons import MT_NT_REPORT, RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.run.handler import RunHandler
+from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class TestRun:
     def test_log_run(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), "report", True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
 
     def test_log_env(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), "report", True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
@@ -26,7 +26,7 @@ class TestRun:
 
     def test_log_metadata(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), "report", True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
@@ -103,18 +103,6 @@ class TestRun:
         # because copy same file to same path (from temp_data to temp_data)
         handler.persist_data([local_resource], tmp_path)
         assert Path(tmp_path, "test_csv_file.csv").exists()
-
-
-# RunHandlerRegistry
-@pytest.fixture()
-def registry():
-    return RunHandlerRegistry()
-
-
-# StoreHandler
-@pytest.fixture()
-def store_handler(local_md_store_cfg, local_store_cfg):
-    return StoreHandler(metadata_store=local_md_store_cfg, store=local_store_cfg)
 
 
 # RunHandler

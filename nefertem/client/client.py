@@ -1,7 +1,5 @@
 """
 Client module.
-Implementation of a Client object to interact with storages
-and create runs.
 """
 from __future__ import annotations
 

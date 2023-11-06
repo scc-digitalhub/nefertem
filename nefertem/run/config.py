@@ -22,7 +22,6 @@ class ExecConfig(BaseModel):
 
 
 class RunConfig(BaseModel):
-
     operation: str
     """Operation to perform."""
 

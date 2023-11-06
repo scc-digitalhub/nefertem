@@ -1,25 +1,29 @@
 """
-Dummy implementation of inference plugin.
+Dummy implementation of profiling plugin.
 """
+
 from __future__ import annotations
 
 import typing
 
-from nefertem_infer.builder import InferencePluginBuilder
-from nefertem_infer.plugin import InferencePlugin
-from nefertem_inference.metadata.report import NefertemSchema
-
+from nefertem_profiling.metadata.report import NefertemProfile
+from nefertem_profiling.plugins.plugin import ProfilingPlugin
+from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.commons import DUMMY
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
+    from nefertem.resources.data_resource import DataResource
 
 
-class InferencePluginDummy(InferencePlugin):
+class ProfilingPluginDummy(ProfilingPlugin):
     """
-    Dummy implementation of inference plugin.
+    Dummy implementation of profiling plugin.
     """
+
+    def __init__(self) -> None:
+        super().__init__()
 
     def setup(self, *args) -> None:
         """
@@ -31,18 +35,18 @@ class InferencePluginDummy(InferencePlugin):
         """
 
     @exec_decorator
-    def infer(self) -> dict:
+    def profile(self) -> dict:
         """
         Do nothing.
         """
         return {}
 
     @exec_decorator
-    def render_nefertem(self, *args) -> NefertemSchema:
+    def render_nefertem(self, *args) -> NefertemProfile:
         """
-        Return a NefertemSchema.
+        Return a NefertemProfile.
         """
-        return NefertemSchema(self.get_lib_name(), self.get_lib_version(), 0.0, [])
+        return NefertemProfile(self.get_lib_name(), self.get_lib_version(), 0.0, {}, {})
 
     @exec_decorator
     def render_artifact(self, result: Result) -> list[tuple]:
@@ -54,7 +58,7 @@ class InferencePluginDummy(InferencePlugin):
             _object = {"errors": result.errors}
         else:
             _object = dict(result.artifact)
-        filename = self._fn_schema.format(f"{DUMMY}.json")
+        filename = self._fn_profile.format(f"{DUMMY}.json")
         artifacts.append(self.get_render_tuple(_object, filename))
         return artifacts
 
@@ -73,13 +77,23 @@ class InferencePluginDummy(InferencePlugin):
         return DUMMY
 
 
-class InferenceBuilderDummy(InferencePluginBuilder):
+class ProfilingBuilderDummy(ProfilingPluginBuilder):
     """
-    Inference plugin builder.
+    Profile plugin builder.
     """
 
-    def build(self, *args) -> list[InferencePluginDummy]:
+    def build(self, resources: list[DataResource]) -> list[ProfilingPluginDummy]:
         """
         Build a plugin.
         """
-        return [InferencePluginDummy()]
+        return [ProfilingPluginDummy()]
+
+    @staticmethod
+    def _filter_metrics(*args) -> None:
+        """
+        Placeholder methods.
+
+        Returns
+        -------
+        None
+        """

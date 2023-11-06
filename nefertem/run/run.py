@@ -4,12 +4,10 @@ Run module.
 from __future__ import annotations
 
 import typing
-from abc import abstractmethod
 from pathlib import Path
 from typing import Any
 
 from nefertem.metadata.artifact import Artifact
-from nefertem.metadata.blob import BlobLog
 from nefertem.metadata.env import EnvLog
 from nefertem.readers.builder import build_reader
 from nefertem.run.status import RunStatus
@@ -20,6 +18,7 @@ from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time, listify
 
 if typing.TYPE_CHECKING:
+    from nefertem.run.handler import RunHandler
     from nefertem.run.run_info import RunInfo
 
 
@@ -38,6 +37,10 @@ class Run:
     ----------
     run_info : RunInfo
         Run information.
+    run_handler : RunHandler
+        Run handler.
+    tmp_dir : str
+        Default local temporary folder where to store input data.
 
     Methods
     -------
@@ -46,11 +49,14 @@ class Run:
 
     """
 
-    def __init__(self, run_info: RunInfo) -> None:
+    def __init__(self, run_info: RunInfo, run_handler: RunHandler, tmp_dir: str) -> None:
         """
         Constructor.
         """
         self.run_info = run_info
+        self.run_handler = run_handler
+        self.tmp_dir = tmp_dir
+        self._filenames = {}
 
     ############################
     # Run methods
@@ -128,11 +134,27 @@ class Run:
         get_output_store().persist_artifact(src, src_name)
         self._log_artifact(src_name)
 
-    @abstractmethod
+    def _render_artifact_name(self, filename: str) -> str:
+        """
+        Return a modified filename to avoid overwriting in persistence.
+
+        Returns
+        -------
+        str
+            Return a modified filename.
+        """
+        self._filenames[filename] = self._filenames.get(filename, 0) + 1
+        return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
+
     def _get_libraries(self) -> None:
         """
-        Return the list of libraries used by the run.
+        Get the list of libraries used by the run.
+
+        Returns
+        -------
+        None
         """
+        self.run_info.run_libraries = self.run_handler.get_libraries()
 
     ############################
     # Data
@@ -160,7 +182,7 @@ class Run:
         for store in get_all_input_stores():
             store.clean_paths()
         try:
-            clean_all(self.run_info.tmp_path)
+            clean_all(self.tmp_dir)
         except FileNotFoundError:
             pass
 

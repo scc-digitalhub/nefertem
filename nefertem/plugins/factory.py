@@ -48,7 +48,7 @@ def _get_object(operation: str, obj: str) -> type:
         If run handler class does not exist.
     """
     try:
-        module = importlib.import_module(f"nefertem_{operation}")
+        module = importlib.import_module(f"nefertem_{operation}.config")
         plugins = getattr(module, "PLUGINS")
         submodule = importlib.import_module(plugins[obj][0])
         return getattr(submodule, plugins[obj][1])

@@ -7,6 +7,8 @@ import concurrent.futures
 import typing
 from typing import Any
 
+from nefertem.plugins.factory import builder_factory
+from nefertem.stores.builder import get_all_input_stores
 from nefertem.utils.commons import RESULT_ARTIFACT, RESULT_LIBRARY, RESULT_NEFERTEM
 from nefertem.utils.utils import flatten_list, listify
 
@@ -42,32 +44,70 @@ class RunHandler:
     # Execution methods
     #############################
 
+    def run(self, *args, **kwargs) -> None:
+        """
+        Run plugins.
+
+        Args and kwargs are passed to plugins, so if you use a plugin that require
+        resources, you can pass them as arguments or keyword arguments.
+
+        E.g.:
+        ```
+        run_handler.run(resources)
+        run_handler.run(resources=resources)
+        ```
+
+        Parameters
+        ----------
+        args : Any
+            Arguments.
+        kwargs : Any
+            Keyword arguments.
+        """
+        builders = self._get_builder()
+        plugins = self._create_plugins(builders, *args, **kwargs)
+        self._scheduler(plugins)
+
+    def _get_builder(self) -> list[PluginBuilder]:
+        """
+        Return a list of builders.
+
+        Returns
+        -------
+        list[PluginBuilder]
+            List of builders.
+        """
+        return builder_factory(self._config, get_all_input_stores())
+
     @staticmethod
-    def _create_plugins(builders: PluginBuilder, *args) -> list[Plugin]:
+    def _create_plugins(builders: PluginBuilder, *args, **kwargs) -> list[Plugin]:
         """
         Return a list of plugins.
         """
-        return flatten_list([builder.build(*args) for builder in builders])
+        return flatten_list([builder.build(*args, **kwargs) for builder in builders])
 
-    def _scheduler(self, plugins: list[Plugin], parallel: bool, num_worker: int) -> None:
+    def _scheduler(self, plugins: list[Plugin]) -> None:
         """
         Schedule execution to avoid multiprocessing issues.
         """
         multiprocess = []
         multithreading = []
         sequential = []
+
         for plugin in plugins:
-            if plugin.exec_multiprocess and parallel:
-                multiprocess.append(plugin)
-            elif plugin.exec_multithread and parallel:
-                multithreading.append(plugin)
+            # Concurrent execution
+            if self._config.parallel:
+                if plugin.exec_multiprocess:
+                    multiprocess.append(plugin)
+                elif plugin.exec_multithread:
+                    multithreading.append(plugin)
+            # Sequential execution
             else:
                 sequential.append(plugin)
 
-        # Revisite this
         self._sequential_execute(sequential)
-        self._pool_execute_multithread(multithreading, num_worker)
-        self._pool_execute_multiprocess(multiprocess, num_worker)
+        self._pool_execute_multithread(multithreading)
+        self._pool_execute_multiprocess(multiprocess)
 
     def _sequential_execute(self, plugins: list[Plugin]) -> None:
         """
@@ -77,21 +117,21 @@ class RunHandler:
             data = self._execute(plugin)
             self._register_results(data)
 
-    def _pool_execute_multiprocess(self, plugins: list[Plugin],  num_worker: int) -> None:
+    def _pool_execute_multiprocess(self, plugins: list[Plugin]) -> None:
         """
         Instantiate a concurrent.future.ProcessPoolExecutor pool to execute operations in
         multiprocessing.
         """
-        with concurrent.futures.ProcessPoolExecutor(max_workers=num_worker) as pool:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=self._config.num_worker) as pool:
             for data in pool.map(self._execute, plugins):
                 self._register_results(data)
 
-    def _pool_execute_multithread(self, plugins: list[Plugin],  num_worker: int) -> None:
+    def _pool_execute_multithread(self, plugins: list[Plugin]) -> None:
         """
         Instantiate a concurrent.future.ThreadPoolExecutor pool to execute operations in
         multithreading.
         """
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_worker) as pool:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self._config.num_worker) as pool:
             for data in pool.map(self._execute, plugins):
                 self._register_results(data)
 
@@ -153,7 +193,7 @@ class RunHandler:
         # Get rendered
         return listify(flatten_list([obj.artifact for obj in objects]))
 
-    def get_libs(self) -> list[dict]:
+    def get_libraries(self) -> list[dict]:
         """
         Get libraries used by operations.
 

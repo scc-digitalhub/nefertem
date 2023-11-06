@@ -1,7 +1,6 @@
 """
 Nefertem base report module.
 """
-from nefertem.metadata.base import Metadata
 
 
 class NefertemBaseReport:

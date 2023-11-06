@@ -39,7 +39,6 @@ class RunInfo(Metadata):
         run_id: str,
         experiment_name: str,
         nefertem_version: str,
-        tmp_path: str,
         resources: list[DataResource],
         run_config: RunConfig,
         run_meta_path: str | None = None,
@@ -49,8 +48,6 @@ class RunInfo(Metadata):
         Constructor.
         """
         super().__init__(run_id, experiment_name, nefertem_version)
-
-        self.tmp_path = tmp_path
 
         self.run_config = run_config
         self.run_libraries = None

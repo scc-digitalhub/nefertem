@@ -1,1 +1,1 @@
-from nefertem_inference.config import MAPPER, PLUGINS
+from nefertem_inference.config import PLUGINS

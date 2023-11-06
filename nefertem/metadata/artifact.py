@@ -1,7 +1,7 @@
 from nefertem.metadata.base import Metadata
 
-class Artifact(Metadata):
 
+class Artifact(Metadata):
     def __init__(self, run_id: str, experiment_name: str, nefertem_version: str, uri: str, name: str) -> None:
         """
         Constructor.
