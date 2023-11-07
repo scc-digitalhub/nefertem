@@ -1,0 +1,1 @@
+from nefertem_profiling_frictionless.builder import ProfilingBuilderFrictionless as Builder

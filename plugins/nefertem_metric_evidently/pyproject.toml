@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nefertem"
+name = "nefertem-metric-evidently"
 version = "2.0.0"
 description = "Python data validation library"
 readme = "README.md"
@@ -18,36 +18,11 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "boto3==1.28.71",
-    "frictionless==5.16.0",
-    "psycopg2-binary==2.9.3",
-    "pyarrow==11.0.0",
+    "evidently==0.4.8",
     "pydantic==2.4.2",
-    "requests==2.31.0",
-    "SQLAlchemy==2.0.22",
-    "pandas==2.0.3",
-    "psutil==5.9.6",
-    "adbc-driver-manager==0.7.0",
-    "polars==0.19.11",
 ]
 
 requires-python = ">=3.10"
-
-[tool.setuptools.packages.find]
-exclude = ["docs*", "tests*", "plugins*", "operations*"]
-
-[project.optional-dependencies]
-dev = [
-    "black",
-    "pytest",
-    "moto==4.1.14"
-]
-docs = [
-    "Sphinx==5.3.0",
-    "pydata-sphinx-theme==0.13.3",
-    "autodoc-pydantic==1.8.0",
-    "numpydoc==1.5.0"
-]
 
 [project.urls]
 Homepage = "https://github.com/scc-digitalhub/nefertem"

@@ -1,0 +1,1 @@
+from nefertem_inference_frictionless.builder import InferenceBuilderFrictionless as Builder

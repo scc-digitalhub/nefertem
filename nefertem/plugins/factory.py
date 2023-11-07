@@ -9,6 +9,7 @@ import typing
 from nefertem.utils.exceptions import RunError
 
 if typing.TYPE_CHECKING:
+    from nefertem.plugins.builder import PluginBuilder
     from nefertem.run.config import RunConfig
 
 
@@ -18,15 +19,12 @@ def builder_factory(config: RunConfig, stores: dict) -> list:
     """
     builders = []
     for cfg in config.exec_config:
-        try:
-            ClsBuilder = _get_object(config.operation, cfg.library)
-            builders.append(ClsBuilder(stores, cfg.exec_args))
-        except KeyError:
-            raise NotImplementedError
+        ClsBuilder = _get_object(config.operation, cfg.library)
+        builders.append(ClsBuilder(stores, cfg.exec_args))
     return builders
 
 
-def _get_object(operation: str, obj: str) -> type:
+def _get_object(operation: str, library: str) -> PluginBuilder:
     """
     Get run handler class.
 
@@ -34,23 +32,16 @@ def _get_object(operation: str, obj: str) -> type:
     ----------
     operation : str
         Operation to perform.
-    obj : str
-        Object type to get.
+    library : str
+        Library to use.
 
     Returns
     -------
-    type
-        Run handler class.
-
-    Raises
-    ------
-    RunError
-        If run handler class does not exist.
+    PluginBuilder
+        Plugin builder class.
     """
     try:
-        module = importlib.import_module(f"nefertem_{operation}.config")
-        plugins = getattr(module, "PLUGINS")
-        submodule = importlib.import_module(plugins[obj][0])
-        return getattr(submodule, plugins[obj][1])
-    except AttributeError:
-        raise RunError(f"Run handler for operation {operation} does not exist!")
+        module = importlib.import_module(f"nefertem_{operation}_{library}")
+        return getattr(module, "Builder")
+    except (ImportError, AttributeError):
+        raise RunError(f"Builder {library} not found.")

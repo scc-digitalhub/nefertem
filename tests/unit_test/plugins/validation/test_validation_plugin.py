@@ -3,11 +3,10 @@ from unittest.mock import MagicMock
 import pytest
 
 from nefertem.plugins.utils import Result, exec_decorator
-from nefertem.plugins.validation.base import Validation
 from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
-class SamplePlugin(ValidationPlugin):
+class SamplePlugin:
     """
     Sample concrete plugin implementation for testing.
     """
