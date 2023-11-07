@@ -5,9 +5,7 @@ from __future__ import annotations
 
 import typing
 from abc import ABCMeta, abstractmethod
-from typing import Any
 
-from nefertem.plugins.utils import RenderTuple
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import build_uuid
 
@@ -22,15 +20,16 @@ class Plugin(metaclass=ABCMeta):
 
     def __init__(self) -> None:
         self._id = build_uuid()
-        self.lib_name = self.get_lib_name()
-        self.lib_version = self.get_lib_version()
+        self.lib_name = self.framework_name()
+        self.lib_version = self.framework_version()
         self.logger = LOGGER
+
         self.data_reader = None
         self.exec_args = None
+
         self.exec_sequential = True
         self.exec_multiprocess = False
         self.exec_multithread = False
-        self.exec_distributed = False
 
     @abstractmethod
     def setup(self, *args, **kwargs) -> None:
@@ -57,31 +56,24 @@ class Plugin(metaclass=ABCMeta):
         """
 
     @staticmethod
-    def get_render_tuple(obj: Any, filename: str) -> RenderTuple:
-        """
-        Return a RenderTuple.
-        """
-        return RenderTuple(obj, filename)
-
-    @staticmethod
     @abstractmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         """
-        Get library name.
+        Get framework name.
         """
 
     @staticmethod
     @abstractmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         """
-        Get library version.
+        Get framework version.
         """
 
-    def get_library(self) -> dict:
+    def get_framework(self) -> dict:
         """
-        Get library info.
+        Get framework info.
         """
         return {
-            "libraryName": self.get_lib_name(),
-            "libraryVersion": self.get_lib_version(),
+            "framework_name": self.framework_name(),
+            "framework_version": self.framework_version(),
         }

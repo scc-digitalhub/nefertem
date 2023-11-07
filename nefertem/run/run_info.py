@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.metadata.base import Metadata
+from nefertem.metadata._base import Metadata
 from nefertem.run.status import RunStatus
 from nefertem.utils.utils import get_time
 

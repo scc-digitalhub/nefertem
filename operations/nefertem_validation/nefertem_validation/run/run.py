@@ -6,8 +6,8 @@ from typing import Any
 from nefertem_validation.metadata.report import NefertemReport
 
 from nefertem.metadata.blob import BlobLog
+from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class RunValidation(Run):
@@ -48,12 +48,12 @@ class RunValidation(Run):
         list[Any]
             Return a list of framework results.
         """
-        reports = self.run_handler.get_item(RESULT_FRAMEWORK)
+        reports = self.run_handler.get_item(ResultType.FRAMEWORK.value)
         if reports:
             return reports
 
         self.run_handler.run(self.run_info.resources, constraints, error_report)
-        return self.run_handler.get_item(RESULT_FRAMEWORK)
+        return self.run_handler.get_item(ResultType.FRAMEWORK.value)
 
     def validate_nefertem(self, constraints: list[dict], error_report: str | None = "partial") -> list[NefertemReport]:
         """
@@ -75,12 +75,12 @@ class RunValidation(Run):
         list[NefertemReport]
             Return a list of "NefertemReport".
         """
-        reports = self.run_handler.get_item(RESULT_NEFERTEM)
+        reports = self.run_handler.get_item(ResultType.NEFERTEM.value)
         if reports:
             return reports
 
         self.run_handler.run(self.run_info.resources, constraints, error_report)
-        return self.run_handler.get_item(RESULT_NEFERTEM)
+        return self.run_handler.get_item(ResultType.NEFERTEM.value)
 
     def validate(self, constraints: list[dict], error_report: str | None = "partial") -> Any:
         """
@@ -115,7 +115,7 @@ class RunValidation(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_NEFERTEM):
+        for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
             metadata = BlobLog(*self._get_base_args(), obj.to_dict()).to_dict()
             self._log_metadata(metadata, "report")
 
@@ -127,5 +127,5 @@ class RunValidation(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_RENDERED):
+        for obj in self.run_handler.get_item(ResultType.RENDERED.value):
             self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))

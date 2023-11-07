@@ -2,8 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from nefertem.plugins.utils import Result, exec_decorator
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.plugins.utils import Result, ResultType, exec_decorator
 
 
 class SamplePlugin:
@@ -47,16 +46,16 @@ class TestValidation:
 
         assert isinstance(result, dict)
 
-        keys = [RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED, RESULT_LIBRARY]
+        keys = [ResultType.FRAMEWORK.value, ResultType.NEFERTEM.value, ResultType.RENDERED.value, ResultType.LIBRARY.value]
         for k in keys:
             assert k in result
 
-        assert isinstance(result[RESULT_FRAMEWORK], Result)
-        assert isinstance(result[RESULT_NEFERTEM], Result)
-        assert isinstance(result[RESULT_RENDERED], Result)
-        assert isinstance(result[RESULT_LIBRARY], dict)
+        assert isinstance(result[ResultType.FRAMEWORK.value], Result)
+        assert isinstance(result[ResultType.NEFERTEM.value], Result)
+        assert isinstance(result[ResultType.RENDERED.value], Result)
+        assert isinstance(result[ResultType.LIBRARY.value], dict)
         lib = {"libraryName": "SamplePlugin", "libraryVersion": "1.0"}
-        assert result[RESULT_LIBRARY] == lib
+        assert result[ResultType.LIBRARY.value] == lib
 
         plg = f"Plugin: SamplePlugin {plugin._id};"
         constraint = f"Constraint: {plugin.constraint.name};"

@@ -14,7 +14,7 @@ class ExecConfig(BaseModel):
     id: str = Field(default_factory=build_uuid)
     """UUID of operation."""
 
-    library: str | None = "_dummy"
+    framework: str
     """Library to use for performing an operation."""
 
     exec_args: dict | None = {}

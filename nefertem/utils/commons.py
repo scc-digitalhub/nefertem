@@ -3,7 +3,7 @@ Module for common terms definition.
 """
 
 # Nefertem version
-NEFERTEM_VERSION: str = "1.0.0"
+NEFERTEM_VERSION: str = "2.0.0"
 
 # Data readers type
 BASE_FILE_READER: str = "FileReader"
@@ -15,23 +15,7 @@ POLARS_DATAFRAME_FILE_READER: str = "PolarsDataFrameFileReader"
 POLARS_DATAFRAME_DUCKDB_READER: str = "PolarsDataFrameDuckDBReader"
 POLARS_DATAFRAME_SQL_READER: str = "PolarsDataFrameSQLReader"
 
-
-# Result typology
-RESULT_FRAMEWORK: str = "framework"
-RESULT_NEFERTEM: str = "nefertem"
-RESULT_RENDERED: str = "rendered"
-RESULT_LIBRARY: str = "library"
-
-
-# Execution status
-STATUS_INIT: str = "created"
-STATUS_RUNNING: str = "executing"
-STATUS_INTERRUPTED: str = "interrupdted"
-STATUS_FINISHED: str = "finished"
-STATUS_ERROR: str = "error"
-
-
 # Generics
 DUMMY: str = "_dummy"
-DEFAULT_DIRECTORY: str = "./ntruns/tmp"
-DEFAULT_EXPERIMENT: str = "experiment"
+DEFAULT_DIRECTORY: str = "./ntruns"
+DEFAULT_EXPERIMENT: str = "exp"

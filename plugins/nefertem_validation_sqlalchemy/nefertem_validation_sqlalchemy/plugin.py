@@ -95,8 +95,8 @@ class ValidationPluginSqlAlchemy(ValidationPlugin):
             valid = False
 
         return NefertemReport(
-            self.get_lib_name(),
-            self.get_lib_version(),
+            self.framework_name(),
+            self.framework_version(),
             duration,
             constraint,
             valid,
@@ -114,18 +114,18 @@ class ValidationPluginSqlAlchemy(ValidationPlugin):
         else:
             _object = result.artifact.to_dict()
         filename = self._fn_report.format("sqlalchemy.json")
-        artifacts.append(self.get_render_tuple(_object, filename))
+        artifacts.append(self._get_render_tuple(_object, filename))
         return artifacts
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         """
         Get library name.
         """
         return sqlalchemy.__name__
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         """
         Get library version.
         """

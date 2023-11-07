@@ -32,11 +32,11 @@ class SamplePlugin(Plugin):
         return obj  # dummy implementation for testing
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         return "SamplePlugin"
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         return "1.0"
 
 
@@ -81,7 +81,7 @@ def test_plugin_render_artifact():
 
 def test_plugin_get_library():
     plugin = SamplePlugin()
-    library_info = plugin.get_library()
+    library_info = plugin.get_framework()
     assert isinstance(library_info, dict)
     assert "libraryName" in library_info
     assert "libraryVersion" in library_info
@@ -105,7 +105,7 @@ def test_builder_destroy():
 def test_plugin_get_render_tuple():
     obj_mock = Mock()
     filename_mock = Mock()
-    render_tuple = Plugin.get_render_tuple(obj_mock, filename_mock)
+    render_tuple = Plugin._get_render_tuple(obj_mock, filename_mock)
     assert isinstance(render_tuple, tuple)
     assert len(render_tuple) == 2
     assert render_tuple[0] == obj_mock
@@ -113,13 +113,13 @@ def test_plugin_get_render_tuple():
 
 
 def test_plugin_get_lib_name():
-    name = SamplePlugin.get_lib_name()
+    name = SamplePlugin.framework_name()
     assert isinstance(name, str)
     assert name == "SamplePlugin"
 
 
 def test_plugin_get_lib_version():
-    version = SamplePlugin.get_lib_version()
+    version = SamplePlugin.framework_version()
     assert isinstance(version, str)
     assert version == "1.0"
 

@@ -13,7 +13,7 @@ from nefertem.stores.input.objects.sql import SQLInputStore, SQLStoreConfig
 from nefertem.stores.kinds import StoreKinds
 
 if typing.TYPE_CHECKING:
-    from nefertem.stores.input.objects.base import InputStore, StoreConfig
+    from nefertem.stores.input.objects._base import InputStore, StoreConfig
 
 
 class InputStoreRegistry(dict):

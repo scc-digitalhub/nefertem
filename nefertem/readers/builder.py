@@ -6,8 +6,8 @@ import typing
 from nefertem.readers.registry import REGISTRY
 
 if typing.TYPE_CHECKING:
-    from nefertem.readers.base import DataReader
-    from nefertem.stores.input.objects.base import InputStore
+    from nefertem.readers._base import DataReader
+    from nefertem.stores.input.objects._base import InputStore
 
 
 def build_reader(reader_type: str, store: InputStore, **kwargs) -> DataReader:

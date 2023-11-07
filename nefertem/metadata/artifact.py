@@ -1,4 +1,4 @@
-from nefertem.metadata.base import Metadata
+from nefertem.metadata._base import Metadata
 
 
 class Artifact(Metadata):

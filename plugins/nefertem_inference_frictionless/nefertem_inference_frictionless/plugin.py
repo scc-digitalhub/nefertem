@@ -65,7 +65,7 @@ class InferencePluginFrictionless(InferencePlugin):
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
             fields = []
 
-        return NefertemSchema(self.get_lib_name(), self.get_lib_version(), duration, fields)
+        return NefertemSchema(self.framework_name(), self.framework_version(), duration, fields)
 
     @exec_decorator
     def render_artifact(self, result: Result) -> list[tuple]:
@@ -78,18 +78,18 @@ class InferencePluginFrictionless(InferencePlugin):
         else:
             _object = result.artifact.to_dict()
         filename = self._fn_schema.format("frictionless.json")
-        artifacts.append(self.get_render_tuple(_object, filename))
+        artifacts.append(self._get_render_tuple(_object, filename))
         return artifacts
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         """
         Get library name.
         """
         return frictionless.__name__
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         """
         Get library version.
         """

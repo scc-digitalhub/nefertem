@@ -6,7 +6,7 @@ from typing import Any
 
 import evidently
 from evidently.report import Report
-from nefertem_metric.metadata.report import NefertemProfile, NefertemProfileMetric
+from nefertem_metric.metadata.report import NefertemMetricReport, ProfileMetric
 from nefertem_metric.plugins.plugin import MetricPlugin
 
 from nefertem.plugins.utils import Result, exec_decorator
@@ -82,9 +82,9 @@ class MetricPluginEvidently(MetricPlugin):
         return res
 
     @exec_decorator
-    def render_nefertem(self, result: Result) -> NefertemProfile:
+    def render_nefertem(self, result: Result) -> NefertemMetricReport:
         """
-        Return a NefertemProfile.
+        Return a NefertemMetricReport.
         """
         exec_err = result.errors
         duration = result.duration
@@ -104,13 +104,13 @@ class MetricPluginEvidently(MetricPlugin):
                     field = value.get("column_name")
                     list = field_metrics.get(field, [])
                     del value["column_name"]
-                    list.append(NefertemProfileMetric(metric_name, metric_name, "evidently", None, value))
+                    list.append(ProfileMetric(metric_name, metric_name, "evidently", None, value))
                     field_metrics[field] = list
                 else:
-                    res_metrics.append(NefertemProfileMetric(metric_name, metric_name, "evidently", None, value))
+                    res_metrics.append(ProfileMetric(metric_name, metric_name, "evidently", None, value))
 
-        return NefertemProfile(
-            self.get_lib_name(), self.get_lib_version(), duration, stats, fields, res_metrics, field_metrics
+        return NefertemMetricReport(
+            self.framework_name(), self.framework_version(), duration, stats, fields, res_metrics, field_metrics
         )
 
     @exec_decorator
@@ -122,32 +122,32 @@ class MetricPluginEvidently(MetricPlugin):
         if result.artifact is None:
             _object = {"errors": result.errors}
             filename = self._fn_profile.format("evidently.json")
-            artifacts.append(self.get_render_tuple(_object, filename))
+            artifacts.append(self._get_render_tuple(_object, filename))
         else:
             # string_html = result.artifact.to_html()
             #     strio_html = write_bytesio(string_html)
             html_filename = self._fn_profile.format("evidently.html")
             string_html = result.artifact.get_html()
             strio_html = write_bytesio(string_html)
-            artifacts.append(self.get_render_tuple(strio_html, html_filename))
+            artifacts.append(self._get_render_tuple(strio_html, html_filename))
 
             string_json = result.artifact.json()
             string_json = string_json.replace("NaN", "null")
             strio_json = write_bytesio(string_json)
             json_filename = self._fn_profile.format("evidently.json")
-            artifacts.append(self.get_render_tuple(strio_json, json_filename))
+            artifacts.append(self._get_render_tuple(strio_json, json_filename))
 
         return artifacts
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         """
         Get library name.
         """
         return evidently.__name__
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         """
         Get library version.
         """

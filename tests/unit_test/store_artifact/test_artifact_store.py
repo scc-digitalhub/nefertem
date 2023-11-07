@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.stores.input.objects.base import InputStore
+from nefertem.stores.input.objects._base import InputStore
 from tests.conftest import TEST_FILENAME
 
 

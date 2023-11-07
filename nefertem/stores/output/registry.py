@@ -10,7 +10,7 @@ from nefertem.stores.output.objects.dummy import DummyOutputStore
 from nefertem.stores.output.objects.local import LocalOutputStore
 
 if typing.TYPE_CHECKING:
-    from nefertem.stores.output.objects.base import OutputStore
+    from nefertem.stores.output.objects._base import OutputStore
 
 
 class OutputStoreRegistry(dict):

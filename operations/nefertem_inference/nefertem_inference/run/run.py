@@ -6,8 +6,8 @@ from typing import Any
 from nefertem_inference.metadata.report import NefertemSchema
 
 from nefertem.metadata.blob import BlobLog
+from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class RunInference(Run):
@@ -40,12 +40,12 @@ class RunInference(Run):
             Return a list of framework results.
 
         """
-        schemas = self.run_handler.get_item(RESULT_FRAMEWORK)
+        schemas = self.run_handler.get_item(ResultType.FRAMEWORK.value)
         if schemas:
             return schemas
 
         self.run_handler.run(self.run_info.resources)
-        return self.run_handler.get_item(RESULT_FRAMEWORK)
+        return self.run_handler.get_item(ResultType.FRAMEWORK.value)
 
     def infer_nefertem(self) -> list[NefertemSchema]:
         """
@@ -57,12 +57,12 @@ class RunInference(Run):
             Return a list of NefertemSchemas.
 
         """
-        schemas = self.run_handler.get_item(RESULT_NEFERTEM)
+        schemas = self.run_handler.get_item(ResultType.NEFERTEM.value)
         if schemas:
             return schemas
 
         self.run_handler.run(self.run_info.resources)
-        return self.run_handler.get_item(RESULT_NEFERTEM)
+        return self.run_handler.get_item(ResultType.NEFERTEM.value)
 
     def infer(self) -> tuple[list[Any], list[NefertemSchema]]:
         """
@@ -83,7 +83,7 @@ class RunInference(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_NEFERTEM):
+        for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
             metadata = BlobLog(*self._get_base_args(), obj.to_dict()).to_dict()
             self._log_metadata(metadata, "schema")
 
@@ -95,5 +95,5 @@ class RunInference(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_RENDERED):
+        for obj in self.run_handler.get_item(ResultType.RENDERED.value):
             self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))

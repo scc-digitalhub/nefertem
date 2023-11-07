@@ -5,7 +5,7 @@ from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
 
-from nefertem.stores.output.objects.base import OutputStore
+from nefertem.stores.output.objects._base import OutputStore
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.file_utils import check_path, clean_all, copy_file
 from nefertem.utils.io_utils import write_json, write_object

@@ -3,7 +3,7 @@ Implementation of REST artifact store.
 """
 import requests
 
-from nefertem.stores.input.objects.base import InputStore, StoreConfig
+from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import get_name_from_uri
 

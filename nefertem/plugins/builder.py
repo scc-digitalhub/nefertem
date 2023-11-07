@@ -5,7 +5,7 @@ from abc import abstractmethod
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.plugin import Plugin
-    from nefertem.stores.input.objects.base import InputStore
+    from nefertem.stores.input.objects._base import InputStore
 
 
 class PluginBuilder:

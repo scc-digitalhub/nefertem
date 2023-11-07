@@ -3,7 +3,7 @@ PandasDataFrameReader module.
 """
 import pandas as pd
 
-from nefertem.readers.base import DataReader
+from nefertem.readers._base import DataReader
 from nefertem.readers.utils import describe_resource
 from nefertem.utils.utils import listify
 

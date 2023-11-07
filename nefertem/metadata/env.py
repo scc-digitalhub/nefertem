@@ -6,7 +6,7 @@ import platform
 
 from psutil import virtual_memory
 
-from nefertem.metadata.base import Metadata
+from nefertem.metadata._base import Metadata
 
 
 class EnvLog(Metadata):
@@ -48,8 +48,8 @@ class EnvLog(Metadata):
         str
             Rounded GB ram memory.
         """
-        mem = virtual_memory().total
-        return str(round(mem / (1024.0**3))) + " GB"
+        mem = virtual_memory().total / (1024.0**3)
+        return f"{mem:.1f} GB"
 
     def to_dict(self) -> dict:
         return self.__dict__

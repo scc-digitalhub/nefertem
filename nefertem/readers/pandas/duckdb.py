@@ -8,7 +8,7 @@ from typing import Any
 
 import duckdb
 
-from nefertem.readers.base import DataReader
+from nefertem.readers._base import DataReader
 from nefertem.utils.exceptions import StoreError
 
 if typing.TYPE_CHECKING:

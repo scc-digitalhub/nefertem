@@ -5,7 +5,7 @@ from typing import Any
 
 import polars as pl
 
-from nefertem.readers.base import DataReader
+from nefertem.readers._base import DataReader
 from nefertem.utils.exceptions import StoreError
 
 

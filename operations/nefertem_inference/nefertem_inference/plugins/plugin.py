@@ -4,8 +4,10 @@ Inference plugin abstract class module.
 from abc import abstractmethod
 from typing import Any
 
+from nefertem_inference.plugins.utils import RenderTuple
+
 from nefertem.plugins.plugin import Plugin
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
+from nefertem.plugins.utils import ResultType
 
 
 class InferencePlugin(Plugin):
@@ -32,10 +34,10 @@ class InferencePlugin(Plugin):
         self.logger.info(f"Render artifact - {plugin}")
         render_result = self.render_artifact(lib_result)
         return {
-            RESULT_FRAMEWORK: lib_result,
-            RESULT_NEFERTEM: nt_result,
-            RESULT_RENDERED: render_result,
-            RESULT_LIBRARY: self.get_library(),
+            ResultType.FRAMEWORK.value: lib_result,
+            ResultType.NEFERTEM.value: nt_result,
+            ResultType.RENDERED.value: render_result,
+            ResultType.LIBRARY.value: self.get_framework(),
         }
 
     @abstractmethod
@@ -43,6 +45,25 @@ class InferencePlugin(Plugin):
         """
         Inference method for schema.
         """
+
+    @staticmethod
+    def _get_render_tuple(obj: Any, filename: str) -> RenderTuple:
+        """
+        Return a RenderTuple.
+
+        Parameters
+        ----------
+        obj : Any
+            Object rendered for persistence.
+        filename : str
+            Filename.
+
+        Returns
+        -------
+        RenderTuple
+            RenderTuple object.
+        """
+        return RenderTuple(obj, filename)
 
     @staticmethod
     def _get_fields(name: str = None, type_: str = None) -> dict:

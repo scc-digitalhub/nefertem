@@ -15,23 +15,17 @@ if typing.TYPE_CHECKING:
 
 class Client:
     """
-    Client class.
-
-    The Client is a public interface that exposes methods to create
-    runs and allows the user to add artifact stores to the pool of runs stores.
-    The Client constructor build a StoreHandler to keep track of stores,
-    both metadata and artifact, and a RunBuilder to create runs.
-    All the parameters passed to the Client interface are passed to the
-    StoreHandler.
+    The Client is a public interface that exposes methods to create runs and allows
+    the user to add input stores to the pool of runs stores.
 
     Parameters
     ----------
-    metadata_store : str
-        Path to the metadata store.
-    store : list[dict]
-        List of dict containing configuration for the artifact stores.
+    path : str
+        Path where to store metadata and artifacts.
+    stores : list[dict]
+        List of dict containing configuration for the input stores.
     tmp_dir : str
-        Default local temporary folder where to store input data".
+        Default local temporary folder where to store input data.
 
     Methods
     -------
@@ -39,28 +33,34 @@ class Client:
         Add a new store to the client internal registry.
     create_run
         Create a new run.
-
     """
 
     def __init__(
         self,
-        output_path: str | None = None,
+        path: str | None = None,
         stores: list[dict] | None = None,
         tmp_dir: str | None = None,
     ) -> None:
         self._tmp_dir = tmp_dir if tmp_dir is not None else DEFAULT_DIRECTORY
-        self._setup_stores(output_path, stores)
+        self._setup_stores(path, stores)
 
     def _setup_stores(self, path: str | None = None, configs: list[dict] | None = None) -> None:
         """
-        Build stores according to configurations provided by user
-        and register them into the store registry.
+        Build stores according to configurations provided by user and register
+        them into the store registry.
+
+        Parameters
+        ----------
+        path : str
+            Path where to store metadata and artifacts.
+        configs : list[dict]
+            List of dict containing configuration for the input stores.
         """
 
-        # Build metadata store
+        # Build output store
         store_builder.build_output_store(path)
 
-        # Build artifact stores
+        # Build input stores
         try:
             for cfg in configs:
                 store_builder.build_input_store(self._tmp_dir, cfg)
@@ -69,7 +69,7 @@ class Client:
 
     def add_store(self, config: dict) -> None:
         """
-        Add a new store to the client internal registry.
+        Add a new store to the store registry.
 
         Parameters
         ----------

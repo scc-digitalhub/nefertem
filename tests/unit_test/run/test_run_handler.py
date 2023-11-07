@@ -11,10 +11,10 @@ from nefertem.utils.commons import (
     INFER,
     MT_NT_REPORT,
     PROFILE,
-    RESULT_FRAMEWORK,
-    RESULT_LIBRARY,
-    RESULT_NEFERTEM,
-    RESULT_RENDERED,
+    ResultType.FRAMEWORK.value,
+    ResultType.LIBRARY.value,
+    ResultType.NEFERTEM.value,
+    ResultType.RENDERED.value,
     VALIDATE,
 )
 from nefertem.utils.exceptions import RunError
@@ -24,10 +24,10 @@ from tests.conftest import CONST_FRICT_01
 class TestRunHandlerRegistry:
     def test_setup(self, registry):
         res_dict_ = {
-            RESULT_FRAMEWORK: [],
-            RESULT_NEFERTEM: [],
-            RESULT_RENDERED: [],
-            RESULT_LIBRARY: [],
+            ResultType.FRAMEWORK.value: [],
+            ResultType.NEFERTEM.value: [],
+            ResultType.RENDERED.value: [],
+            ResultType.LIBRARY.value: [],
         }
         dict_ = {
             PROFILE: res_dict_,
@@ -37,23 +37,23 @@ class TestRunHandlerRegistry:
         assert registry.registry == dict_
 
     def test_register(self, registry):
-        registry.register(VALIDATE, RESULT_FRAMEWORK, ["test"])
-        assert registry.registry[VALIDATE][RESULT_FRAMEWORK] == ["test"]
-        registry.register(VALIDATE, RESULT_FRAMEWORK, "test2")
-        assert registry.registry[VALIDATE][RESULT_FRAMEWORK] == [
+        registry.register(VALIDATE, ResultType.FRAMEWORK.value, ["test"])
+        assert registry.registry[VALIDATE][ResultType.FRAMEWORK.value] == ["test"]
+        registry.register(VALIDATE, ResultType.FRAMEWORK.value, "test2")
+        assert registry.registry[VALIDATE][ResultType.FRAMEWORK.value] == [
             "test",
             "test2",
         ]
-        registry.register(VALIDATE, RESULT_NEFERTEM, "test3")
-        assert registry.registry[VALIDATE][RESULT_NEFERTEM] == ["test3"]
+        registry.register(VALIDATE, ResultType.NEFERTEM.value, "test3")
+        assert registry.registry[VALIDATE][ResultType.NEFERTEM.value] == ["test3"]
 
     def test_get_object(self, registry):
         print(registry.registry)
-        registry.register(VALIDATE, RESULT_FRAMEWORK, ["test"])
+        registry.register(VALIDATE, ResultType.FRAMEWORK.value, ["test"])
         print(registry.registry)
-        x = registry.get_object(VALIDATE, RESULT_FRAMEWORK)
+        x = registry.get_object(VALIDATE, ResultType.FRAMEWORK.value)
         assert x == ["test"]
-        x = registry.get_object("test", RESULT_FRAMEWORK)
+        x = registry.get_object("test", ResultType.FRAMEWORK.value)
         assert x == []
 
 
@@ -97,7 +97,7 @@ class TestRunHandler:
     def test_get_item(self, dict_result, handler):
         op = INFER
         res = handler._register_results(op, dict_result)
-        res = handler.get_item(op, RESULT_NEFERTEM)
+        res = handler.get_item(op, ResultType.NEFERTEM.value)
         assert isinstance(res[0], Result)
 
     def test_get_artifact_schema(self, dict_result, handler):
@@ -203,8 +203,8 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_FRAMEWORK: result_obj,
-        RESULT_NEFERTEM: result_obj,
-        RESULT_RENDERED: result_obj,
-        RESULT_LIBRARY: [{"test": "test"}],
+        ResultType.FRAMEWORK.value: result_obj,
+        ResultType.NEFERTEM.value: result_obj,
+        ResultType.RENDERED.value: result_obj,
+        ResultType.LIBRARY.value: [{"test": "test"}],
     }

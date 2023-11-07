@@ -19,12 +19,12 @@ def builder_factory(config: RunConfig, stores: dict) -> list:
     """
     builders = []
     for cfg in config.exec_config:
-        ClsBuilder = _get_object(config.operation, cfg.library)
+        ClsBuilder = _get_object(config.operation, cfg.framework)
         builders.append(ClsBuilder(stores, cfg.exec_args))
     return builders
 
 
-def _get_object(operation: str, library: str) -> PluginBuilder:
+def _get_object(operation: str, framework: str) -> PluginBuilder:
     """
     Get run handler class.
 
@@ -32,8 +32,8 @@ def _get_object(operation: str, library: str) -> PluginBuilder:
     ----------
     operation : str
         Operation to perform.
-    library : str
-        Library to use.
+    framework : str
+        Framework to use.
 
     Returns
     -------
@@ -41,7 +41,7 @@ def _get_object(operation: str, library: str) -> PluginBuilder:
         Plugin builder class.
     """
     try:
-        module = importlib.import_module(f"nefertem_{operation}_{library}")
+        module = importlib.import_module(f"nefertem_{operation}_{framework}")
         return getattr(module, "Builder")
     except (ImportError, AttributeError):
-        raise RunError(f"Builder {library} not found.")
+        raise RunError(f"Builder of {framework} for {operation} not found.")

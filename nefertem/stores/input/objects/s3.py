@@ -8,7 +8,7 @@ import boto3
 import botocore.client
 from botocore.exceptions import ClientError
 
-from nefertem.stores.input.objects.base import InputStore, StoreConfig
+from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import get_name_from_uri, get_uri_path

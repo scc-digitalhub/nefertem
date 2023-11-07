@@ -6,8 +6,8 @@ from typing import Any
 from nefertem_profiling.metadata.report import NefertemProfile
 
 from nefertem.metadata.blob import BlobLog
+from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class RunProfiling(Run):
@@ -38,12 +38,12 @@ class RunProfiling(Run):
             Return a list of framework results.
 
         """
-        profiles = self.run_handler.get_item(RESULT_FRAMEWORK)
+        profiles = self.run_handler.get_item(ResultType.FRAMEWORK.value)
         if profiles:
             return profiles
 
         self.run_handler.run(self.run_info.resources)
-        return self.run_handler.get_item(RESULT_FRAMEWORK)
+        return self.run_handler.get_item(ResultType.FRAMEWORK.value)
 
     def profile_nefertem(self) -> list[NefertemProfile]:
         """
@@ -55,12 +55,12 @@ class RunProfiling(Run):
             Return a list of NefertemProfile.
 
         """
-        profiles = self.run_handler.get_item(RESULT_NEFERTEM)
+        profiles = self.run_handler.get_item(ResultType.NEFERTEM.value)
         if profiles:
             return profiles
 
         self.run_handler.run(self.run_info.resources)
-        return self.run_handler.get_item(RESULT_NEFERTEM)
+        return self.run_handler.get_item(ResultType.NEFERTEM.value)
 
     def profile(self) -> tuple[list[Any], list[NefertemProfile]]:
         """
@@ -82,7 +82,7 @@ class RunProfiling(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_NEFERTEM):
+        for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
             metadata = BlobLog(*self._get_base_args(), obj.to_dict()).to_dict()
             self._log_metadata(metadata, "profile")
 
@@ -94,5 +94,5 @@ class RunProfiling(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_RENDERED):
+        for obj in self.run_handler.get_item(ResultType.RENDERED.value):
             self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))

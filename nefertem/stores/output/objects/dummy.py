@@ -1,7 +1,7 @@
 """
 Dummy metadata store module.
 """
-from nefertem.stores.output.objects.base import OutputStore
+from nefertem.stores.output.objects._base import OutputStore
 
 
 class DummyOutputStore(OutputStore):

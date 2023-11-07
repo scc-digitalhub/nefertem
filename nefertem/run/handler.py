@@ -8,8 +8,8 @@ import typing
 from typing import Any
 
 from nefertem.plugins.factory import builder_factory
+from nefertem.plugins.utils import ResultType
 from nefertem.stores.builder import get_all_input_stores
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM
 from nefertem.utils.utils import flatten_list, listify
 
 if typing.TYPE_CHECKING:
@@ -188,7 +188,7 @@ class RunHandler:
         objects = self._registry.get(item_type, [])
 
         # Get artifacts and nefertem report
-        if item_type in [RESULT_FRAMEWORK, RESULT_NEFERTEM]:
+        if item_type in [ResultType.FRAMEWORK.value, ResultType.NEFERTEM.value]:
             return [obj.artifact for obj in objects]
 
         # Get rendered
@@ -204,7 +204,7 @@ class RunHandler:
             List of libraries.
         """
         libs = []
-        for i in self._registry.get(RESULT_LIBRARY, []):
+        for i in self._registry.get(ResultType.LIBRARY.value, []):
             if dict(**i) not in libs:
                 libs.append(i)
         return libs

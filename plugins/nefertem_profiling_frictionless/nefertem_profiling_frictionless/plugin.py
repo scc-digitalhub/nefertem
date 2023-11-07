@@ -64,7 +64,7 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
             fields = {}
             stats = {}
 
-        return NefertemProfile(self.get_lib_name(), self.get_lib_version(), duration, stats, fields)
+        return NefertemProfile(self.framework_name(), self.framework_version(), duration, stats, fields)
 
     @exec_decorator
     def render_artifact(self, result: Result) -> list[tuple]:
@@ -77,18 +77,18 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
         else:
             _object = write_bytesio(result.artifact.to_json())
         filename = self._fn_profile.format("frictionless.json")
-        artifacts.append(self.get_render_tuple(_object, filename))
+        artifacts.append(self._get_render_tuple(_object, filename))
         return artifacts
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         """
         Get library name.
         """
         return frictionless.__name__
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         """
         Get library version.
         """

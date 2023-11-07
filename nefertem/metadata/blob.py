@@ -1,7 +1,7 @@
 """
 BlobLog module.
 """
-from nefertem.metadata.base import Metadata
+from nefertem.metadata._base import Metadata
 
 
 class BlobLog(Metadata):

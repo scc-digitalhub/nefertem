@@ -8,8 +8,8 @@ from nefertem_validation_sqlalchemy.plugin import ValidationPluginSqlAlchemy
 
 from nefertem.readers.builder import build_reader
 from nefertem.utils.commons import PANDAS_DATAFRAME_SQL_READER
-from nefertem.utils.exceptions import ValidationError
 from nefertem.utils.utils import flatten_list
+from operations.nefertem_validation.nefertem_validation.utils import ValidationError
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource

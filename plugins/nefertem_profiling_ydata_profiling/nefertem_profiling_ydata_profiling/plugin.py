@@ -84,7 +84,7 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
             fields = {}
             stats = {}
 
-        return NefertemProfile(self.get_lib_name(), self.get_lib_version(), duration, stats, fields)
+        return NefertemProfile(self.framework_name(), self.framework_version(), duration, stats, fields)
 
     @exec_decorator
     def render_artifact(self, result: Result) -> list[tuple]:
@@ -96,30 +96,30 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
         if result.artifact is None:
             _object = {"errors": result.errors}
             filename = self._fn_profile.format("ydata.json")
-            artifacts.append(self.get_render_tuple(_object, filename))
+            artifacts.append(self._get_render_tuple(_object, filename))
         else:
             string_html = result.artifact.to_html()
             strio_html = write_bytesio(string_html)
             html_filename = self._fn_profile.format("ydata.html")
-            artifacts.append(self.get_render_tuple(strio_html, html_filename))
+            artifacts.append(self._get_render_tuple(strio_html, html_filename))
 
             string_json = result.artifact.to_json()
             string_json = string_json.replace("NaN", "null")
             strio_json = write_bytesio(string_json)
             json_filename = self._fn_profile.format("ydata.json")
-            artifacts.append(self.get_render_tuple(strio_json, json_filename))
+            artifacts.append(self._get_render_tuple(strio_json, json_filename))
 
         return artifacts
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         """
         Get library name.
         """
         return ydata_profiling.__name__
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         """
         Get library version.
         """

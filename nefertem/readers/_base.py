@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any
 
 if typing.TYPE_CHECKING:
-    from nefertem.stores.input.objects.base import InputStore
+    from nefertem.stores.input.objects._base import InputStore
 
 
 class DataReader(metaclass=ABCMeta):

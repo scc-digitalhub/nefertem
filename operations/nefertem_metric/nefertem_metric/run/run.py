@@ -6,8 +6,8 @@ from typing import Any
 from nefertem_metric.metadata.report import NefertemMetricReport
 
 from nefertem.metadata.blob import BlobLog
+from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class RunMetric(Run):
@@ -47,12 +47,12 @@ class RunMetric(Run):
             Return a list of framework results.
 
         """
-        metrics = self.run_handler.get_item(RESULT_FRAMEWORK)
+        metrics = self.run_handler.get_item(ResultType.FRAMEWORK.value)
         if metrics:
             return metrics
 
         self.run_handler.run(self.run_info.resources, metrics)
-        return self.run_handler.get_item(RESULT_FRAMEWORK)
+        return self.run_handler.get_item(ResultType.FRAMEWORK.value)
 
     def metric_nefertem(self, metrics: list[dict]) -> list[NefertemMetricReport]:
         """
@@ -69,12 +69,12 @@ class RunMetric(Run):
             Return a list of NefertemMetricReport.
 
         """
-        metrics = self.run_handler.get_item(RESULT_NEFERTEM)
+        metrics = self.run_handler.get_item(ResultType.NEFERTEM.value)
         if metrics:
             return metrics
 
         self.run_handler.run(self.run_info.resources, metrics)
-        return self.run_handler.get_item(RESULT_NEFERTEM)
+        return self.run_handler.get_item(ResultType.NEFERTEM.value)
 
     def metric(self, metrics: list[dict]) -> tuple[list[Any], list[NefertemMetricReport]]:
         """
@@ -101,7 +101,7 @@ class RunMetric(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_NEFERTEM):
+        for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
             metadata = BlobLog(*self._get_base_args(), obj.to_dict()).to_dict()
             self._log_metadata(metadata, "metric")
 
@@ -113,5 +113,5 @@ class RunMetric(Run):
         -------
         None
         """
-        for obj in self.run_handler.get_item(RESULT_RENDERED):
+        for obj in self.run_handler.get_item(ResultType.RENDERED.value):
             self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))

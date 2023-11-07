@@ -7,7 +7,7 @@ import typing
 
 from pydantic import ValidationError
 
-from nefertem.stores.input.objects.base import StoreParameters
+from nefertem.stores.input.objects._base import StoreParameters
 from nefertem.stores.input.registry import input_store_registry
 from nefertem.stores.kinds import StoreKinds
 from nefertem.stores.output.registry import mdstore_registry
@@ -18,8 +18,8 @@ from nefertem.utils.uri_utils import map_uri_scheme
 from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:
-    from nefertem.stores.input.objects.base import InputStore, StoreConfig
-    from nefertem.stores.output.objects.base import OutputStore
+    from nefertem.stores.input.objects._base import InputStore, StoreConfig
+    from nefertem.stores.output.objects._base import OutputStore
 
 
 class StoreBuilder:

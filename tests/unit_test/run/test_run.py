@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
+from nefertem.plugins.utils import ResultType
 from nefertem.run.handler import RunHandler
-from nefertem.utils.commons import RESULT_FRAMEWORK, RESULT_LIBRARY, RESULT_NEFERTEM, RESULT_RENDERED
 
 
 class TestRun:
@@ -115,8 +115,8 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_FRAMEWORK: result_obj,
-        RESULT_NEFERTEM: result_obj,
-        RESULT_RENDERED: result_obj,
-        RESULT_LIBRARY: [{"test": "test"}],
+        ResultType.FRAMEWORK.value: result_obj,
+        ResultType.NEFERTEM.value: result_obj,
+        ResultType.RENDERED.value: result_obj,
+        ResultType.LIBRARY.value: [{"test": "test"}],
     }
