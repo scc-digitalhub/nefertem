@@ -20,7 +20,7 @@ keywords = ["data", "validation", "quality"]
 dependencies = [
     "boto3==1.28.71",
     "frictionless==5.16.0",
-    "psycopg2-binary==2.9.3",
+    "psycopg2-binary==2.9.7",
     "pyarrow==11.0.0",
     "pydantic==2.4.2",
     "requests==2.31.0",
