@@ -17,11 +17,11 @@ class LocalInputStore(InputStore):
     interact with the local filesystem.
     """
 
-    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: LocalStoreConfig) -> None:
+    def __init__(self, name: str, store_type: str, temp_dir: str, config: LocalStoreConfig) -> None:
         """
         Constructor.
         """
-        super().__init__(name, uri, store_type, temp_dir)
+        super().__init__(name, store_type, temp_dir)
         self.config = config
 
     ############################

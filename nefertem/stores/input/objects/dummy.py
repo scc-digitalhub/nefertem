@@ -28,7 +28,7 @@ class DummyInputStore(InputStore):
         """
         Constructor.
         """
-        super().__init__(name, uri, store_type, temp_dir)
+        super().__init__(name, store_type, temp_dir)
         self.config = config
 
     def persist_artifact(self, *args) -> None:

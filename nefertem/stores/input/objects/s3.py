@@ -43,11 +43,11 @@ class S3InputStore(InputStore):
 
     """
 
-    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: S3StoreConfig) -> None:
+    def __init__(self, name: str, store_type: str, temp_dir: str, config: S3StoreConfig) -> None:
         """
         Constructor.
         """
-        super().__init__(name, uri, store_type, temp_dir)
+        super().__init__(name, store_type, temp_dir)
         self.config = config
 
     ############################

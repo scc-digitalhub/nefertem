@@ -24,8 +24,8 @@ class StoreParameters(BaseModel):
     name: str
     """Store id."""
 
-    uri: str
-    """Store uri."""
+    store_type: str
+    """Store type."""
 
     config: dict | None = {}
     """Dictionary containing the configuration for the backend."""
@@ -39,20 +39,19 @@ class InputStore(metaclass=ABCMeta):
     ----------
     name : str
         Name of store.
-    type : str
-        Type of store, e.g. s3, sql, local.
+    store_type : str
+        Type of store (local, remote, s3, sql).
     temp_dir : str
         Temporary download path.
     config : dict, default = None
-        A dictionary with the credentials/configurations for the backend storage.
+        A dictionary with the credentials/configurations for the storage.
     """
 
-    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str) -> None:
+    def __init__(self, name: str, store_type: str, temp_dir: str) -> None:
         """
         Constructor.
         """
         self.name = name
-        self.uri = uri
         self.store_type = store_type
         self.temp_dir = temp_dir
 

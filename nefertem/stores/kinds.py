@@ -11,6 +11,6 @@ class StoreKinds(Enum):
 
     DUMMY = "_dummy"
     LOCAL = "local"
-    REMOTE = "http"
+    REMOTE = "remote"
     S3 = "s3"
     SQL = "sql"

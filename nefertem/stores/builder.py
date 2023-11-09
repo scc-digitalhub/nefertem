@@ -90,13 +90,11 @@ class StoreBuilder:
             Store parameters.
         """
         cfg: StoreParameters = self._validate_parameters(config)
-        store_type = map_uri_scheme(cfg.uri)
         return {
             "name": cfg.name,
-            "uri": cfg.uri,
-            "store_type": store_type,
+            "store_type": cfg.store_type,
             "temp_dir": get_path(tmp_dir, build_uuid()),
-            "config": self._validate_config(store_type, cfg.config),
+            "config": self._validate_config(cfg.store_type, cfg.config),
         }
 
     @staticmethod
@@ -122,7 +120,7 @@ class StoreBuilder:
         try:
             return StoreParameters(**config)
         except TypeError:  # If config is None
-            return StoreParameters(StoreKinds.DUMMY.value, "_dummy://")
+            return StoreParameters(StoreKinds.DUMMY.value, DUMMY)
         except ValidationError:
             raise StoreError("Invalid store configuration.")
 

@@ -31,11 +31,11 @@ class RemoteInputStore(InputStore):
 
     """
 
-    def __init__(self, name: str, uri: str, store_type: str, temp_dir: str, config: RemoteStoreConfig) -> None:
+    def __init__(self, name: str, store_type: str, temp_dir: str, config: RemoteStoreConfig) -> None:
         """
         Constructor.
         """
-        super().__init__(name, uri, store_type, temp_dir)
+        super().__init__(name, store_type, temp_dir)
         self.config = config
 
     ############################
