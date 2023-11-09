@@ -1,11 +1,11 @@
 import pytest
 
-from nefertem.metadata.env import EnvLog
+from nefertem.metadata.env import Env
 
 
 @pytest.fixture()
 def env():
-    return EnvLog()
+    return Env()
 
 
 class TestEnvLog:

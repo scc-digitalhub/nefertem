@@ -5,7 +5,7 @@ from typing import Any
 
 from nefertem_profiling.metadata.report import NefertemProfile
 
-from nefertem.metadata.blob import BlobLog
+from nefertem.metadata.blob import Blob
 from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
 
@@ -83,7 +83,7 @@ class RunProfiling(Run):
         None
         """
         for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
-            metadata = BlobLog(*self._get_base_args(), obj.to_dict()).to_dict()
+            metadata = Blob(*self._get_base_args(), obj.to_dict()).to_dict()
             self._log_metadata(metadata, "profile")
 
     def persist_profile(self) -> None:

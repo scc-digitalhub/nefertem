@@ -19,7 +19,7 @@ classifiers = [
 keywords = ["data", "validation", "quality"]
 dependencies = [
     "frictionless==5.16.0",
-    "pydantic==2.4.2",
+    "pydantic>=2",
 ]
 
 requires-python = ">=3.10"

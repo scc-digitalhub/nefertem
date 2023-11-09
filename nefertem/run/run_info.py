@@ -5,61 +5,72 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.metadata._base import Metadata
+from nefertem.metadata.env import Env
 from nefertem.run.status import RunStatus
-from nefertem.utils.utils import get_time
+from nefertem.utils.commons import NEFERTEM_VERSION
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource
     from nefertem.run.config import RunConfig
 
 
-class RunInfo(Metadata):
+class RunInfo:
     """
     Run's metadata.
 
     Attributes
     ----------
-    experiment_name : str
-        Id of the experiment.
     run_id : str
         Run id.
-    run_type: str
-        Run typology.
-    run_meta_path : str
+    experiment_name : str
+        Id of the experiment.
+    resources : list[DataResource]
+        List of input resources.
+    run_config : RunConfig
+        Run configuration.
+    metadata_path : str
         URI that point to the metadata store.
-    run_art_path : str
+    artifact_path : str
         URI that point to the artifact store.
-    resources_uri : str
-        URI that point to the resource.
     """
 
     def __init__(
         self,
         run_id: str,
         experiment_name: str,
-        nefertem_version: str,
-        resources: list[DataResource],
         run_config: RunConfig,
-        run_meta_path: str | None = None,
-        run_art_path: str | None = None,
+        resources: list[DataResource],
+        metadata_path: str | None = None,
+        artifact_path: str | None = None,
     ) -> None:
         """
         Constructor.
         """
-        super().__init__(run_id, experiment_name, nefertem_version)
 
+        # Run info
+        self.run_id = run_id
+        self.experiment_name = experiment_name
+
+        # Execution info
         self.run_config = run_config
         self.run_libraries = None
-        self.run_meta_path = run_meta_path
-        self.run_art_path = run_art_path
 
+        # Inputs
         self.resources = resources
 
-        self.created = get_time()
-        self.begin_status = RunStatus.RUNNING.value
+        # Outputs
+        self.nefertem_outputs = {"path": metadata_path, "files": []}
+        self.artifact_outputs = {"path": artifact_path, "files": []}
+
+        # Execution environment
+        self.nefertem_version = NEFERTEM_VERSION
+        self.execution_environment = Env().to_dict()
+
+        # Status
+        self.status = RunStatus.CREATED.value
+
+        # Timings
         self.started = None
-        self.end_status = None
         self.finished = None
 
     def to_dict(self) -> dict:
@@ -74,15 +85,14 @@ class RunInfo(Metadata):
         return {
             "run_id": self.run_id,
             "experiment_name": self.experiment_name,
-            "nefertem_version": self.nefertem_version,
             "run_config": self.run_config.model_dump(exclude_none=True),
             "run_libraries": self.run_libraries,
-            "run_meta_path": self.run_meta_path,
-            "run_art_path": self.run_art_path,
             "resources": [i.model_dump(exclude_none=True) for i in self.resources],
-            "created": self.created,
-            "begin_status": self.begin_status,
+            "nefertem_outputs": self.nefertem_outputs,
+            "artifact_outputs": self.artifact_outputs,
+            "nefertem_version": self.nefertem_version,
+            "execution_environment": self.execution_environment,
+            "status": self.status,
             "started": self.started,
-            "end_status": self.end_status,
             "finished": self.finished,
         }

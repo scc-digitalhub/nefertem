@@ -6,10 +6,8 @@ import platform
 
 from psutil import virtual_memory
 
-from nefertem.metadata._base import Metadata
 
-
-class EnvLog(Metadata):
+class Env:
     """
     Basic log structure for execution enviroment.
 
@@ -27,11 +25,10 @@ class EnvLog(Metadata):
         RAM memory in GB.
     """
 
-    def __init__(self, run_id: str, experiment_name: str, nefertem_version: str) -> None:
+    def __init__(self) -> None:
         """
         Constructor.
         """
-        super().__init__(run_id, experiment_name, nefertem_version)
         self.platform = platform.platform()
         self.python_version = platform.python_version()
         self.cpu_model = platform.processor()

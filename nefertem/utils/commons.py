@@ -17,5 +17,5 @@ POLARS_DATAFRAME_SQL_READER: str = "PolarsDataFrameSQLReader"
 
 # Generics
 DUMMY: str = "_dummy"
-DEFAULT_DIRECTORY: str = "./ntruns"
+DEFAULT_DIRECTORY: str = "./ntruns/tmp"
 DEFAULT_EXPERIMENT: str = "exp"

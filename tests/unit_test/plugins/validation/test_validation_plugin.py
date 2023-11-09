@@ -46,7 +46,12 @@ class TestValidation:
 
         assert isinstance(result, dict)
 
-        keys = [ResultType.FRAMEWORK.value, ResultType.NEFERTEM.value, ResultType.RENDERED.value, ResultType.LIBRARY.value]
+        keys = [
+            ResultType.FRAMEWORK.value,
+            ResultType.NEFERTEM.value,
+            ResultType.RENDERED.value,
+            ResultType.LIBRARY.value,
+        ]
         for k in keys:
             assert k in result
 

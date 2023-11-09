@@ -5,7 +5,7 @@ from typing import Any
 
 from nefertem_validation.metadata.report import NefertemReport
 
-from nefertem.metadata.blob import BlobLog
+from nefertem.metadata.blob import Blob
 from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
 
@@ -116,7 +116,7 @@ class RunValidation(Run):
         None
         """
         for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
-            metadata = BlobLog(*self._get_base_args(), obj.to_dict()).to_dict()
+            metadata = Blob(*self._get_base_args(), obj.to_dict()).to_dict()
             self._log_metadata(metadata, "report")
 
     def persist_report(self) -> None:

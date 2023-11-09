@@ -1,19 +1,13 @@
 """
 Run configuration objects module.
 """
-from pydantic import BaseModel, Field
-
-from nefertem.utils.utils import build_uuid
+from pydantic import BaseModel
 
 
 class ExecConfig(BaseModel):
     """
     Generic configuration for run operation.
     """
-
-    id: str = Field(default_factory=build_uuid)
-    """UUID of operation."""
-
     framework: str
     """Library to use for performing an operation."""
 
@@ -22,6 +16,10 @@ class ExecConfig(BaseModel):
 
 
 class RunConfig(BaseModel):
+    """
+    Run configuration.
+    """
+
     operation: str
     """Operation to perform."""
 

@@ -1,25 +1,31 @@
 """
-BlobLog module.
+Blob module.
 """
-from nefertem.metadata._base import Metadata
+from nefertem.utils.commons import NEFERTEM_VERSION
 
 
-class BlobLog(Metadata):
+class Blob:
     """
     Object logged to backend.
 
     Attributes
     ----------
+    run_id : str
+        Run id.
+    experiment_name : str
+        Experiment name.
     contents : dict
         Blob of metadata to log.
     """
 
-    def __init__(self, run_id: str, experiment_name: str, nefertem_version: str, contents: dict) -> None:
+    def __init__(self, run_id: str, experiment_name: str, contents: dict) -> None:
         """
         Constructor.
         """
-        super().__init__(run_id, experiment_name, nefertem_version)
+        self.run_id = run_id
+        self.experiment_name = experiment_name
         self.contents = contents
+        self.nefertem_version = NEFERTEM_VERSION
 
     def to_dict(self) -> dict:
         """
@@ -30,9 +36,4 @@ class BlobLog(Metadata):
         dict
             Dictionary representation of the object.
         """
-        return {
-            "run_id": self.run_id,
-            "experiment_name": self.experiment_name,
-            "nefertem_version": self.nefertem_version,
-            **self.contents,
-        }
+        return self.__dict__

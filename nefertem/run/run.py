@@ -7,12 +7,10 @@ import typing
 from pathlib import Path
 from typing import Any
 
-from nefertem.metadata.artifact import Artifact
-from nefertem.metadata.env import EnvLog
 from nefertem.readers.builder import build_reader
 from nefertem.run.status import RunStatus
 from nefertem.stores.builder import get_all_input_stores, get_input_store, get_output_store
-from nefertem.utils.commons import BASE_FILE_READER, NEFERTEM_VERSION
+from nefertem.utils.commons import BASE_FILE_READER
 from nefertem.utils.file_utils import clean_all
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time, listify
@@ -71,7 +69,7 @@ class Run:
         tuple
             Base arguments for metadata.
         """
-        return self.run_info.run_id, self.run_info.experiment_name, NEFERTEM_VERSION
+        return self.run_info.run_id, self.run_info.experiment_name
 
     def _log_run(self) -> None:
         """
@@ -83,28 +81,7 @@ class Run:
         """
         metadata = self.run_info.to_dict()
         self._log_metadata(metadata, "run")
-
-    def _log_env(self) -> None:
-        """
-        Log run's enviroment details.
-
-        Returns
-        -------
-        None
-        """
-        metadata = EnvLog(*self._get_base_args()).to_dict()
-        self._log_metadata(metadata, "run_env")
-
-    def _log_artifact(self, src_name: str) -> None:
-        """
-        Log artifact metadata.
-
-        Returns
-        -------
-        None
-        """
-        metadata = Artifact(*self._get_base_args(), self.run_info.run_art_path, src_name).to_dict()
-        get_output_store().log_metadata(metadata, "artifact")
+        self.run_info.nefertem_outputs["files"].append("run.json")
 
     def _log_metadata(self, src: dict, src_type: str) -> None:
         """
@@ -132,7 +109,7 @@ class Run:
         None
         """
         get_output_store().persist_artifact(src, src_name)
-        self._log_artifact(src_name)
+        self.run_info.artifact_outputs["files"].append(src_name)
 
     def _render_artifact_name(self, filename: str) -> str:
         """
@@ -145,16 +122,6 @@ class Run:
         """
         self._filenames[filename] = self._filenames.get(filename, 0) + 1
         return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
-
-    def _get_libraries(self) -> None:
-        """
-        Get the list of libraries used by the run.
-
-        Returns
-        -------
-        None
-        """
-        self.run_info.run_libraries = self.run_handler.get_libraries()
 
     ############################
     # Data
@@ -173,7 +140,7 @@ class Run:
             data_reader = build_reader(BASE_FILE_READER, store)
             for path in listify(res.path):
                 tmp = Path(data_reader.fetch_data(path))
-                get_output_store().persist_artifact(tmp, tmp.name)
+                self._persist_artifact(tmp, tmp.name)
 
     def _clean_all(self) -> None:
         """
@@ -191,26 +158,35 @@ class Run:
     ############################
 
     def __enter__(self) -> Run:
+        # Handle run's start
         LOGGER.info(f"Starting run {self.run_info.run_id}")
-        self.run_info.begin_status = RunStatus.RUNNING.value
+
+        # Set run's status
+        self.run_info.status = RunStatus.RUNNING.value
         self.run_info.started = get_time()
+
+        # Log run's metadata
         self._log_run()
-        self._log_env()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
+        # Handle run's end
         if exc_type is None:
-            self.run_info.end_status = RunStatus.FINISHED.value
+            self.run_info.status = RunStatus.FINISHED.value
         elif exc_type in (InterruptedError, KeyboardInterrupt):
-            self.run_info.end_status = RunStatus.INTERRUPTED.value
+            self.run_info.status = RunStatus.INTERRUPTED.value
         else:
-            self.run_info.end_status = RunStatus.ERROR.value
-
-        self._get_libraries()
+            self.run_info.status = RunStatus.ERROR.value
         self.run_info.finished = get_time()
-        self._log_run()
-        LOGGER.info("Run finished. Clean up of temp resources.")
 
+        # Get libraries used in the run
+        self.run_info.run_libraries = self.run_handler.get_libraries()
+
+        # Log run's metadata
+        self._log_run()
+
+        # Clean up
+        LOGGER.info("Run finished. Clean up of temp resources.")
         self._clean_all()
 
     ############################

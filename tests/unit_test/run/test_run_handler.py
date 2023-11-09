@@ -2,59 +2,17 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.client.store_handler import StoreHandler
 from nefertem.plugins.factory import builder_factory
 from nefertem.plugins.plugin import Plugin
-from nefertem.plugins.utils import Result
-from nefertem.run.handler import RunHandler, RunHandlerRegistry
-from nefertem.utils.commons import (
-    INFER,
-    MT_NT_REPORT,
-    PROFILE,
-    ResultType.FRAMEWORK.value,
-    ResultType.LIBRARY.value,
-    ResultType.NEFERTEM.value,
-    ResultType.RENDERED.value,
-    VALIDATE,
-)
+from nefertem.plugins.utils import Result, ResultType
+from nefertem.run.handler import RunHandler
 from nefertem.utils.exceptions import RunError
 from tests.conftest import CONST_FRICT_01
 
-
-class TestRunHandlerRegistry:
-    def test_setup(self, registry):
-        res_dict_ = {
-            ResultType.FRAMEWORK.value: [],
-            ResultType.NEFERTEM.value: [],
-            ResultType.RENDERED.value: [],
-            ResultType.LIBRARY.value: [],
-        }
-        dict_ = {
-            PROFILE: res_dict_,
-            INFER: res_dict_,
-            VALIDATE: res_dict_,
-        }
-        assert registry.registry == dict_
-
-    def test_register(self, registry):
-        registry.register(VALIDATE, ResultType.FRAMEWORK.value, ["test"])
-        assert registry.registry[VALIDATE][ResultType.FRAMEWORK.value] == ["test"]
-        registry.register(VALIDATE, ResultType.FRAMEWORK.value, "test2")
-        assert registry.registry[VALIDATE][ResultType.FRAMEWORK.value] == [
-            "test",
-            "test2",
-        ]
-        registry.register(VALIDATE, ResultType.NEFERTEM.value, "test3")
-        assert registry.registry[VALIDATE][ResultType.NEFERTEM.value] == ["test3"]
-
-    def test_get_object(self, registry):
-        print(registry.registry)
-        registry.register(VALIDATE, ResultType.FRAMEWORK.value, ["test"])
-        print(registry.registry)
-        x = registry.get_object(VALIDATE, ResultType.FRAMEWORK.value)
-        assert x == ["test"]
-        x = registry.get_object("test", ResultType.FRAMEWORK.value)
-        assert x == []
+INFER = "infer"
+VALIDATE = "validate"
+PROFILE = "profile"
+MT_NT_REPORT = "nefertem_report"
 
 
 class TestRunHandler:
@@ -179,18 +137,6 @@ class TestRunHandler:
         # because copy same file to same path (from temp_data to temp_data)
         handler.persist_data([local_resource], tmp_path)
         assert Path(tmp_path, "test_csv_file.csv").exists()
-
-
-# RunHandlerRegistry
-@pytest.fixture()
-def registry():
-    return RunHandlerRegistry()
-
-
-# StoreHandler
-@pytest.fixture()
-def store_handler(local_md_store_cfg, local_store_cfg):
-    return StoreHandler(metadata_store=local_md_store_cfg, store=local_store_cfg)
 
 
 # RunHandler

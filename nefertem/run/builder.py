@@ -13,7 +13,7 @@ from nefertem.run.config import RunConfig
 from nefertem.run.handler import RunHandler
 from nefertem.run.run_info import RunInfo
 from nefertem.stores.builder import get_output_store
-from nefertem.utils.commons import DEFAULT_EXPERIMENT, NEFERTEM_VERSION
+from nefertem.utils.commons import DEFAULT_EXPERIMENT
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.utils import build_uuid
 
@@ -86,8 +86,6 @@ class RunBuilder:
         # Initialize run and get metadata and artifacts URI
         store = get_output_store()
         store.init_run(experiment, run_id, overwrite)
-        run_md_uri = str(store.metadata_path)
-        run_art_uri = str(store.artifact_path)
 
         # Get run specific operations
         ClsRun: Run = self._get_run_object(cfg.operation)
@@ -97,11 +95,10 @@ class RunBuilder:
         run_info = RunInfo(
             run_id=run_id,
             experiment_name=experiment,
-            nefertem_version=NEFERTEM_VERSION,
-            resources=res,
             run_config=cfg,
-            run_meta_path=run_md_uri,
-            run_art_path=run_art_uri,
+            resources=res,
+            metadata_path=str(store.metadata_path),
+            artifact_path=str(store.artifact_path),
         )
         return ClsRun(run_info, run_handler, tmp_dir)
 
