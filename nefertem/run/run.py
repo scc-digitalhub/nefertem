@@ -90,7 +90,7 @@ class Run:
         None
         """
         pth = get_output_store().log_metadata(src, src_type)
-        self.run_info.nefertem_outputs.append(pth)
+        self.run_info.output_files.append(pth)
 
     def _persist_artifact(self, src: Any, src_name: str) -> None:
         """
@@ -108,7 +108,7 @@ class Run:
         None
         """
         pth = get_output_store().persist_artifact(src, src_name)
-        self.run_info.artifact_outputs.append(pth)
+        self.run_info.output_files.append(pth)
 
     ############################
     # Data

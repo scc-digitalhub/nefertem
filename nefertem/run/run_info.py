@@ -57,8 +57,7 @@ class RunInfo:
         self.resources = resources
 
         # Outputs
-        self.nefertem_outputs = []
-        self.artifact_outputs = []
+        self.output_files = []
 
         # Execution environment
         self.nefertem_version = NEFERTEM_VERSION
@@ -86,8 +85,7 @@ class RunInfo:
             "run_config": self.run_config.model_dump(exclude_none=True),
             "run_libraries": self.run_libraries,
             "resources": [i.model_dump(exclude_none=True) for i in self.resources],
-            "nefertem_outputs": self.nefertem_outputs,
-            "artifact_outputs": self.artifact_outputs,
+            "output_files": self.output_files,
             "nefertem_version": self.nefertem_version,
             "execution_environment": self.execution_environment,
             "status": self.status,
