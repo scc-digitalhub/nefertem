@@ -96,4 +96,4 @@ class RunInference(Run):
         None
         """
         for obj in self.run_handler.get_item(ResultType.RENDERED.value):
-            self._persist_artifact(obj.object, self._render_artifact_name(obj.filename))
+            self._persist_artifact(obj.object, obj.filename)

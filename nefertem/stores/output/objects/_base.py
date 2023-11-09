@@ -19,13 +19,24 @@ class OutputStore(metaclass=ABCMeta):
 
     def __init__(self, path: str) -> None:
         self.path = path
+        self.run_path = None
         self.artifact_path = None
         self.metadata_path = None
+
+    ############################
+    # Run methods
+    ############################
 
     @abstractmethod
     def init_run(self, exp_name: str, run_id: str, overwrite: bool) -> None:
         """
         Initial enviroment operation.
+        """
+
+    @abstractmethod
+    def get_run_path(self, exp_name: str, run_id: str) -> str:
+        """
+        Return run path.
         """
 
     ############################

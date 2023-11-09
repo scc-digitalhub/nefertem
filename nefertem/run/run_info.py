@@ -24,24 +24,21 @@ class RunInfo:
         Run id.
     experiment_name : str
         Id of the experiment.
+    run_path : str
+        Path where to store run's metadata and artifacts.
     resources : list[DataResource]
         List of input resources.
     run_config : RunConfig
         Run configuration.
-    metadata_path : str
-        URI that point to the metadata store.
-    artifact_path : str
-        URI that point to the artifact store.
     """
 
     def __init__(
         self,
         run_id: str,
         experiment_name: str,
+        run_path: str,
         run_config: RunConfig,
         resources: list[DataResource],
-        metadata_path: str | None = None,
-        artifact_path: str | None = None,
     ) -> None:
         """
         Constructor.
@@ -52,6 +49,7 @@ class RunInfo:
         self.experiment_name = experiment_name
 
         # Execution info
+        self.run_path = run_path
         self.run_config = run_config
         self.run_libraries = None
 
@@ -59,8 +57,8 @@ class RunInfo:
         self.resources = resources
 
         # Outputs
-        self.nefertem_outputs = {"path": metadata_path, "files": []}
-        self.artifact_outputs = {"path": artifact_path, "files": []}
+        self.nefertem_outputs = []
+        self.artifact_outputs = []
 
         # Execution environment
         self.nefertem_version = NEFERTEM_VERSION

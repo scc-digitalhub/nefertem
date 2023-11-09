@@ -31,7 +31,7 @@ class RunBuilder:
 
     Methods
     -------
-    create_run(resources, run_config, experiment, run_id, overwrite)
+    create_run(resources, run_config, experiment_name, run_id, overwrite)
         Create a new run.
     _validate_resources(resources)
         Validate data resources against model.
@@ -46,7 +46,7 @@ class RunBuilder:
         resources: list[dict],
         run_config: dict,
         tmp_dir: str,
-        experiment: str | None = DEFAULT_EXPERIMENT,
+        experiment_name: str | None = DEFAULT_EXPERIMENT,
         run_id: str | None = None,
         overwrite: bool = False,
     ) -> Run:
@@ -61,12 +61,12 @@ class RunBuilder:
             Run configuration.
         tmp_dir : str
             Temporary directory to store artifacts.
-        experiment : str, optional
-            Experiment name, by default DEFAULT_EXPERIMENT.
+        experiment_name : str, optional
+            Experiment name.
         run_id : str, optional
             Run id, by default None.
         overwrite : bool, optional
-            If True, overwrite run metadata/artifact if it already exists.
+            If True, overwrite run if already exists.
 
         Returns
         -------
@@ -83,9 +83,10 @@ class RunBuilder:
         # Get run id
         run_id = build_uuid(run_id)
 
-        # Initialize run and get metadata and artifacts URI
+        # Initialize run and get run path
         store = get_output_store()
-        store.init_run(experiment, run_id, overwrite)
+        store.init_run(experiment_name, run_id, overwrite)
+        run_path = store.get_run_path(experiment_name, run_id)
 
         # Get run specific operations
         ClsRun: Run = self._get_run_object(cfg.operation)
@@ -94,11 +95,10 @@ class RunBuilder:
         run_handler = RunHandler(cfg)
         run_info = RunInfo(
             run_id=run_id,
-            experiment_name=experiment,
+            experiment_name=experiment_name,
+            run_path=run_path,
             run_config=cfg,
             resources=res,
-            metadata_path=str(store.metadata_path),
-            artifact_path=str(store.artifact_path),
         )
         return ClsRun(run_info, run_handler, tmp_dir)
 

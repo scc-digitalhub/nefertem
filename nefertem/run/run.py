@@ -37,8 +37,8 @@ class Run:
         Run information.
     run_handler : RunHandler
         Run handler.
-    tmp_dir : str
-        Default local temporary folder where to store input data.
+    _tmp_dir : str
+        Local temporary folder where to store input data.
 
     Methods
     -------
@@ -53,8 +53,7 @@ class Run:
         """
         self.run_info = run_info
         self.run_handler = run_handler
-        self.tmp_dir = tmp_dir
-        self._filenames = {}
+        self._tmp_dir = tmp_dir
 
     ############################
     # Run methods
@@ -80,8 +79,7 @@ class Run:
         None
         """
         metadata = self.run_info.to_dict()
-        self._log_metadata(metadata, "run")
-        self.run_info.nefertem_outputs["files"].append("run.json")
+        self._log_metadata(metadata, "run_metadata")
 
     def _log_metadata(self, src: dict, src_type: str) -> None:
         """
@@ -91,7 +89,8 @@ class Run:
         -------
         None
         """
-        get_output_store().log_metadata(src, src_type)
+        pth = get_output_store().log_metadata(src, src_type)
+        self.run_info.nefertem_outputs.append(pth)
 
     def _persist_artifact(self, src: Any, src_name: str) -> None:
         """
@@ -108,20 +107,8 @@ class Run:
         -------
         None
         """
-        get_output_store().persist_artifact(src, src_name)
-        self.run_info.artifact_outputs["files"].append(src_name)
-
-    def _render_artifact_name(self, filename: str) -> str:
-        """
-        Return a modified filename to avoid overwriting in persistence.
-
-        Returns
-        -------
-        str
-            Return a modified filename.
-        """
-        self._filenames[filename] = self._filenames.get(filename, 0) + 1
-        return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
+        pth = get_output_store().persist_artifact(src, src_name)
+        self.run_info.artifact_outputs.append(pth)
 
     ############################
     # Data
@@ -149,7 +136,7 @@ class Run:
         for store in get_all_input_stores():
             store.clean_paths()
         try:
-            clean_all(self.tmp_dir)
+            clean_all(self._tmp_dir)
         except FileNotFoundError:
             pass
 
