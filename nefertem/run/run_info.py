@@ -82,6 +82,7 @@ class RunInfo:
         return {
             "run_id": self.run_id,
             "experiment_name": self.experiment_name,
+            "run_path": self.run_path,
             "run_config": self.run_config.model_dump(exclude_none=True),
             "run_libraries": self.run_libraries,
             "resources": [i.model_dump(exclude_none=True) for i in self.resources],
