@@ -14,7 +14,7 @@ from nefertem.plugins.utils import exec_decorator
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
-    from nefertem.readers.file.file import FileReader
+    from nefertem.readers.objects.file import FileReader
     from nefertem.resources.data_resource import DataResource
 
 

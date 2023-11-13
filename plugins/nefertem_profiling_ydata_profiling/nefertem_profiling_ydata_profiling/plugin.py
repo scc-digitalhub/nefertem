@@ -16,8 +16,9 @@ from nefertem.plugins.utils import exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
+    from nefertem_profiling_ydata_profiling.reader import PandasDataFrameFileReader
+
     from nefertem.plugins.utils import Result
-    from nefertem.readers.file.native import NativeReader
     from nefertem.resources.data_resource import DataResource
 
 
@@ -33,7 +34,7 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
 
     def setup(
         self,
-        data_reader: NativeReader,
+        data_reader: PandasDataFrameFileReader,
         resource: DataResource,
         exec_args: dict,
     ) -> None:

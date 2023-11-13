@@ -11,19 +11,26 @@ from nefertem_validation.plugins.constraint import Constraint
 from nefertem_validation_duckdb.constraint import ConstraintDuckDB
 from nefertem_validation_duckdb.plugin import ValidationPluginDuckDB
 
+from nefertem.readers import reader_registry
 from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import PANDAS_DATAFRAME_DUCKDB_READER, PANDAS_DATAFRAME_FILE_READER
 from nefertem.utils.utils import build_uuid, flatten_list, listify
 
 if typing.TYPE_CHECKING:
-    from nefertem.readers.file.native import NativeReader
+    from nefertem.readers.objects.native import NativeReader
     from nefertem.resources.data_resource import DataResource
+
+
+PANDAS_READER = "pandas_df_duckdb_reader"
 
 
 class ValidationBuilderDuckDB(ValidationPluginBuilder):
     """
     DuckDB validation plugin builder.
     """
+
+    def __init__(self, stores: dict[str, str], exec_args: dict) -> None:
+        super().__init__(stores, exec_args)
+        reader_registry.register(PANDAS_READER, "nefertem_validation_duckdb.reader", "PandasDataFrameDuckDBReader")
 
     def build(
         self,
@@ -43,7 +50,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
 
         plugins = []
         for const in f_constraint:
-            data_reader = build_reader(PANDAS_DATAFRAME_DUCKDB_READER, None)
+            data_reader = build_reader(PANDAS_READER, None)
             plugin = ValidationPluginDuckDB()
             plugin.setup(data_reader, str(self.tmp_db), const, error_report, self.exec_args)
             plugins.append(plugin)
@@ -82,7 +89,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         Register resource in db.
         """
         store = self.stores[resource.store]
-        data_reader = build_reader(PANDAS_DATAFRAME_FILE_READER, store)
+        data_reader = build_reader(PANDAS_READER, store)
         df = self._get_data(data_reader, listify(resource.path))  # noqa pylint: disable=no-member
         self.con.execute(f"CREATE TABLE IF NOT EXISTS {resource.name} AS SELECT * FROM df;")
 
@@ -91,7 +98,7 @@ class ValidationBuilderDuckDB(ValidationPluginBuilder):
         """
         Fetch data from paths.
         """
-        dfs = [data_reader.fetch_data(pth) for pth in paths]
+        dfs = [data_reader.fetch_local_data(pth) for pth in paths]
         return data_reader.concat_data(dfs)
 
     def _tear_down_connection(self) -> None:

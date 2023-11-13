@@ -4,7 +4,7 @@ from nefertem_validation_evidently.plugin import ValidationPluginEvidently
 
 from nefertem.readers.builder import build_reader
 from nefertem.resources.data_resource import DataResource
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.utils.commons import FILE_READER
 
 
 class ValidationBuilderEvidently(ValidationPluginBuilder):
@@ -27,11 +27,11 @@ class ValidationBuilderEvidently(ValidationPluginBuilder):
             for resource in resources:
                 if resource.name == constraint.resource:
                     store = self.stores[resource.store]
-                    data_reader = build_reader(BASE_FILE_READER, store)
+                    data_reader = build_reader(FILE_READER, store)
                     curr_resource = resource
                 elif resource.name == constraint.reference_resource:
                     store = self.stores[resource.store]
-                    ref_data_reader = build_reader(BASE_FILE_READER, store)
+                    ref_data_reader = build_reader(FILE_READER, store)
                     ref_resource = resource
 
             if curr_resource is not None:

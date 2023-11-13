@@ -15,7 +15,7 @@ from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
-    from nefertem.readers.file.file import FileReader
+    from nefertem.readers.objects.file import FileReader
     from nefertem.resources.data_resource import DataResource
 
 
@@ -43,7 +43,7 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
         Profile
         """
         data = self.data_reader.fetch_data(self.resource.path)
-        profile = Resource().describe(data, stats=True, **self.exec_args)
+        profile = Resource().describe(str(data), stats=True, **self.exec_args)
         return Resource(profile.to_dict())
 
     @exec_decorator

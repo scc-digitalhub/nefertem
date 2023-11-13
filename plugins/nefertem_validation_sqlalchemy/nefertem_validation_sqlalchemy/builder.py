@@ -6,8 +6,9 @@ from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_sqlalchemy.constraint import ConstraintSqlAlchemy
 from nefertem_validation_sqlalchemy.plugin import ValidationPluginSqlAlchemy
 
+from nefertem.readers import reader_registry
 from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import PANDAS_DATAFRAME_SQL_READER
+from nefertem.stores.input.objects._base import InputStore
 from nefertem.utils.utils import flatten_list
 from operations.nefertem_validation.nefertem_validation.utils import ValidationError
 
@@ -15,10 +16,17 @@ if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource
 
 
+PANDAS_READER = "pandas_df_sql_reader"
+
+
 class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
     """
     SqlAlchemy validation plugin builder.
     """
+
+    def __init__(self, stores: list[InputStore], exec_args: dict) -> None:
+        super().__init__(stores, exec_args)
+        reader_registry.register(PANDAS_READER, "nefertem_validation_sqlalchemy.reader", "PandasDataFrameSQLReader")
 
     def build(
         self,
@@ -35,7 +43,7 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
 
         plugins = []
         for i in g_constraint:
-            data_reader = build_reader(PANDAS_DATAFRAME_SQL_READER, i["store"])
+            data_reader = build_reader(PANDAS_READER, i["store"])
             plugin = ValidationPluginSqlAlchemy()
             plugin.setup(data_reader, i["constraint"], error_report, self.exec_args)
             plugins.append(plugin)

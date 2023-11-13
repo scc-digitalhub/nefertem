@@ -41,13 +41,13 @@ class OutputStore(metaclass=ABCMeta):
     ############################
 
     @abstractmethod
-    def log_metadata(self, obj: dict, filename: str) -> None:
+    def log_metadata(self, obj: dict, filename: str, check_filename: bool = True) -> None:
         """
         Method to log metadata.
         """
 
     @abstractmethod
-    def persist_artifact(self, obj: Any, filename: str) -> None:
+    def persist_artifact(self, obj: Any, filename: str, check_filename: bool = True) -> None:
         """
         Method to persist an artifact.
         """

@@ -7,7 +7,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
-from nefertem.readers._base import DataReader
+from nefertem.readers.objects._base import DataReader
 from nefertem.utils.exceptions import StoreError
 
 

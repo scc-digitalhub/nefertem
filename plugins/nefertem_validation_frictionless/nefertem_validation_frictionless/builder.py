@@ -8,7 +8,7 @@ from nefertem_validation_frictionless.constraints import ConstraintFrictionless,
 from nefertem_validation_frictionless.plugin import ValidationPluginFrictionless
 
 from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.utils.commons import FILE_READER
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource
@@ -35,7 +35,7 @@ class ValidationBuilderFrictionless(ValidationPluginBuilder):
             for const in f_constraints:
                 if resource.name in const.resources:
                     store = self.stores[resource.store]
-                    data_reader = build_reader(BASE_FILE_READER, store)
+                    data_reader = build_reader(FILE_READER, store)
                     plugin = ValidationPluginFrictionless()
                     plugin.setup(data_reader, resource, const, error_report, self.exec_args)
                     plugins.append(plugin)

@@ -15,9 +15,9 @@ from nefertem.plugins.utils import exec_decorator
 
 if typing.TYPE_CHECKING:
     from nefertem_validation_duckdb.constraint import ConstraintDuckDB
+    from nefertem_validation_duckdb.reader import PandasDataFrameDuckDBReader
 
     from nefertem.plugins.utils import Result
-    from nefertem.readers.file.native import NativeReader
 
 
 class ValidationPluginDuckDB(ValidationPlugin):
@@ -32,7 +32,7 @@ class ValidationPluginDuckDB(ValidationPlugin):
 
     def setup(
         self,
-        data_reader: NativeReader,
+        data_reader: PandasDataFrameDuckDBReader,
         db: str,
         constraint: ConstraintDuckDB,
         error_report: str,
@@ -56,7 +56,7 @@ class ValidationPluginDuckDB(ValidationPlugin):
             data = self.data_reader.fetch_data(self.db, self.constraint.query)
             value = self._filter_result(data)
             valid, errors = evaluate_validity(value, self.constraint.expect, self.constraint.value)
-            result = self._shorten_data(data)
+            result = self.data_reader.return_head(data)
             return ValidationReport(result, valid, errors)
         except Exception as ex:
             raise ex
@@ -70,12 +70,6 @@ class ValidationPluginDuckDB(ValidationPlugin):
         elif self.constraint.check == "rows":
             return self.data_reader.return_length(data)
 
-    def _shorten_data(self, data: Any) -> Any:
-        """
-        Return a short version of data.
-        """
-        return self.data_reader.return_head(data)
-
     @exec_decorator
     def render_nefertem(self, result: Result) -> NefertemReport:
         """
@@ -83,7 +77,7 @@ class ValidationPluginDuckDB(ValidationPlugin):
         """
         exec_err = result.errors
         duration = result.duration
-        constraint = self.constraint.dict()
+        constraint = self.constraint.model_dump()
         errors = {}
 
         if exec_err is None:

@@ -20,6 +20,7 @@ keywords = ["data", "validation", "quality"]
 dependencies = [
     "duckdb==0.9.1",
     "pandas==2.0.3",
+    "frictionless==5.16.0",
     "pydantic>=2",
 ]
 

@@ -4,6 +4,8 @@ SQL checks module.
 import re
 from typing import Any
 
+from frictionless import Detector, Resource
+
 
 def evaluate_validity(result: Any, expect: str, value: Any) -> tuple:
     """
@@ -128,3 +130,22 @@ class ValidationReport:
 
     def to_dict(self):
         return {"result": self.result, "valid": self.valid, "error": self.error}
+
+
+def describe_resource(pth: str) -> dict:
+    """
+    Describe a resource using frictionless.
+
+    With bigger buffer/sample we should avoid error encoding detection.
+
+    Parameters
+    ----------
+    pth: str
+        Path to resource.
+
+    Returns
+    -------
+    dict
+        Resource description.
+    """
+    return Resource.describe(source=pth, detector=Detector(buffer_size=20000, sample_size=1250)).to_dict()

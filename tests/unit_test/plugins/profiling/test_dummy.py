@@ -1,7 +1,7 @@
 import pytest
 
 from nefertem.plugins.profiling.dummy import ProfileBuilderDummy, ProfilePluginDummy
-from nefertem.utils.commons import BASE_FILE_READER, DUMMY, PROFILE
+from nefertem.utils.commons import DUMMY, FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
@@ -69,4 +69,4 @@ def resource(local_resource):
 
 @pytest.fixture
 def data_reader():
-    return BASE_FILE_READER
+    return FILE_READER

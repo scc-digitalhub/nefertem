@@ -3,10 +3,10 @@ from __future__ import annotations
 import importlib
 import typing
 
-from nefertem.readers.registry import REGISTRY
+from nefertem.readers.registry import reader_registry
 
 if typing.TYPE_CHECKING:
-    from nefertem.readers._base import DataReader
+    from nefertem.readers.objects._base import DataReader
     from nefertem.stores.input.objects._base import InputStore
 
 
@@ -29,8 +29,8 @@ def build_reader(reader_type: str, store: InputStore, **kwargs) -> DataReader:
         Reader instance.
     """
     try:
-        module = importlib.import_module(REGISTRY[reader_type][0])
-        reader = getattr(module, REGISTRY[reader_type][1])
+        module = importlib.import_module(reader_registry[reader_type][0])
+        reader = getattr(module, reader_registry[reader_type][1])
         return reader(store, **kwargs)
     except (KeyError, ModuleNotFoundError, AttributeError, ImportError):
         raise KeyError(f"Reader {reader_type} not found. Check installed libraries.")

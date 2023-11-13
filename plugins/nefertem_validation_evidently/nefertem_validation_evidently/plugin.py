@@ -7,7 +7,7 @@ from nefertem_validation.plugins.plugin import ValidationPlugin
 from nefertem_validation_evidently.constraint import ConstraintEvidently
 
 from nefertem.plugins.utils import Result, exec_decorator
-from nefertem.readers.file.file import FileReader
+from nefertem.readers.objects.file import FileReader
 from nefertem.resources.data_resource import DataResource
 
 
@@ -78,7 +78,7 @@ class ValidationPluginEvidently(ValidationPlugin):
         """
         exec_err = result.errors
         duration = result.duration
-        constraint = self.constraint.dict()
+        constraint = self.constraint.model_dump()
         errors = self._get_errors()
 
         if exec_err is None:

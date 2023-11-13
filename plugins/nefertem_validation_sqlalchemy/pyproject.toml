@@ -18,6 +18,7 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
+    "pandas==2.0.3",
     "psycopg2-binary~=2.9",
     "SQLAlchemy>=2",
     "pydantic>=2",

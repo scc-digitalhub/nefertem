@@ -11,7 +11,7 @@ from typing import Any
 from nefertem.readers.builder import build_reader
 from nefertem.run.status import RunStatus
 from nefertem.stores.builder import get_all_input_stores, get_input_store, get_output_store
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.utils.commons import FILE_READER
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time, listify
 
@@ -79,36 +79,47 @@ class Run:
         None
         """
         metadata = self.run_info.to_dict()
-        self._log_metadata(metadata, "run_metadata.json")
+        self._log_metadata(metadata, "run_metadata.json", check_filename=False)
 
-    def _log_metadata(self, src: dict, src_type: str) -> None:
+    def _log_metadata(self, obj: dict, filename: str, check_filename: bool = True) -> None:
         """
-        Log generic metadata.
-
-        Returns
-        -------
-        None
-        """
-        pth = get_output_store().log_metadata(src, src_type)
-        if pth not in self.run_info.output_files:
-            self.run_info.output_files.append(pth)
-
-    def _persist_artifact(self, src: Any, src_name: str) -> None:
-        """
-        Persist artifact in the artifact store.
+        Log metadata dictionary.
 
         Parameters
         ----------
-        src : Any
-            Artifact to persist.
-        src_name : str
-            Artifact filename.
+        obj : dict
+            Metadata dictionary.
+        filename : str
+            Metadata filename.
+        check_filename : bool, optional
+            Flag for store to overwriting avoidance.
 
         Returns
         -------
         None
         """
-        pth = get_output_store().persist_artifact(src, src_name)
+        pth = get_output_store().log_metadata(obj, filename, check_filename)
+        if pth not in self.run_info.output_files:
+            self.run_info.output_files.append(pth)
+
+    def _persist_artifact(self, obj: Any, filename: str, check_filename: bool = True) -> None:
+        """
+        Persist artifact in the output store.
+
+        Parameters
+        ----------
+        obj : Any
+            Artifact to persist.
+        filename : str
+            Artifact filename.
+        check_filename : bool, optional
+            Flag for store to overwriting avoidance.
+
+        Returns
+        -------
+        None
+        """
+        pth = get_output_store().persist_artifact(obj, filename, check_filename)
         if pth not in self.run_info.output_files:
             self.run_info.output_files.append(pth)
 
@@ -126,10 +137,10 @@ class Run:
         """
         for res in self.run_info.resources:
             store = get_input_store(res.store)
-            data_reader = build_reader(BASE_FILE_READER, store)
+            data_reader = build_reader(FILE_READER, store)
             for path in listify(res.path):
                 tmp = Path(data_reader.fetch_data(path))
-                self._persist_artifact(tmp, tmp.name)
+                self._persist_artifact(tmp, tmp.name, check_filename=False)
 
     def _clean_all(self) -> None:
         """

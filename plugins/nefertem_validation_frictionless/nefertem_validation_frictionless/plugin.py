@@ -13,7 +13,7 @@ from nefertem.plugins.utils import Result, exec_decorator
 if typing.TYPE_CHECKING:
     from nefertem_validation_frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
 
-    from nefertem.readers.file.file import FileReader
+    from nefertem.readers.objects.file import FileReader
     from nefertem.resources.data_resource import DataResource
 
 
@@ -51,8 +51,8 @@ class ValidationPluginFrictionless(ValidationPlugin):
         Validate a Data Resource.
         """
         data = self.data_reader.fetch_data(self.resource.path)
-        schema = self._rebuild_constraints(data)
-        res = Resource(path=data, schema=schema).validate(**self.exec_args)
+        schema = self._rebuild_constraints(str(data))
+        res = Resource(path=str(data), schema=schema).validate(**self.exec_args)
         return Report.from_descriptor(res.to_dict())
 
     def _rebuild_constraints(self, data_path: str) -> Schema:
@@ -105,7 +105,7 @@ class ValidationPluginFrictionless(ValidationPlugin):
         """
         exec_err = result.errors
         duration = result.duration
-        constraint = self.constraint.dict()
+        constraint = self.constraint.model_dump()
         errors = self._get_errors()
 
         if exec_err is None:

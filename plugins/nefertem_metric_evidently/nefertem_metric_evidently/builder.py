@@ -10,7 +10,7 @@ from nefertem_metric_evidently.plugin import ProfilingPluginEvidently
 from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 
 from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.utils.commons import FILE_READER
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource
@@ -35,11 +35,11 @@ class MetricBuilderEvidently(ProfilingPluginBuilder):
             for resource in resources:
                 if resource.name == metric.resource:
                     store = self.stores[resource.store]
-                    data_reader = build_reader(BASE_FILE_READER, store)
+                    data_reader = build_reader(FILE_READER, store)
                     curr_resource = resource
                 elif resource.name == metric.reference_resource:
                     store = self.stores[resource.store]
-                    ref_data_reader = build_reader(BASE_FILE_READER, store)
+                    ref_data_reader = build_reader(FILE_READER, store)
                     ref_resource = resource
 
             if curr_resource is not None:

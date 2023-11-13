@@ -1,3 +1,28 @@
+"""
+Utils functions for data reader.
+"""
+from frictionless import Detector, Resource
+
+
+def describe_resource(pth: str) -> dict:
+    """
+    Describe a resource using frictionless.
+
+    With bigger buffer/sample we should avoid error encoding detection.
+
+    Parameters
+    ----------
+    pth: str
+        Path to resource.
+
+    Returns
+    -------
+    dict
+        Resource description.
+    """
+    return Resource.describe(source=pth, detector=Detector(buffer_size=20000, sample_size=1250)).to_dict()
+
+
 # Columns/fields to parse from profile
 PROFILE_COLUMNS = ["analysis", "table", "variables"]
 PROFILE_FIELDS = [
@@ -13,50 +38,4 @@ PROFILE_FIELDS = [
     "p_missing",
     "count",
     "memory_size",
-]
-PROFILE_DATASET_METRICS = [
-    "n",
-    "n_var",
-    "memory_size",
-    "record_size",
-    "n_cells_missing",
-    "n_vars_with_missing",
-    "n_vars_all_missing",
-    "p_cells_missing",
-    "n_duplicates",
-    "p_duplicates",
-]
-PROFILE_FIELD_METRICS = [
-    "n_distinct",
-    "p_distinct",
-    "is_unique",
-    "n_unique",
-    "p_unique",
-    "type",
-    "hashable",
-    "n_missing",
-    "n",
-    "p_missing",
-    "count",
-    "memory_size",
-    "n_negative",
-    "p_negative",
-    "n_infinite",
-    "n_zeros",
-    "mean",
-    "std",
-    "variance",
-    "min",
-    "max",
-    "kurtosis",
-    "skewness",
-    "sum",
-    "mad",
-    "chi_squared_statistic",
-    "chi_squared_pvalue",
-    "range",
-    "iqr",
-    "cv",
-    "p_zeros",
-    "p_infinite",
 ]

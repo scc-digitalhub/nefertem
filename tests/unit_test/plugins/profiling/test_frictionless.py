@@ -6,7 +6,7 @@ from frictionless import Resource
 
 from nefertem.plugins.profiling.frictionless.builder import ProfileBuilderFrictionless
 from nefertem.plugins.profiling.frictionless.plugin import ProfilePluginFrictionless
-from nefertem.utils.commons import BASE_FILE_READER, PROFILE
+from nefertem.utils.commons import FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
@@ -105,4 +105,4 @@ def resource(local_resource_no_temp):
 
 @pytest.fixture
 def data_reader():
-    return BASE_FILE_READER
+    return FILE_READER

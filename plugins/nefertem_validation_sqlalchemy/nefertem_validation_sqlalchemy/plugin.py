@@ -15,9 +15,9 @@ from nefertem.plugins.utils import exec_decorator
 
 if typing.TYPE_CHECKING:
     from nefertem_validation_sqlalchemy.constraint import ConstraintSqlAlchemy
+    from nefertem_validation_sqlalchemy.reader import PandasDataFrameSQLReader
 
     from nefertem.plugins.utils import Result
-    from nefertem.readers.file.native import NativeReader
 
 
 class ValidationPluginSqlAlchemy(ValidationPlugin):
@@ -31,7 +31,7 @@ class ValidationPluginSqlAlchemy(ValidationPlugin):
 
     def setup(
         self,
-        data_reader: NativeReader,
+        data_reader: PandasDataFrameSQLReader,
         constraint: ConstraintSqlAlchemy,
         error_report: str,
         exec_args: dict,
@@ -80,7 +80,7 @@ class ValidationPluginSqlAlchemy(ValidationPlugin):
         """
         exec_err = result.errors
         duration = result.duration
-        constraint = self.constraint.dict()
+        constraint = self.constraint.model_dump()
         errors = {}
 
         if exec_err is None:

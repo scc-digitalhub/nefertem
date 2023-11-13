@@ -15,7 +15,7 @@ from nefertem.utils.io_utils import write_bytesio
 if typing.TYPE_CHECKING:
     from nefertem_metric_evidently.metrics import MetricEvidently
 
-    from nefertem.readers.file.file import FileReader
+    from nefertem.readers.objects.file import FileReader
     from nefertem.resources.data_resource import DataResource
 
 

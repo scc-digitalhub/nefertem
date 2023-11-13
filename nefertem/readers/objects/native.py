@@ -1,7 +1,7 @@
 """
 NativeReader module.
 """
-from nefertem.readers._base import DataReader
+from nefertem.readers.objects._base import DataReader
 
 
 class NativeReader(DataReader):
