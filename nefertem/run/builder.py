@@ -13,7 +13,6 @@ from nefertem.run.config import RunConfig
 from nefertem.run.handler import RunHandler
 from nefertem.run.run_info import RunInfo
 from nefertem.stores.builder import get_output_store
-from nefertem.utils.commons import DEFAULT_EXPERIMENT
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.utils import build_uuid
 
@@ -31,14 +30,8 @@ class RunBuilder:
 
     Methods
     -------
-    create_run(resources, run_config, experiment_name, run_id, overwrite)
+    create_run
         Create a new run.
-    _validate_resources(resources)
-        Validate data resources against model.
-    _check_resources(resources)
-        Check if resources already exist.
-    _validate_run_config(run_config)
-        Validate run config against model.
     """
 
     def create_run(
@@ -46,7 +39,7 @@ class RunBuilder:
         resources: list[dict],
         run_config: dict,
         tmp_dir: str,
-        experiment_name: str | None = DEFAULT_EXPERIMENT,
+        experiment_name: str | None = None,
         run_id: str | None = None,
         overwrite: bool = False,
     ) -> Run:
@@ -61,11 +54,11 @@ class RunBuilder:
             Run configuration.
         tmp_dir : str
             Temporary directory to store artifacts.
-        experiment_name : str, optional
+        experiment_name : str
             Experiment name.
-        run_id : str, optional
+        run_id : str
             Run id, by default None.
-        overwrite : bool, optional
+        overwrite : bool
             If True, overwrite run if already exists.
 
         Returns
@@ -73,6 +66,9 @@ class RunBuilder:
         Run
             Run object.
         """
+        if experiment_name is None:
+            experiment_name = "default"
+
         # Validate resources
         res = self._validate_resources(resources)
         self._check_resources(res)
@@ -86,7 +82,7 @@ class RunBuilder:
         # Initialize run and get run path
         store = get_output_store()
         store.init_run(experiment_name, run_id, overwrite)
-        run_path = store.get_run_path(experiment_name, run_id)
+        run_path = store.get_run_path()
 
         # Get run specific operations
         ClsRun: Run = self._get_run_object(cfg.operation)

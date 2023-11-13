@@ -7,7 +7,6 @@ import typing
 
 from nefertem.run.builder import run_builder
 from nefertem.stores.builder import store_builder
-from nefertem.utils.commons import DEFAULT_DIRECTORY, DEFAULT_EXPERIMENT
 
 if typing.TYPE_CHECKING:
     from nefertem.run.run import Run
@@ -24,8 +23,6 @@ class Client:
         Path where to store metadata and artifacts.
     stores : list[dict]
         List of dict containing configuration for the input stores.
-    tmp_dir : str
-        Default local temporary folder where to store input data.
 
     Methods
     -------
@@ -39,9 +36,8 @@ class Client:
         self,
         path: str | None = None,
         stores: list[dict] | None = None,
-        tmp_dir: str | None = None,
     ) -> None:
-        self._tmp_dir = tmp_dir if tmp_dir is not None else DEFAULT_DIRECTORY
+        self._tmp_dir = "./ntruns/tmp"
         self._setup_stores(path, stores)
 
     def _setup_stores(self, path: str | None = None, configs: list[dict] | None = None) -> None:
@@ -86,7 +82,7 @@ class Client:
         self,
         resources: list[dict],
         run_config: dict,
-        experiment: str | None = DEFAULT_EXPERIMENT,
+        experiment: str | None = None,
         run_id: str | None = None,
         overwrite: bool = False,
     ) -> Run:

@@ -13,8 +13,6 @@ from nefertem.stores.kinds import StoreKinds
 from nefertem.stores.output.registry import mdstore_registry
 from nefertem.utils.commons import DUMMY
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import get_path
-from nefertem.utils.utils import build_uuid
 
 if typing.TYPE_CHECKING:
     from nefertem.stores.input.objects._base import InputStore, StoreConfig
@@ -52,7 +50,7 @@ class StoreBuilder:
         if self._output_store is None:
             self._output_store = mdstore_registry[StoreKinds.LOCAL.value](path)
 
-    def build_input_store(self, tmp_dir: str, config: dict | None = None) -> None:
+    def build_input_store(self, temp_dir: str, config: dict | None = None) -> None:
         """
         Method to create an input stores.
 
@@ -60,25 +58,25 @@ class StoreBuilder:
         ----------
         config : dict
             Store configuration.
-        tmp_dir: str
+        temp_dir: str
             Temporary directory.
 
         Returns
         -------
         None
         """
-        params = self._parse_parameters(tmp_dir, config)
+        params = self._parse_parameters(temp_dir, config)
         if params["name"] in self._stores:
             raise StoreError(f"Store {params['name']} already exists.")
         self._stores[params["name"]] = self._get_store(params)
 
-    def _parse_parameters(self, tmp_dir: str, config: dict | None = None) -> dict:
+    def _parse_parameters(self, temp_dir: str, config: dict | None = None) -> dict:
         """
         Parse store parameters.
 
         Parameters
         ----------
-        tmp_dir : str
+        temp_dir : str
             Temporary directory.
         config : dict
             Store configuration.
@@ -92,7 +90,7 @@ class StoreBuilder:
         return {
             "name": cfg.name,
             "store_type": cfg.store_type,
-            "temp_dir": get_path(tmp_dir, build_uuid()),
+            "temp_dir": temp_dir,
             "config": self._validate_config(cfg.store_type, cfg.config),
         }
 

@@ -2,6 +2,7 @@
 Implementation of S3 artifact store.
 """
 # pylint: disable=unused-import
+from pathlib import Path
 from typing import Type
 
 import boto3
@@ -10,8 +11,7 @@ from botocore.exceptions import ClientError
 
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import get_path
-from nefertem.utils.uri_utils import get_name_from_uri, get_uri_path
+from nefertem.utils.uri_utils import get_name_from_uri
 
 # Type aliases
 S3Client = Type["botocore.client.S3"]
@@ -74,7 +74,7 @@ class S3InputStore(InputStore):
             return cached
 
         self.logger.info(f"Fetching resource {src} from store {self.name}")
-        dst = get_path(self.temp_dir, get_name_from_uri(src))
+        dst = self.temp_dir / get_name_from_uri(src)
         filepath = self._download_file(src, dst)
         self._register_resource(key, filepath)
         return filepath
@@ -108,7 +108,7 @@ class S3InputStore(InputStore):
         str
             The name of the S3 bucket.
         """
-        return str(self.config.bucket_name)
+        return self.config.bucket_name
 
     def _get_client(self) -> S3Client:
         """
@@ -126,26 +126,6 @@ class S3InputStore(InputStore):
         }
         return boto3.client("s3", **cfg)
 
-    @staticmethod
-    def _get_key(path: str) -> str:
-        """
-        Build key.
-
-        Parameters
-        ----------
-        path : str
-            The source path to get the key from.
-
-        Returns
-        -------
-        str
-            The key.
-        """
-        key = get_uri_path(path)
-        if key.startswith("/"):
-            key = key[1:]
-        return key
-
     def _check_factory(self) -> tuple[S3Client, str]:
         """
         Check if the S3 bucket is accessible by sending a head_bucket request.
@@ -160,7 +140,8 @@ class S3InputStore(InputStore):
         self._check_access_to_storage(client, bucket)
         return client, bucket
 
-    def _check_access_to_storage(self, client: S3Client, bucket: str) -> None:
+    @staticmethod
+    def _check_access_to_storage(client: S3Client, bucket: str) -> None:
         """
         Check if the S3 bucket is accessible by sending a head_bucket request.
 
@@ -189,7 +170,7 @@ class S3InputStore(InputStore):
     # Private I/O methods
     ############################
 
-    def _download_file(self, key: str, dst: str) -> str:
+    def _download_file(self, key: str, dst: str) -> Path:
         """
         Download a file from S3 based storage. The function checks if the bucket is accessible
         and if the destination directory exists. If the destination directory does not exist,
@@ -204,12 +185,12 @@ class S3InputStore(InputStore):
 
         Returns
         -------
-        str
+        Path
             The path of the downloaded file.
         """
         client, bucket = self._check_factory()
         client.download_file(bucket, key, dst)
-        return dst
+        return Path(dst)
 
     def _get_presinged_url(self, src: str) -> str:
         """

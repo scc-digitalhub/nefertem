@@ -79,7 +79,7 @@ class Run:
         None
         """
         metadata = self.run_info.to_dict()
-        self._log_metadata(metadata, "run_metadata")
+        self._log_metadata(metadata, "run_metadata.json")
 
     def _log_metadata(self, src: dict, src_type: str) -> None:
         """

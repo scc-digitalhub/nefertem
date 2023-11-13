@@ -20,7 +20,13 @@ class LocalOutputStore(OutputStore):
 
     def __init__(self, path: str) -> None:
         super().__init__(path)
-        self._cnt = {}
+
+        self.path = Path(self.path)
+
+        self._initialized = False
+        self._run_path = None
+        self._artifact_path = None
+        self._metadata_path = None
         self._filenames = {}
 
     ############################
@@ -29,8 +35,8 @@ class LocalOutputStore(OutputStore):
 
     def init_run(self, exp_name: str, run_id: str, overwrite: bool) -> None:
         """
-        Check run metadata folder existence. If folder doesn't exist, create it.
-        If overwrite is True, it delete all the run's folder contents.
+        Initial run folders. If folder doesn't exist, create it.
+        If overwrite is True, delete the folder and create it again.
 
         Parameters
         ----------
@@ -43,22 +49,49 @@ class LocalOutputStore(OutputStore):
         -------
         None
         """
-        self.run_path = Path(self.get_run_path(exp_name, run_id))
-        self.artifact_path = self.run_path / "artifacts"
-        self.metadata_path = self.run_path / "metadata"
-
-        if self.run_path.exists():
+        self._set_paths(exp_name, run_id)
+        if self._run_path.exists():
             if not overwrite:
                 raise RunError("Run already exists, please use another id.")
             else:
-                clean_all(self.run_path)
-                self.artifact_path.mkdir(parents=True)
-                self.metadata_path.mkdir(parents=True)
+                clean_all(self._run_path)
+                self._create_run_directories()
         else:
-            self.artifact_path.mkdir(parents=True, exist_ok=True)
-            self.metadata_path.mkdir(parents=True, exist_ok=True)
+            self._create_run_directories()
+        self._initialized = True
 
-    def get_run_path(self, exp_name: str, run_id: str) -> str:
+    def _set_paths(self, exp_name: str, run_id: str) -> None:
+        """
+        Set run paths.
+
+        Parameters
+        ----------
+        exp_name : str
+            Experiment name.
+        run_id : str
+            Run id.
+
+        Returns
+        -------
+        None
+        """
+        self._run_path = self.path / exp_name / run_id
+        self._artifact_path = self._run_path / "artifacts"
+        self._metadata_path = self._run_path / "metadata"
+
+    def _create_run_directories(self) -> None:
+        """
+        Create run folders.
+
+        Returns
+        -------
+        None
+        """
+        self._run_path.mkdir(parents=True)
+        self._artifact_path.mkdir()
+        self._metadata_path.mkdir()
+
+    def get_run_path(self) -> Path:
         """
         Return run path.
 
@@ -71,117 +104,109 @@ class LocalOutputStore(OutputStore):
 
         Returns
         -------
-        str
+        Path
             Run path.
+
+        Raises
+        ------
+        RunError
+            If the run is not initialized.
         """
-        return str(Path(self.path) / exp_name / run_id)
+        if not self._initialized:
+            raise RunError("Run not initialized.")
+        return self._run_path
 
     ############################
     # Write methods
     ############################
 
-    def log_metadata(self, src: dict, src_type: str) -> str:
+    def log_metadata(self, obj: dict, filename: str) -> Path:
         """
         Method that log metadata.
 
         Parameters
         ----------
-        src : dict
-            Metadata to log.
-        src_type : str
-            Source type.
+        obj: dict
+            Metadata dictionary to be logged.
+        filename: str
+            Filename for the metadata.
 
         Returns
         -------
-        str
-            Path of the metadata file.
+        Path
+            Path to the metadata file.
         """
 
-        if not isinstance(src, dict):
+        if not isinstance(obj, dict):
             raise RunError("Metadata must be a dictionary.")
 
-        self.metadata_path.mkdir(exist_ok=True)
-        filename = self._get_metadata_filename(src_type)
-        dst = self.metadata_path / filename
-        write_json(src, dst)
-        return str(dst)
+        dst = self._metadata_path / self._parse_filename(filename)
+        write_json(obj, dst)
+        return dst
 
-    def _get_metadata_filename(self, src_type: str) -> str:
-        """
-        Return source path based on input source type.
-
-        Parameters
-        ----------
-        src_type : str
-            Source type.
-
-        Returns
-        -------
-        str
-            Filename.
-        """
-        if src_type == "run_metadata":
-            return f"{src_type}.json"
-        else:
-            self._cnt[src_type] = self._cnt.get(src_type, 0) + 1
-            return f"{src_type}_{self._cnt[src_type]}.json"
-
-    def persist_artifact(self, src: Any, src_name: str) -> None:
+    def persist_artifact(self, obj: Any, filename: str) -> Path:
         """
         Method to persist an artifact.
+        The local store supports the following types:
+
+        - Local file or dump string
+        - Dictionary
+        - StringIO/BytesIO buffer
 
         Parameters
         ----------
-        src : Any
-            The source file to be persisted.
-        src_name : str
-            Name given to the source file.
+        obj : Any
+            The source object to be persisted.
+        filename: str
+            Filename for the artifact.
 
         Returns
         -------
         str
-            Path of the artifact.
+            Path to the artifact.
 
         Raises
         ------
         RunError
             If the source type is not supported.
         """
+        dst = self._artifact_path / self._parse_filename(filename)
 
-        self.artifact_path.mkdir(exist_ok=True)
-        filename = self._get_artifact_name(src_name)
-        dst = self.artifact_path / filename
+        if isinstance(obj, (str, Path)):
+            copy_file(obj, dst)
 
-        # Local file or dump string
-        if isinstance(src, (str, Path)):
-            copy_file(src, dst)
+        elif isinstance(obj, dict):
+            write_json(obj, dst)
 
-        # Dictionary
-        elif isinstance(src, dict):
-            write_json(src, dst)
-
-        # StringIO/BytesIO buffer
-        elif isinstance(src, (BytesIO, StringIO)):
-            write_object(src, dst)
+        elif isinstance(obj, (BytesIO, StringIO)):
+            write_object(obj, dst)
 
         else:
-            raise RunError("Invalid object type, it could not be persisted.")
+            raise RunError("Invalid object type, it can not be persisted.")
 
-        return str(dst)
+        return dst
 
-    def _get_artifact_name(self, filename: str) -> str:
+    ############################
+    # Helper methods
+    ############################
+
+    def _parse_filename(self, filename: str) -> str:
         """
-        Return a modified filename to avoid overwriting in persistence.
+        Return a modified filename to avoid overwriting in persistence for artifacts and metadata.
+        In the case of run_metadata.json, it will not be modified.
 
         Parameters
         ----------
         filename : str
-            Filename.
+            Filename to be parsed.
 
         Returns
         -------
         str
             Return a modified filename.
         """
+        if filename == "run_metadata.json":
+            return filename
         self._filenames[filename] = self._filenames.get(filename, 0) + 1
         return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
+

@@ -20,10 +20,9 @@ class DummyInputStore(InputStore):
     def __init__(
         self,
         name: str,
-        uri: str,
         store_type: str,
         temp_dir: str,
-        config: dict,
+        config: DummyStoreConfig,
     ) -> None:
         """
         Constructor.
@@ -31,14 +30,9 @@ class DummyInputStore(InputStore):
         super().__init__(name, store_type, temp_dir)
         self.config = config
 
-    def persist_artifact(self, *args) -> None:
-        """
-        Placeholder methods.
-
-        Returns
-        -------
-        None
-        """
+    ############################
+    # Read methods
+    ############################
 
     def fetch_file(self, *args) -> None:
         """

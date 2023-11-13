@@ -103,7 +103,7 @@ class RunMetric(Run):
         """
         for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
             metadata = Blob(*self._get_base_args(), obj.to_dict()).to_dict()
-            self._log_metadata(metadata, "metric")
+            self._log_metadata(metadata, "nefertem_metric.json")
 
     def persist_metric(self) -> None:
         """

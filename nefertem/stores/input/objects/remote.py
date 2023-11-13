@@ -1,10 +1,11 @@
 """
 Implementation of REST artifact store.
 """
+from pathlib import Path
+
 import requests
 
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
-from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import get_name_from_uri
 
 
@@ -42,7 +43,7 @@ class RemoteInputStore(InputStore):
     # Read methods
     ############################
 
-    def fetch_file(self, src: str) -> str:
+    def fetch_file(self, src: str) -> Path:
         """
         Return the path where a resource it is stored.
 
@@ -53,7 +54,7 @@ class RemoteInputStore(InputStore):
 
         Returns
         -------
-        str
+        Path
             The location of the requested file.
         """
         key = f"{src}_file"
@@ -65,7 +66,7 @@ class RemoteInputStore(InputStore):
             raise ValueError("Only csv and parquet files are supported for download.")
 
         self.logger.info(f"Fetching resource {src} from store {self.name}")
-        dst = get_path(self.temp_dir, get_name_from_uri(src))
+        dst = self.temp_dir / get_name_from_uri(src)
         filepath = self._download_file(src, dst)
         self._register_resource(key, filepath)
         return filepath
@@ -112,7 +113,7 @@ class RemoteInputStore(InputStore):
         r = requests.head(src, timeout=60)
         r.raise_for_status()
 
-    def _download_file(self, url: str, dst: str) -> str:
+    def _download_file(self, url: str, dst: str) -> Path:
         """
         Method to download a file from a given url.
 
@@ -125,7 +126,7 @@ class RemoteInputStore(InputStore):
 
         Returns
         -------
-        str
+        Path
             The path of the downloaded file.
         """
         self._check_head(url)
@@ -135,7 +136,7 @@ class RemoteInputStore(InputStore):
             with open(dst, "wb") as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
-        return dst
+        return Path(dst)
 
     def _get_auth(self) -> dict:
         """

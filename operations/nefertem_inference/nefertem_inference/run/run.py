@@ -85,7 +85,7 @@ class RunInference(Run):
         """
         for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
             metadata = Blob(*self._get_base_args(), obj.to_dict()).to_dict()
-            self._log_metadata(metadata, "schema")
+            self._log_metadata(metadata, "nefertem_schema.json")
 
     def persist_schema(self) -> None:
         """

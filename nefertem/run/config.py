@@ -8,6 +8,7 @@ class ExecConfig(BaseModel):
     """
     Generic configuration for run operation.
     """
+
     framework: str
     """Library to use for performing an operation."""
 

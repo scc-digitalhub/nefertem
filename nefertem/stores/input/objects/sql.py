@@ -2,12 +2,12 @@
 Implementation of SQL artifact store.
 """
 import re
+from pathlib import Path
 
 import polars as pl
 
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import get_path
 
 
 class SQLStoreConfig(StoreConfig):
@@ -60,7 +60,7 @@ class SQLInputStore(InputStore):
         """
         raise NotImplementedError("SQL store does not support persistence.")
 
-    def fetch_file(self, src: str) -> str:
+    def fetch_file(self, src: str) -> Path:
         """
         Return the path where a resource it is stored.
 
@@ -81,7 +81,7 @@ class SQLInputStore(InputStore):
 
         self.logger.info(f"Fetching resource {src} from store {self.name}")
         table = self._get_table_name(src)
-        dst = get_path(self.temp_dir, f"{table}.parquet")
+        dst = self.temp_dir / f"{table}.parquet"
         filepath = self._download_table(table, dst)
         self._register_resource(key, filepath)
         return filepath
@@ -172,7 +172,7 @@ class SQLInputStore(InputStore):
         """
         pl.read_database(query, self._get_connection_string(), engine="adbc")
 
-    def _download_table(self, table: str, dst: str) -> str:
+    def _download_table(self, table: str, dst: str) -> Path:
         """
         Download a table from SQL based storage.
 
@@ -185,13 +185,13 @@ class SQLInputStore(InputStore):
 
         Returns
         -------
-        str
-            The destination path.
+        Path
+            The destination of the file on local filesystem.
         """
         self._verify_table(table)
         query = f"select * from {table}"
         self._execute_query(query).write_parquet(dst)
-        return dst
+        return Path(dst)
 
     def _verify_table(self, table: str) -> None:
         """

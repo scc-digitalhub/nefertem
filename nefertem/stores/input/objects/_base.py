@@ -2,10 +2,13 @@
 Abstract class for artifact store.
 """
 from abc import ABCMeta, abstractmethod
+from pathlib import Path
+from typing import Any
 
 from pydantic import BaseModel
 
 from nefertem.utils.logger import LOGGER
+from nefertem.utils.utils import build_uuid
 
 
 class StoreConfig(BaseModel):
@@ -53,7 +56,7 @@ class InputStore(metaclass=ABCMeta):
         """
         self.name = name
         self.store_type = store_type
-        self.temp_dir = temp_dir
+        self.temp_dir = Path(temp_dir) / build_uuid()
 
         # Path registry
         self._cache = {}
@@ -66,13 +69,13 @@ class InputStore(metaclass=ABCMeta):
     ############################
 
     @abstractmethod
-    def fetch_file(self, src: str) -> str:
+    def fetch_file(self, src: str) -> Path:
         """
         Return the temporary path where a resource it is stored.
         """
 
     @abstractmethod
-    def fetch_native(self, src: str) -> str:
+    def fetch_native(self, src: str) -> Any:
         """
         Return a native format path for a resource.
         """
@@ -81,13 +84,13 @@ class InputStore(metaclass=ABCMeta):
     # Cache methods
     ############################
 
-    def _get_resource(self, key: str) -> str | None:
+    def _get_resource(self, key: str) -> Path | None:
         """
         Method to return temporary path of a registered resource.
         """
         return self._cache.get(key)
 
-    def _register_resource(self, key: str, path: str) -> None:
+    def _register_resource(self, key: str, path: Path) -> None:
         """
         Method to register a resource into the path registry.
         """

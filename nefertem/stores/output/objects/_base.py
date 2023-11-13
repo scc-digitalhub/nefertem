@@ -19,9 +19,6 @@ class OutputStore(metaclass=ABCMeta):
 
     def __init__(self, path: str) -> None:
         self.path = path
-        self.run_path = None
-        self.artifact_path = None
-        self.metadata_path = None
 
     ############################
     # Run methods
@@ -34,7 +31,7 @@ class OutputStore(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def get_run_path(self, exp_name: str, run_id: str) -> str:
+    def get_run_path(self) -> str:
         """
         Return run path.
         """
@@ -44,13 +41,13 @@ class OutputStore(metaclass=ABCMeta):
     ############################
 
     @abstractmethod
-    def log_metadata(self, src: str, src_type: str, overwrite: bool) -> None:
+    def log_metadata(self, obj: dict, filename: str) -> None:
         """
         Method to log metadata.
         """
 
     @abstractmethod
-    def persist_artifact(self, src: Any, src_name: str, metadata: dict) -> None:
+    def persist_artifact(self, obj: Any, filename: str) -> None:
         """
         Method to persist an artifact.
         """

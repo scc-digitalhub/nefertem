@@ -1,6 +1,7 @@
 """
 LocalInputStore module.
 """
+from pathlib import Path
 
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 
@@ -28,7 +29,7 @@ class LocalInputStore(InputStore):
     # Read methods
     ############################
 
-    def fetch_file(self, src: str) -> str:
+    def fetch_file(self, src: str) -> Path:
         """
         Return the path where a resource it is stored.
 
@@ -39,12 +40,12 @@ class LocalInputStore(InputStore):
 
         Returns
         -------
-        str
+        Path
             The location of the requested file.
         """
-        return src
+        return Path(src)
 
-    def fetch_native(self, src: str) -> str:
+    def fetch_native(self, src: str) -> Path:
         """
         Return a native format path for a resource.
 
@@ -55,7 +56,7 @@ class LocalInputStore(InputStore):
 
         Returns
         -------
-        str
+        Path
             The location of the requested file.
         """
-        return src
+        return Path(src)

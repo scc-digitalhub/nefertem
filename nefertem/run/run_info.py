@@ -4,6 +4,7 @@ RunInfo module.
 from __future__ import annotations
 
 import typing
+from pathlib import Path
 
 from nefertem.metadata.env import Env
 from nefertem.run.status import RunStatus
@@ -24,7 +25,7 @@ class RunInfo:
         Run id.
     experiment_name : str
         Id of the experiment.
-    run_path : str
+    run_path : Path
         Path where to store run's metadata and artifacts.
     resources : list[DataResource]
         List of input resources.
@@ -36,7 +37,7 @@ class RunInfo:
         self,
         run_id: str,
         experiment_name: str,
-        run_path: str,
+        run_path: Path,
         run_config: RunConfig,
         resources: list[DataResource],
     ) -> None:
@@ -61,7 +62,7 @@ class RunInfo:
 
         # Execution environment
         self.nefertem_version = NEFERTEM_VERSION
-        self.execution_environment = Env().to_dict()
+        self.execution_environment = Env()
 
         # Status
         self.status = RunStatus.CREATED.value
@@ -82,13 +83,13 @@ class RunInfo:
         return {
             "run_id": self.run_id,
             "experiment_name": self.experiment_name,
-            "run_path": self.run_path,
+            "run_path": str(self.run_path),
             "run_config": self.run_config.model_dump(exclude_none=True),
             "run_libraries": self.run_libraries,
             "resources": [i.model_dump(exclude_none=True) for i in self.resources],
-            "output_files": self.output_files,
+            "output_files": [str(i) for i in self.output_files],
             "nefertem_version": self.nefertem_version,
-            "execution_environment": self.execution_environment,
+            "execution_environment": self.execution_environment.to_dict(),
             "status": self.status,
             "started": self.started,
             "finished": self.finished,

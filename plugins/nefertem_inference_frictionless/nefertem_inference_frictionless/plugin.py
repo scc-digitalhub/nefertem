@@ -42,7 +42,7 @@ class InferencePluginFrictionless(InferencePlugin):
         Method that call infer on a resource and return an inferred schema.
         """
         data = self.data_reader.fetch_data(self.resource.path)
-        schema = Schema.describe(path=data, name=self.resource.name, **self.exec_args)
+        schema = Schema.describe(path=str(data), name=self.resource.name, **self.exec_args)
         return Schema(schema.to_dict())
 
     @exec_decorator
