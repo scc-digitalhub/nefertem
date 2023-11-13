@@ -4,70 +4,23 @@ Common IO utils.
 from __future__ import annotations
 
 import json
-import shutil
-from io import BufferedReader, BytesIO, StringIO, TextIOWrapper
+from io import BytesIO, StringIO
 from pathlib import Path
-from typing import IO
-
-
-#  https://stackoverflow.com/questions/55889474/convert-io-stringio-to-io-bytesio
-#  made by foobarna, improved by imporsen
-class BytesIOWrapper(BufferedReader):
-    """
-    Wrap a buffered bytes stream over TextIOBase string stream.
-    """
-
-    def __init__(self, text_io_buffer, encoding=None, errors=None, **kwargs):
-        super().__init__(text_io_buffer, **kwargs)
-        self.encoding = encoding or text_io_buffer.encoding or "utf-8"
-        self.errors = errors or text_io_buffer.errors or "strict"
-
-    def _encoding_call(self, method_name, *args, **kwargs):
-        raw_method = getattr(self.raw, method_name)
-        val = raw_method(*args, **kwargs)
-        return val.encode(self.encoding, errors=self.errors)
-
-    def read(self, size=-1):
-        return self._encoding_call("read", size)
-
-    def read1(self, size=-1):
-        return self._encoding_call("read1", size)
-
-    def peek(self, size=-1):
-        return self._encoding_call("peek", size)
-
-
-def wrap_bytes(src: IO) -> StringIO:
-    """
-    Wrap a BytesIO in a StringIO.
-    """
-    if isinstance(src, BytesIO):
-        return TextIOWrapper(src)
-    return src
-
-
-def wrap_string(src: IO) -> BytesIO:
-    """
-    Wrap a StringIO in a BytesIO.
-    """
-    if isinstance(src, StringIO):
-        return BytesIOWrapper(src)
-    return src
-
-
-def write_stringio(src: str) -> StringIO:
-    """
-    Write string in TextStream StringIO.
-    """
-    stringio = StringIO()
-    stringio.write(src)
-    stringio.seek(0)
-    return stringio
 
 
 def write_bytesio(src: str) -> BytesIO:
     """
     Write string in ByteStream BytesIO.
+
+    Parameters
+    ----------
+    src : str
+        The source string to be wrapped.
+
+    Returns
+    -------
+    BytesIO
+        The wrapped object.
     """
     bytesio = BytesIO()
     bytesio.write(src.encode())
@@ -75,35 +28,59 @@ def write_bytesio(src: str) -> BytesIO:
     return bytesio
 
 
-def write_json(data: dict, path: str | Path) -> None:
+def write_bytes(byt: bytes, path: Path) -> None:
     """
-    Store JSON file.
+    Write bytes on a file.
+
+    Parameters
+    ----------
+    byt : bytes
+        The bytes to be written.
+    path : Path
+        The path to the file.
+
+    Returns
+    -------
+    None
     """
-    with open(path, "w") as file:
-        json.dump(data, file)
+    path.write_bytes(byt)
 
 
-def write_text(string: str, path: str | Path) -> None:
+def write_object(buff: BytesIO | StringIO, path: Path) -> None:
     """
-    Write text on a file.
-    """
-    with open(path, "w") as file:
-        file.write(string)
+    Write a buffer as file.
 
+    Parameters
+    ----------
+    buff : IO
+        The buffer to be written.
+    path : Path
+        The path to the file.
 
-def write_bytes(byt: bytes, path: str | Path) -> None:
-    """
-    Write text on a file.
-    """
-    with open(path, "wb") as file:
-        file.write(byt)
-
-
-def write_object(buff: IO, dst: str) -> None:
-    """
-    Save a buffer as file.
+    Returns
+    -------
+    None
     """
     buff.seek(0)
-    write_mode = "wb" if isinstance(buff, BytesIO) else "w"
-    with open(dst, write_mode) as file:
-        shutil.copyfileobj(buff, file)
+    if isinstance(buff, BytesIO):
+        path.write_bytes(buff.read())
+    else:
+        path.write_text(buff.read(), encoding="utf-8")
+
+
+def write_json(data: dict, path: Path) -> None:
+    """
+    Store JSON file.
+
+    Parameters
+    ----------
+    data : dict
+        The data to be stored.
+    path : Path
+        The path to the file.
+
+    Returns
+    -------
+    None
+    """
+    path.write_text(json.dumps(data, indent=4), encoding="utf-8")

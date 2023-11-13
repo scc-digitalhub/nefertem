@@ -11,7 +11,6 @@ from botocore.exceptions import ClientError
 
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
-from nefertem.utils.uri_utils import get_name_from_uri
 
 # Type aliases
 S3Client = Type["botocore.client.S3"]
@@ -74,7 +73,7 @@ class S3InputStore(InputStore):
             return cached
 
         self.logger.info(f"Fetching resource {src} from store {self.name}")
-        dst = self.temp_dir / get_name_from_uri(src)
+        dst = self.temp_dir / src.split("/")[-1]
         filepath = self._download_file(src, dst)
         self._register_resource(key, filepath)
         return filepath

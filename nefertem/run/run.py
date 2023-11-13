@@ -3,6 +3,7 @@ Run module.
 """
 from __future__ import annotations
 
+import shutil
 import typing
 from pathlib import Path
 from typing import Any
@@ -11,7 +12,6 @@ from nefertem.readers.builder import build_reader
 from nefertem.run.status import RunStatus
 from nefertem.stores.builder import get_all_input_stores, get_input_store, get_output_store
 from nefertem.utils.commons import BASE_FILE_READER
-from nefertem.utils.file_utils import clean_all
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import get_time, listify
 
@@ -138,7 +138,7 @@ class Run:
         for store in get_all_input_stores():
             store.clean_paths()
         try:
-            clean_all(self._tmp_dir)
+            shutil.rmtree(self._tmp_dir)
         except FileNotFoundError:
             pass
 

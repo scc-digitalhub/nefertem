@@ -1,13 +1,13 @@
 """
 Local metadata store module.
 """
+import shutil
 from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
 
 from nefertem.stores.output.objects._base import OutputStore
 from nefertem.utils.exceptions import RunError
-from nefertem.utils.file_utils import clean_all, copy_file
 from nefertem.utils.io_utils import write_json, write_object
 
 
@@ -54,7 +54,7 @@ class LocalOutputStore(OutputStore):
             if not overwrite:
                 raise RunError("Run already exists, please use another id.")
             else:
-                clean_all(self._run_path)
+                shutil.rmtree(self._run_path)
                 self._create_run_directories()
         else:
             self._create_run_directories()
@@ -120,7 +120,7 @@ class LocalOutputStore(OutputStore):
     # Write methods
     ############################
 
-    def log_metadata(self, obj: dict, filename: str) -> Path:
+    def log_metadata(self, obj: dict, filename: str, check_filename: bool = True) -> Path:
         """
         Method that log metadata.
 
@@ -130,6 +130,8 @@ class LocalOutputStore(OutputStore):
             Metadata dictionary to be logged.
         filename: str
             Filename for the metadata.
+        check_filename: bool
+            If True, check if the filename already exists.
 
         Returns
         -------
@@ -140,11 +142,13 @@ class LocalOutputStore(OutputStore):
         if not isinstance(obj, dict):
             raise RunError("Metadata must be a dictionary.")
 
-        dst = self._metadata_path / self._parse_filename(filename)
+        if check_filename:
+            filename = self._parse_filename(filename)
+        dst = self._metadata_path / filename
         write_json(obj, dst)
         return dst
 
-    def persist_artifact(self, obj: Any, filename: str) -> Path:
+    def persist_artifact(self, obj: Any, filename: str, check_filename: bool = True) -> Path:
         """
         Method to persist an artifact.
         The local store supports the following types:
@@ -159,6 +163,8 @@ class LocalOutputStore(OutputStore):
             The source object to be persisted.
         filename: str
             Filename for the artifact.
+        check_filename: bool
+            If True, check if the filename already exists.
 
         Returns
         -------
@@ -170,10 +176,12 @@ class LocalOutputStore(OutputStore):
         RunError
             If the source type is not supported.
         """
-        dst = self._artifact_path / self._parse_filename(filename)
+        if check_filename:
+            filename = self._parse_filename(filename)
+        dst = self._artifact_path / filename
 
         if isinstance(obj, (str, Path)):
-            copy_file(obj, dst)
+            shutil.copy(obj, dst)
 
         elif isinstance(obj, dict):
             write_json(obj, dst)
@@ -193,7 +201,6 @@ class LocalOutputStore(OutputStore):
     def _parse_filename(self, filename: str) -> str:
         """
         Return a modified filename to avoid overwriting in persistence for artifacts and metadata.
-        In the case of run_metadata.json, it will not be modified.
 
         Parameters
         ----------
@@ -205,8 +212,5 @@ class LocalOutputStore(OutputStore):
         str
             Return a modified filename.
         """
-        if filename == "run_metadata.json":
-            return filename
         self._filenames[filename] = self._filenames.get(filename, 0) + 1
         return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"
-

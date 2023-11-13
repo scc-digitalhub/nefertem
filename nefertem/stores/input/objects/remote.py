@@ -2,11 +2,11 @@
 Implementation of REST artifact store.
 """
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 import requests
 
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
-from nefertem.utils.uri_utils import get_name_from_uri
 
 
 class RemoteStoreConfig(StoreConfig):
@@ -62,11 +62,8 @@ class RemoteInputStore(InputStore):
         if cached is not None:
             return cached
 
-        if src.split(".")[-1] not in ["csv", "parquet"]:
-            raise ValueError("Only csv and parquet files are supported for download.")
-
         self.logger.info(f"Fetching resource {src} from store {self.name}")
-        dst = self.temp_dir / get_name_from_uri(src)
+        dst = self.temp_dir / self._get_filename(src)
         filepath = self._download_file(src, dst)
         self._register_resource(key, filepath)
         return filepath
@@ -152,3 +149,28 @@ class RemoteInputStore(InputStore):
         if self.config.auth == "oauth":
             return {"headers": {"Authorization": f"Bearer {self.config.token}"}}
         return {}
+
+    @staticmethod
+    def _get_filename(url: str) -> str:
+        """
+        Get the filename from a url.
+
+        Parameters
+        ----------
+        url : str
+            The url of the file.
+
+        Returns
+        -------
+        str
+            The filename.
+
+        Raises
+        ------
+        ValueError
+            If the file extension is not supported.
+        """
+        filename = Path(unquote(urlparse(url).path)).name
+        if filename.split(".")[-1] not in ["csv", "parquet"]:
+            raise ValueError("Only csv and parquet files are supported for download.")
+        return filename
