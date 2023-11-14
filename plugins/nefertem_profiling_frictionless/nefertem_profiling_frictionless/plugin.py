@@ -10,7 +10,7 @@ from frictionless import Resource
 from nefertem_profiling.metadata.report import NefertemProfile
 from nefertem_profiling.plugins.plugin import ProfilingPlugin
 
-from nefertem.plugins.utils import exec_decorator
+from nefertem.plugins.utils import RenderTuple, exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
@@ -25,6 +25,9 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
     """
 
     def __init__(self) -> None:
+        """
+        Constructor.
+        """
         super().__init__()
         self.resource = None
         self.exec_multiprocess = True
@@ -60,7 +63,7 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
             fields = {f["name"]: {"type": f["type"]} for f in fields}
             stats = {k: v for k, v in rep.items() if k != "schema"}
         else:
-            self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
+            self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             fields = {}
             stats = {}
 
@@ -71,19 +74,22 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
         """
         Return a rendered profile ready to be persisted as artifact.
         """
-        artifacts = []
         if result.artifact is None:
-            _object = {"errors": result.errors}
+            obj = {"errors": result.errors}
         else:
-            _object = write_bytesio(result.artifact.to_json())
+            obj = write_bytesio(result.artifact.to_json())
         filename = self._fn_profile.format("frictionless.json")
-        artifacts.append(self._get_render_tuple(_object, filename))
-        return artifacts
+        return [RenderTuple(obj, filename)]
 
     @staticmethod
     def framework_name() -> str:
         """
         Get library name.
+
+        Returns
+        -------
+        str
+            Library name.
         """
         return frictionless.__name__
 
@@ -91,5 +97,10 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
     def framework_version() -> str:
         """
         Get library version.
+
+        Returns
+        -------
+        str
+            Library version.
         """
         return frictionless.__version__

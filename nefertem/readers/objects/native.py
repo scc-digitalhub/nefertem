@@ -1,6 +1,8 @@
 """
 NativeReader module.
 """
+from typing import Any
+
 from nefertem.readers.objects._base import DataReader
 
 
@@ -14,7 +16,7 @@ class NativeReader(DataReader):
     for remote storages.
     """
 
-    def fetch_data(self, src: str) -> str:
+    def fetch_data(self, src: str) -> Any:
         """
         Fetch resource from backend.
         """

@@ -4,9 +4,10 @@ import evidently
 from evidently.test_suite import TestSuite
 from nefertem_validation.metadata.report import NefertemReport
 from nefertem_validation.plugins.plugin import ValidationPlugin
+from nefertem_validation.plugins.utils import get_errors, parse_error_report
 from nefertem_validation_evidently.constraint import ConstraintEvidently
 
-from nefertem.plugins.utils import Result, exec_decorator
+from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
 from nefertem.readers.objects.file import FileReader
 from nefertem.resources.data_resource import DataResource
 
@@ -17,6 +18,9 @@ class ValidationPluginEvidently(ValidationPlugin):
     """
 
     def __init__(self) -> None:
+        """
+        Constructor.
+        """
         super().__init__()
         self.resource = None
         self.reference_resource = None
@@ -79,17 +83,17 @@ class ValidationPluginEvidently(ValidationPlugin):
         exec_err = result.errors
         duration = result.duration
         constraint = self.constraint.model_dump()
-        errors = self._get_errors()
+        errors = None
 
         if exec_err is None:
             artifact = result.artifact.as_dict()
             valid = artifact["summary"]["all_passed"]
             if not valid:
-                errors_list = list(filter(lambda t: t["status"] != "SUCCESS", artifact["tests"]))
-                parsed_error_list = self._parse_error_report(errors_list)
-                errors = self._get_errors(len(errors_list), parsed_error_list)
+                errors_list = [i for i in artifact["tests"] if i["status"] != "SUCCESS"]
+                parsed_error_list = parse_error_report(errors_list, self.error_report)
+                errors = get_errors(len(errors_list), parsed_error_list)
         else:
-            self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
+            self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             valid = False
 
         return NefertemReport(
@@ -106,19 +110,22 @@ class ValidationPluginEvidently(ValidationPlugin):
         """
         Return an Evidently report to be persisted as artifact.
         """
-        artifacts = []
         if result.artifact is None:
-            _object = {"errors": result.errors}
+            obj = {"errors": result.errors}
         else:
-            _object = result.artifact.as_dict()
+            obj = result.artifact.as_dict()
         filename = self._fn_report.format("evidently.json")
-        artifacts.append(self._get_render_tuple(_object, filename))
-        return artifacts
+        return [RenderTuple(obj, filename)]
 
     @staticmethod
     def framework_name() -> str:
         """
         Get library name.
+
+        Returns
+        -------
+        str
+            Library name.
         """
         return evidently.__name__
 
@@ -126,5 +133,10 @@ class ValidationPluginEvidently(ValidationPlugin):
     def framework_version() -> str:
         """
         Get library version.
+
+        Returns
+        -------
+        str
+            Library version.
         """
         return evidently.__version__

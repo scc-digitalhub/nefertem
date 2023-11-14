@@ -7,8 +7,9 @@ from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
 from nefertem_validation.metadata.report import NefertemReport
 from nefertem_validation.plugins.plugin import ValidationPlugin
+from nefertem_validation.plugins.utils import get_errors, parse_error_report, render_error_type
 
-from nefertem.plugins.utils import Result, exec_decorator
+from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
 
 if typing.TYPE_CHECKING:
     from nefertem_validation_frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
@@ -23,6 +24,9 @@ class ValidationPluginFrictionless(ValidationPlugin):
     """
 
     def __init__(self) -> None:
+        """
+        Constructor.
+        """
         super().__init__()
         self.resource = None
         self.schema = None
@@ -106,18 +110,18 @@ class ValidationPluginFrictionless(ValidationPlugin):
         exec_err = result.errors
         duration = result.duration
         constraint = self.constraint.model_dump()
-        errors = self._get_errors()
+        errors = None
 
         if exec_err is None:
             valid = result.artifact.to_dict().get("valid")
             if not valid:
-                errors_list = [self._render_error_type(err[0]) for err in result.artifact.flatten(spec=["code"])]
+                errors_list = [render_error_type(err[0]) for err in result.artifact.flatten(spec=["code"])]
                 total_count = len(errors_list)
-                parsed_error_list = self._parse_error_report(errors_list)
-                errors = self._get_errors(total_count, parsed_error_list)
+                parsed_error_list = parse_error_report(errors_list, self.error_report)
+                errors = get_errors(total_count, parsed_error_list)
 
         else:
-            self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
+            self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             valid = False
 
         return NefertemReport(
@@ -134,20 +138,22 @@ class ValidationPluginFrictionless(ValidationPlugin):
         """
         Return a rendered report ready to be persisted as artifact.
         """
-        artifacts = []
         if result.artifact is None:
-            _object = {"errors": result.errors}
+            obj = {"errors": result.errors}
         else:
-            _object = result.artifact.to_dict()
-
+            obj = result.artifact.to_dict()
         filename = self._fn_report.format("frictionless.json")
-        artifacts.append(self._get_render_tuple(_object, filename))
-        return artifacts
+        return [RenderTuple(obj, filename)]
 
     @staticmethod
     def framework_name() -> str:
         """
         Get library name.
+
+        Returns
+        -------
+        str
+            Library name.
         """
         return frictionless.__name__
 
@@ -155,5 +161,10 @@ class ValidationPluginFrictionless(ValidationPlugin):
     def framework_version() -> str:
         """
         Get library version.
+
+        Returns
+        -------
+        str
+            Library version.
         """
         return frictionless.__version__

@@ -12,7 +12,7 @@ from nefertem_profiling.plugins.plugin import ProfilingPlugin
 from nefertem_profiling_ydata_profiling.utils import PROFILE_COLUMNS, PROFILE_FIELDS
 from ydata_profiling import ProfileReport
 
-from nefertem.plugins.utils import exec_decorator
+from nefertem.plugins.utils import RenderTuple, exec_decorator
 from nefertem.utils.io_utils import write_bytesio
 
 if typing.TYPE_CHECKING:
@@ -28,6 +28,9 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
     """
 
     def __init__(self) -> None:
+        """
+        Constructor.
+        """
         super().__init__()
         self.resource = None
         self.exec_multiprocess = True
@@ -81,7 +84,7 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
             stats = args.get("table", {})
 
         else:
-            self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
+            self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             fields = {}
             stats = {}
 
@@ -95,20 +98,21 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
         artifacts = []
 
         if result.artifact is None:
-            _object = {"errors": result.errors}
+            obj = {"errors": result.errors}
             filename = self._fn_profile.format("ydata.json")
-            artifacts.append(self._get_render_tuple(_object, filename))
+            artifacts.append(RenderTuple(obj, filename))
         else:
+            # HTML version
             string_html = result.artifact.to_html()
             strio_html = write_bytesio(string_html)
             html_filename = self._fn_profile.format("ydata.html")
-            artifacts.append(self._get_render_tuple(strio_html, html_filename))
+            artifacts.append(RenderTuple(strio_html, html_filename))
 
-            string_json = result.artifact.to_json()
-            string_json = string_json.replace("NaN", "null")
+            # JSON version
+            string_json = result.artifact.to_json().replace("NaN", "null")
             strio_json = write_bytesio(string_json)
             json_filename = self._fn_profile.format("ydata.json")
-            artifacts.append(self._get_render_tuple(strio_json, json_filename))
+            artifacts.append(RenderTuple(strio_json, json_filename))
 
         return artifacts
 
@@ -116,6 +120,11 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
     def framework_name() -> str:
         """
         Get library name.
+
+        Returns
+        -------
+        str
+            Library name.
         """
         return ydata_profiling.__name__
 
@@ -123,5 +132,10 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
     def framework_version() -> str:
         """
         Get library version.
+
+        Returns
+        -------
+        str
+            Library version.
         """
         return ydata_profiling.__version__

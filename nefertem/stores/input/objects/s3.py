@@ -85,7 +85,7 @@ class S3InputStore(InputStore):
         Parameters
         ----------
         src : str
-            A presigned URL.
+            Key of the resource.
 
         Returns
         -------

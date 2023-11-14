@@ -9,8 +9,9 @@ import frictionless
 from frictionless import Schema
 from nefertem_inference.metadata.report import NefertemSchema
 from nefertem_inference.plugins.plugin import InferencePlugin
+from nefertem_inference.plugins.utils import get_fields
 
-from nefertem.plugins.utils import exec_decorator
+from nefertem.plugins.utils import RenderTuple, exec_decorator
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result
@@ -24,6 +25,9 @@ class InferencePluginFrictionless(InferencePlugin):
     """
 
     def __init__(self) -> None:
+        """
+        Constructor.
+        """
         super().__init__()
         self.resource = None
         self.exec_multiprocess = True
@@ -31,6 +35,19 @@ class InferencePluginFrictionless(InferencePlugin):
     def setup(self, data_reader: FileReader, resource: DataResource, exec_args: dict) -> None:
         """
         Set plugin resource.
+
+        Parameters
+        ----------
+        data_reader : FileReader
+            Data reader.
+        resource : DataResource
+            Data resource to be inferred.
+        exec_args : dict
+            Execution arguments for Schema.describe.
+
+        Returns
+        -------
+        None
         """
         self.data_reader = data_reader
         self.resource = resource
@@ -40,6 +57,11 @@ class InferencePluginFrictionless(InferencePlugin):
     def infer(self) -> Schema:
         """
         Method that call infer on a resource and return an inferred schema.
+
+        Returns
+        -------
+        Schema
+            Inferred schema.
         """
         data = self.data_reader.fetch_data(self.resource.path)
         schema = Schema.describe(path=str(data), name=self.resource.name, **self.exec_args)
@@ -48,43 +70,60 @@ class InferencePluginFrictionless(InferencePlugin):
     @exec_decorator
     def render_nefertem(self, result: Result) -> NefertemSchema:
         """
-        Return a NefertemSchema.
-        """
+        Method that call render on a resource and return a NefertemSchema.
 
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        NefertemSchema
+            NefertemSchema.
+        """
         exec_err = result.errors
         duration = result.duration
 
         if exec_err is None:
-            inferred_fields = result.artifact.to_dict().get("fields", [])
-
-            def func(x):
-                return self._get_fields(x.get("name", ""), x.get("type", ""))
-
-            fields = [func(field) for field in inferred_fields]
+            inferred = result.artifact.to_dict().get("fields", [])
+            fields = [get_fields(i.get("name", ""), i.get("type", "")) for i in inferred]
         else:
-            self.logger.error(f"Execution error {str(exec_err)} for plugin {self._id}")
+            self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             fields = []
-
         return NefertemSchema(self.framework_name(), self.framework_version(), duration, fields)
 
     @exec_decorator
     def render_artifact(self, result: Result) -> list[tuple]:
         """
         Return a frictionless schema to be persisted as artifact.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        list[tuple]
+            List of RenderTuple.
         """
-        artifacts = []
         if result.artifact is None:
-            _object = {"errors": result.errors}
+            obj = {"errors": result.errors}
         else:
-            _object = result.artifact.to_dict()
+            obj = result.artifact.to_dict()
         filename = self._fn_schema.format("frictionless.json")
-        artifacts.append(self._get_render_tuple(_object, filename))
-        return artifacts
+        return [RenderTuple(obj, filename)]
 
     @staticmethod
     def framework_name() -> str:
         """
         Get library name.
+
+        Returns
+        -------
+        str
+            Library name.
         """
         return frictionless.__name__
 
@@ -92,5 +131,10 @@ class InferencePluginFrictionless(InferencePlugin):
     def framework_version() -> str:
         """
         Get library version.
+
+        Returns
+        -------
+        str
+            Library version.
         """
         return frictionless.__version__

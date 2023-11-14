@@ -1,8 +1,6 @@
 from abc import abstractmethod
 from typing import Any
 
-from nefertem_metric.plugins.utils import RenderTuple
-
 from nefertem.plugins.plugin import Plugin
 from nefertem.plugins.utils import ResultType
 
@@ -15,6 +13,9 @@ class MetricPlugin(Plugin):
     _fn_metric = "metric_{}"
 
     def __init__(self) -> None:
+        """
+        Constructor.
+        """
         super().__init__()
         self.metric = None
 
@@ -22,7 +23,7 @@ class MetricPlugin(Plugin):
         """
         Method that call specific execution.
         """
-        plugin = f"Plugin: {self.lib_name} {self._id};"
+        plugin = f"Plugin: {self.lib_name} {self.id};"
         self.logger.info(
             f"Execute metric - {plugin}" + (" Metric: {self.metric.name}" if self.metric is not None else "")
         )
@@ -43,22 +44,3 @@ class MetricPlugin(Plugin):
         """
         Generate metrics.
         """
-
-    @staticmethod
-    def _get_render_tuple(obj: Any, filename: str) -> RenderTuple:
-        """
-        Return a RenderTuple.
-
-        Parameters
-        ----------
-        obj : Any
-            Object rendered for persistence.
-        filename : str
-            Filename.
-
-        Returns
-        -------
-        RenderTuple
-            RenderTuple object.
-        """
-        return RenderTuple(obj, filename)

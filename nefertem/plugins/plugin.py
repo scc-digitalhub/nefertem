@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import typing
 from abc import ABCMeta, abstractmethod
+from typing import Any
 
+from nefertem.plugins.utils import RenderTuple
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import build_uuid
 
@@ -19,7 +21,7 @@ class Plugin(metaclass=ABCMeta):
     """
 
     def __init__(self) -> None:
-        self._id = build_uuid()
+        self.id = build_uuid()
         self.lib_name = self.framework_name()
         self.lib_version = self.framework_version()
         self.logger = LOGGER

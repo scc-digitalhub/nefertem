@@ -2,8 +2,11 @@
 Plugin utils module.
 """
 import time
+from collections import namedtuple
 from enum import Enum
 from typing import Any, Callable
+
+RenderTuple = namedtuple("RenderTuple", ("object", "filename"))
 
 
 class ExecutionStatus(Enum):
