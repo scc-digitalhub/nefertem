@@ -1,7 +1,6 @@
 """
 PandasDataFrameReader module.
 """
-from typing import Any
 
 import pandas as pd
 from sqlalchemy import create_engine

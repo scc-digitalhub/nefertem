@@ -15,8 +15,9 @@ from nefertem.utils.utils import build_uuid, flatten_list, listify
 
 if typing.TYPE_CHECKING:
     from nefertem_validation_duckdb.reader import PandasDataFrameDuckDBReader
-    from nefertem.stores.input.objects._base import InputStore
+
     from nefertem.resources.data_resource import DataResource
+    from nefertem.stores.input.objects._base import InputStore
 
 
 PANDAS_READER = "pandas_df_duckdb_reader"

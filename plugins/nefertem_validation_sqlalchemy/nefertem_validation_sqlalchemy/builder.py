@@ -5,7 +5,6 @@ import typing
 from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_sqlalchemy.constraint import ConstraintSqlAlchemy
 from nefertem_validation_sqlalchemy.plugin import ValidationPluginSqlAlchemy
-from pyparsing import C
 
 from nefertem.readers import reader_registry
 from nefertem.readers.builder import build_reader
@@ -66,7 +65,6 @@ class ValidationBuilderSqlAlchemy(ValidationPluginBuilder):
         # Build plugins
         plugins = []
         for i in g_constraint:
-
             # Build reader
             data_reader = build_reader(PANDAS_READER, i["store"])
 

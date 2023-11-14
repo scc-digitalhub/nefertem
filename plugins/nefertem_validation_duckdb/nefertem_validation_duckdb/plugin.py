@@ -83,7 +83,7 @@ class ValidationPluginDuckDB(ValidationPlugin):
         """
         try:
             # Fetch data from db
-            data = self.data_reader.fetch_data(self.db, self.constraint.query)
+            data = self.data_reader.read_duckdb(self.db, self.constraint.query)
 
             # Filter result
             value = self.filter_fnc(data)

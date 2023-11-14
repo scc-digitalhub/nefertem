@@ -4,7 +4,6 @@ SQLAlchemy implementation of validation plugin.
 from __future__ import annotations
 
 import typing
-from typing import Any
 
 import sqlalchemy
 from nefertem_validation.metadata.report import NefertemReport

@@ -1,7 +1,6 @@
 """
 PandasDataFrameDuckDBReader module.
 """
-from typing import Any
 
 import duckdb
 import pandas as pd
@@ -19,38 +18,56 @@ class PandasDataFrameDuckDBReader(DataReader):
     It allows to read a resource as pandas DataFrame.
     """
 
-    def fetch_data(self, src: str, query: str) -> pd.DataFrame:
-        """
-        Fetch resource from backend.
-        """
-        return self._read_df_from_db(src, query)
-
-    @staticmethod
-    def _read_df_from_db(src: str, query: str) -> pd.DataFrame:
-        """
-        Use the pandas to read data from db.
-        """
-        try:
-            conn = duckdb.connect(database=src, read_only=True)
-            conn.execute(query)
-            return conn.fetchdf()
-        except Exception as ex:
-            raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
-
     def fetch_local_data(self, srcs: list[str]) -> pd.DataFrame:
         """
         Fetch resource from backend.
+
+        Parameters
+        ----------
+        srcs : list[str]
+            List of paths to resources.
+
+        Returns
+        -------
+        pd.DataFrame
+            Pandas DataFrame.
         """
         dfs = []
         for src in srcs:
-            path = self.store.fetch_file(src)
-            res = describe_resource(path)
-            dfs.append(self._read_df_from_path(res))
+            dfs.append(self.fetch_data(src))
         return pd.concat(dfs)
+
+    def fetch_data(self, src: str) -> pd.DataFrame:
+        """
+        Fetch resource from backend.
+
+        Parameters
+        ----------
+        src : str
+            Path to resource.
+
+        Returns
+        -------
+        pd.DataFrame
+            Pandas DataFrame.
+        """
+        path = self.store.fetch_file(src)
+        res = describe_resource(path)
+        return self._read_df_from_path(res)
 
     def _read_df_from_path(self, resource: dict) -> pd.DataFrame:
         """
         Read a file into a pandas DataFrame.
+
+        Parameters
+        ----------
+        resource : dict
+            Resource description.
+
+        Returns
+        -------
+        pd.DataFrame
+            Pandas DataFrame.
         """
         paths = listify(resource.get("path"))
         file_format = resource.get("format")
@@ -69,3 +86,32 @@ class PandasDataFrameDuckDBReader(DataReader):
             raise ValueError("File extension not supported!")
 
         return pd.concat(list_df)
+
+
+    def read_duckdb(self, src: str, query: str) -> pd.DataFrame:
+        """
+        Read data from a local duckdb.
+
+        Parameters
+        ----------
+        src : str
+            Source name.
+        query : str
+            Query to execute.
+
+        Returns
+        -------
+        pd.DataFrame
+            Pandas DataFrame.
+
+        Raises
+        ------
+        StoreError
+            If the query fails.
+        """
+        try:
+            conn = duckdb.connect(database=src, read_only=True)
+            conn.execute(query)
+            return conn.fetchdf()
+        except Exception as ex:
+            raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")

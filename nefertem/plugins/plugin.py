@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import typing
 from abc import ABCMeta, abstractmethod
-from typing import Any
 
 from nefertem.plugins.utils import RenderTuple
 from nefertem.utils.logger import LOGGER
