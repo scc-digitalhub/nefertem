@@ -22,8 +22,6 @@ class Plugin(metaclass=ABCMeta):
 
     def __init__(self) -> None:
         self.id = build_uuid()
-        self.lib_name = self.framework_name()
-        self.lib_version = self.framework_version()
         self.logger = LOGGER
 
         self.data_reader = None
@@ -46,15 +44,15 @@ class Plugin(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def render_nefertem(self, obj: Result) -> Result:
+    def render_nefertem(self, obj: Result) -> RenderTuple:
         """
-        Produce nefertem output.
+        Return a NefertemProfile object ready to be persisted as metadata.
         """
 
     @abstractmethod
-    def render_artifact(self, obj: Result) -> Result:
+    def render_artifact(self, obj: Result) -> list[RenderTuple]:
         """
-        Render an artifact to be persisted.
+        Return an object ready to be persisted as artifact.
         """
 
     @staticmethod

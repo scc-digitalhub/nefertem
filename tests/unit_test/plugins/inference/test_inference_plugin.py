@@ -23,11 +23,11 @@ class SamplePlugin(Inference):
         return obj  # dummy implementation for testing
 
     @staticmethod
-    def get_lib_name() -> str:
+    def get_framework_name() -> str:
         return "SamplePlugin"
 
     @staticmethod
-    def get_lib_version() -> str:
+    def get_framework_version() -> str:
         return "1.0"
 
 

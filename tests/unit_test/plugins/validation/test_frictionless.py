@@ -66,11 +66,11 @@ class TestValidationPluginFrictionless:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == frictionless.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == frictionless.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == frictionless.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == frictionless.__version__
 
     def test_rebuild_constraints(self, setted_plugin):
         # Correct execution

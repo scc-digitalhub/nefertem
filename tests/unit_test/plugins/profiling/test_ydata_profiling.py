@@ -68,11 +68,11 @@ class TestProfilePluginYdataProfiling:
         assert output.artifact[0].filename == filename1
         assert output.artifact[0].filename != filename2
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == ydata_profiling.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == ydata_profiling.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == ydata_profiling.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == ydata_profiling.__version__
 
 
 class TestProfileBuilderYdataProfiling:

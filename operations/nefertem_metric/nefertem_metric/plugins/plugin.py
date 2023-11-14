@@ -23,7 +23,7 @@ class MetricPlugin(Plugin):
         """
         Method that call specific execution.
         """
-        plugin = f"Plugin: {self.lib_name} {self.id};"
+        plugin = f"Plugin: {self.framework_name()} {self.id};"
         self.logger.info(
             f"Execute metric - {plugin}" + (" Metric: {self.metric.name}" if self.metric is not None else "")
         )

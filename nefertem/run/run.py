@@ -79,9 +79,9 @@ class Run:
         None
         """
         metadata = self.run_info.to_dict()
-        self._log_metadata(metadata, "run_metadata.json", check_filename=False)
+        self._log_metadata(metadata, "run_metadata.json")
 
-    def _log_metadata(self, obj: dict, filename: str, check_filename: bool = True) -> None:
+    def _log_metadata(self, obj: dict, filename: str) -> None:
         """
         Log metadata dictionary.
 
@@ -91,18 +91,16 @@ class Run:
             Metadata dictionary.
         filename : str
             Metadata filename.
-        check_filename : bool, optional
-            Flag for store to overwriting avoidance.
 
         Returns
         -------
         None
         """
-        pth = get_output_store().log_metadata(obj, filename, check_filename)
+        pth = get_output_store().log_metadata(obj, filename)
         if pth not in self.run_info.output_files:
             self.run_info.output_files.append(pth)
 
-    def _persist_artifact(self, obj: Any, filename: str, check_filename: bool = True) -> None:
+    def _persist_artifact(self, obj: Any, filename: str) -> None:
         """
         Persist artifact in the output store.
 
@@ -112,14 +110,12 @@ class Run:
             Artifact to persist.
         filename : str
             Artifact filename.
-        check_filename : bool, optional
-            Flag for store to overwriting avoidance.
 
         Returns
         -------
         None
         """
-        pth = get_output_store().persist_artifact(obj, filename, check_filename)
+        pth = get_output_store().persist_artifact(obj, filename)
         if pth not in self.run_info.output_files:
             self.run_info.output_files.append(pth)
 
@@ -140,7 +136,7 @@ class Run:
             data_reader = build_reader(FILE_READER, store)
             for path in listify(res.path):
                 tmp = Path(data_reader.fetch_data(path))
-                self._persist_artifact(tmp, tmp.name, check_filename=False)
+                self._persist_artifact(tmp, tmp.name)
 
     def _clean_all(self) -> None:
         """

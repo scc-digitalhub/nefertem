@@ -72,11 +72,11 @@ class TestValidationPluginSqlAlchemy:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == sqlalchemy.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == sqlalchemy.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == sqlalchemy.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == sqlalchemy.__version__
 
 
 class TestValidationBuilderSqlAlchemy:

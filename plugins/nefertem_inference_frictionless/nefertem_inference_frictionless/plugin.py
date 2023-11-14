@@ -21,7 +21,23 @@ if typing.TYPE_CHECKING:
 
 class InferencePluginFrictionless(InferencePlugin):
     """
-    Frictionless implementation of inference plugin.
+    Frictionless implementation of inference plugin. It supports multiprocess execution.
+
+    Attributes
+    ----------
+    resource : DataResource
+        Resource to be inferred.
+
+    Methods
+    -------
+    setup
+        Setup plugin.
+    infer
+        Method that call infer on a resource and return an inferred schema.
+    render_nefertem
+        Method that call render on a resource and return a NefertemSchema.
+    render_artifact
+        Return a frictionless schema to be persisted as artifact.
     """
 
     def __init__(self) -> None:
@@ -34,7 +50,7 @@ class InferencePluginFrictionless(InferencePlugin):
 
     def setup(self, data_reader: FileReader, resource: DataResource, exec_args: dict) -> None:
         """
-        Set plugin resource.
+        Setup plugin.
 
         Parameters
         ----------
@@ -56,7 +72,7 @@ class InferencePluginFrictionless(InferencePlugin):
     @exec_decorator
     def infer(self) -> Schema:
         """
-        Method that call infer on a resource and return an inferred schema.
+        Generate a frictionless schema.
 
         Returns
         -------
@@ -68,9 +84,9 @@ class InferencePluginFrictionless(InferencePlugin):
         return Schema(schema.to_dict())
 
     @exec_decorator
-    def render_nefertem(self, result: Result) -> NefertemSchema:
+    def render_nefertem(self, result: Result) -> RenderTuple:
         """
-        Method that call render on a resource and return a NefertemSchema.
+        Return a NefertemSchema ready to be persisted as metadata.
 
         Parameters
         ----------
@@ -79,24 +95,31 @@ class InferencePluginFrictionless(InferencePlugin):
 
         Returns
         -------
-        NefertemSchema
-            NefertemSchema.
+        RenderTuple
+            Rendered object.
         """
         exec_err = result.errors
         duration = result.duration
 
         if exec_err is None:
             inferred = result.artifact.to_dict().get("fields", [])
-            fields = [get_fields(i.get("name", ""), i.get("type", "")) for i in inferred]
+            fields = [get_fields(i.get("name"), i.get("type")) for i in inferred]
         else:
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             fields = []
-        return NefertemSchema(self.framework_name(), self.framework_version(), duration, fields)
+
+        obj = NefertemSchema(
+            **self.get_framework(),
+            duration=duration,
+            fields=fields,
+        )
+        filename = f"nefertem_schema_{self.id}.json"
+        return RenderTuple(obj, filename)
 
     @exec_decorator
-    def render_artifact(self, result: Result) -> list[tuple]:
+    def render_artifact(self, result: Result) -> list[RenderTuple]:
         """
-        Return a frictionless schema to be persisted as artifact.
+        Return a frictionless schema ready to be persisted as artifact.
 
         Parameters
         ----------
@@ -112,7 +135,7 @@ class InferencePluginFrictionless(InferencePlugin):
             obj = {"errors": result.errors}
         else:
             obj = result.artifact.to_dict()
-        filename = self._fn_schema.format("frictionless.json")
+        filename = f"frictionless_schema_{self.id}.json"
         return [RenderTuple(obj, filename)]
 
     @staticmethod

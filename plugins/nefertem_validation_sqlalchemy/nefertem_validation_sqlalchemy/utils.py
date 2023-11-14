@@ -1,10 +1,11 @@
 """
 SQL checks module.
 """
-from __future__ import annotations
-
 import re
 from typing import Any
+
+import pandas as pd
+from frictionless import Detector, Resource
 
 
 def evaluate_validity(result: Any, expect: str, value: Any) -> tuple:
@@ -120,7 +121,7 @@ class ValidationReport:
 
     def __init__(
         self,
-        result: Any,
+        result: dict,
         valid: bool,
         error: list,
     ) -> None:
@@ -130,3 +131,43 @@ class ValidationReport:
 
     def to_dict(self):
         return {"result": self.result, "valid": self.valid, "error": self.error}
+
+
+def describe_resource(pth: str) -> dict:
+    """
+    Describe a resource using frictionless.
+
+    With bigger buffer/sample we should avoid error encoding detection.
+
+    Parameters
+    ----------
+    pth: str
+        Path to resource.
+
+    Returns
+    -------
+    dict
+        Resource description.
+    """
+    return Resource.describe(source=pth, detector=Detector(buffer_size=20000, sample_size=1250)).to_dict()
+
+
+def return_head(df: pd.DataFrame) -> dict:
+    """
+    Return head(100) of DataFrame as dict.
+    """
+    return df.head(100).to_dict()
+
+
+def return_first_value(df: pd.DataFrame) -> Any:
+    """
+    Return first value of DataFrame.
+    """
+    return df.iloc[0, 0]
+
+
+def return_length(df: pd.DataFrame) -> int:
+    """
+    Return length of DataFrame.
+    """
+    return df.shape[0]

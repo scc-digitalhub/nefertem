@@ -34,7 +34,20 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
 
     def setup(self, data_reader: FileReader, resource: DataResource, exec_args: dict) -> None:
         """
-        Set plugin resource.
+        Setup plugin.
+
+        Parameters
+        ----------
+        data_reader : FileReader
+            Data reader.
+        resource : DataResource
+            Data resource to be profiled.
+        exec_args : dict
+            Execution arguments for Resource.describe.
+
+        Returns
+        -------
+        None
         """
         self.data_reader = data_reader
         self.resource = resource
@@ -43,16 +56,30 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
     @exec_decorator
     def profile(self) -> Resource:
         """
-        Profile
+        Generate a frictionless profile.
+
+        Returns
+        -------
+        Resource
         """
         data = self.data_reader.fetch_data(self.resource.path)
         profile = Resource().describe(str(data), stats=True, **self.exec_args)
         return Resource(profile.to_dict())
 
     @exec_decorator
-    def render_nefertem(self, result: Result) -> NefertemProfile:
+    def render_nefertem(self, result: Result) -> RenderTuple:
         """
-        Return a NefertemProfile.
+        Return a nefertem profile ready to be persisted as metadata.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        RenderTuple
+            Rendered object.
         """
         exec_err = result.errors
         duration = result.duration
@@ -67,18 +94,35 @@ class ProfilingPluginFrictionless(ProfilingPlugin):
             fields = {}
             stats = {}
 
-        return NefertemProfile(self.framework_name(), self.framework_version(), duration, stats, fields)
+        obj = NefertemProfile(
+            **self.get_framework(),
+            duration=duration,
+            stats=stats,
+            fields=fields,
+        )
+        filename = f"nefertem_profile_{self.id}.json"
+        return RenderTuple(obj, filename)
 
     @exec_decorator
-    def render_artifact(self, result: Result) -> list[tuple]:
+    def render_artifact(self, result: Result) -> list[RenderTuple]:
         """
-        Return a rendered profile ready to be persisted as artifact.
+        Return a frictionless profile ready to be persisted as artifact.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        list[tuple]
+            List of RenderTuple.
         """
         if result.artifact is None:
             obj = {"errors": result.errors}
         else:
             obj = write_bytesio(result.artifact.to_json())
-        filename = self._fn_profile.format("frictionless.json")
+        filename = f"frictionless_profile_{self.id}.json"
         return [RenderTuple(obj, filename)]
 
     @staticmethod

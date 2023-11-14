@@ -19,4 +19,8 @@ def get_fields(name: str = None, type_: str = None) -> dict:
     dict
         Field structure.
     """
+    if name is None:
+        name = "unknown"
+    if type_ is None:
+        type_ = "unknown"
     return {"name": name, "type": type_}

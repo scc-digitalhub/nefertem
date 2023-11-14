@@ -29,11 +29,11 @@ class TestValidationPluginDummy:
         assert isinstance(output.artifact[0].object, dict)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == DUMMY
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == DUMMY
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == DUMMY
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == DUMMY
 
 
 class TestValidationBuilderDummy:

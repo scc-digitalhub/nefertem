@@ -14,7 +14,7 @@ class ConstraintFrictionless(Constraint):
     field: str
     """Field to validate."""
 
-    fieldType: str
+    field_type: str
     """Datatype of the field to validate."""
 
     constraint: str

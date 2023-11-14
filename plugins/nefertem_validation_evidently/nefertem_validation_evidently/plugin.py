@@ -76,7 +76,7 @@ class ValidationPluginEvidently(ValidationPlugin):
         return res
 
     @exec_decorator
-    def render_nefertem(self, result: Result) -> NefertemReport:
+    def render_nefertem(self, result: Result) -> RenderTuple:
         """
         Return a NefertemReport.
         """
@@ -106,7 +106,7 @@ class ValidationPluginEvidently(ValidationPlugin):
         )
 
     @exec_decorator
-    def render_artifact(self, result: Result) -> list[tuple]:
+    def render_artifact(self, result: Result) -> list[RenderTuple]:
         """
         Return an Evidently report to be persisted as artifact.
         """

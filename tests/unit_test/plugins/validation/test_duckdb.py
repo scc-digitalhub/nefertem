@@ -73,11 +73,11 @@ class TestValidationPluginDuckDB:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == duckdb.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == duckdb.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == duckdb.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == duckdb.__version__
 
 
 class TestValidationBuilderDuckDB:

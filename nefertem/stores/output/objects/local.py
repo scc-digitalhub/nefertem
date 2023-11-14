@@ -27,7 +27,6 @@ class LocalOutputStore(OutputStore):
         self._run_path = None
         self._artifact_path = None
         self._metadata_path = None
-        self._filenames = {}
 
     ############################
     # Run methods
@@ -120,7 +119,7 @@ class LocalOutputStore(OutputStore):
     # Write methods
     ############################
 
-    def log_metadata(self, obj: dict, filename: str, check_filename: bool = True) -> Path:
+    def log_metadata(self, obj: dict, filename: str) -> Path:
         """
         Method that log metadata.
 
@@ -130,8 +129,6 @@ class LocalOutputStore(OutputStore):
             Metadata dictionary to be logged.
         filename: str
             Filename for the metadata.
-        check_filename: bool
-            If True, check if the filename already exists.
 
         Returns
         -------
@@ -141,14 +138,11 @@ class LocalOutputStore(OutputStore):
 
         if not isinstance(obj, dict):
             raise RunError("Metadata must be a dictionary.")
-
-        if check_filename:
-            filename = self._parse_filename(filename)
         dst = self._metadata_path / filename
         write_json(obj, dst)
         return dst
 
-    def persist_artifact(self, obj: Any, filename: str, check_filename: bool = True) -> Path:
+    def persist_artifact(self, obj: Any, filename: str) -> Path:
         """
         Method to persist an artifact.
         The local store supports the following types:
@@ -163,8 +157,6 @@ class LocalOutputStore(OutputStore):
             The source object to be persisted.
         filename: str
             Filename for the artifact.
-        check_filename: bool
-            If True, check if the filename already exists.
 
         Returns
         -------
@@ -176,8 +168,6 @@ class LocalOutputStore(OutputStore):
         RunError
             If the source type is not supported.
         """
-        if check_filename:
-            filename = self._parse_filename(filename)
         dst = self._artifact_path / filename
 
         if isinstance(obj, (str, Path)):
@@ -193,24 +183,3 @@ class LocalOutputStore(OutputStore):
             raise RunError("Invalid object type, it can not be persisted.")
 
         return dst
-
-    ############################
-    # Helper methods
-    ############################
-
-    def _parse_filename(self, filename: str) -> str:
-        """
-        Return a modified filename to avoid overwriting in persistence for artifacts and metadata.
-
-        Parameters
-        ----------
-        filename : str
-            Filename to be parsed.
-
-        Returns
-        -------
-        str
-            Return a modified filename.
-        """
-        self._filenames[filename] = self._filenames.get(filename, 0) + 1
-        return f"{Path(filename).stem}_{self._filenames[filename]}{Path(filename).suffix}"

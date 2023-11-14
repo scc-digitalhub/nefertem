@@ -46,24 +46,3 @@ class PandasDataFrameSQLReader(DataReader):
             raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
         finally:
             engine.dispose()
-
-    @staticmethod
-    def return_head(df: pd.DataFrame) -> dict:
-        """
-        Return head(100) of DataFrame as dict.
-        """
-        return df.head(100).to_dict()
-
-    @staticmethod
-    def return_first_value(df: pd.DataFrame) -> Any:
-        """
-        Return first value of DataFrame.
-        """
-        return df.iloc[0, 0]
-
-    @staticmethod
-    def return_length(df: pd.DataFrame) -> int:
-        """
-        Return length of DataFrame.
-        """
-        return df.shape[0]

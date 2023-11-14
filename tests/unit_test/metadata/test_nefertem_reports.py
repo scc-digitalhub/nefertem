@@ -8,8 +8,8 @@ class TestNefertemReports:
     def test_profile(self):
         data = NefertemProfile("test", "test", 1.0, {}, {})
         expected_data = {
-            "lib_name": "test",
-            "lib_version": "test",
+            "framework_name": "test",
+            "framework_version": "test",
             "duration": 1.0,
             "stats": {},
             "fields": {},
@@ -21,8 +21,8 @@ class TestNefertemReports:
     def test_report(self):
         data = NefertemReport("test", "test", 1.0, {}, True, {})
         expected_data = {
-            "lib_name": "test",
-            "lib_version": "test",
+            "framework_name": "test",
+            "framework_version": "test",
             "duration": 1.0,
             "constraint": {},
             "valid": True,
@@ -33,8 +33,8 @@ class TestNefertemReports:
     def test_schema(self):
         data = NefertemSchema("test", "test", 1.0, [])
         expected_data = {
-            "lib_name": "test",
-            "lib_version": "test",
+            "framework_name": "test",
+            "framework_version": "test",
             "duration": 1.0,
             "fields": [],
         }

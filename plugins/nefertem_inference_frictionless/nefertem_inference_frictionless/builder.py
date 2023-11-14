@@ -23,14 +23,26 @@ class InferenceBuilderFrictionless(InferencePluginBuilder):
 
     def build(self, resources: list[DataResource]) -> list[InferencePluginFrictionless]:
         """
-        Build a plugin.
+        Build a plugin for each resource.
+
+        Parameters
+        ----------
+        resources : list[DataResource]
+            List of resources.
+
+        Returns
+        -------
+        list[InferencePluginFrictionless]
+            List of plugins.
         """
         plugins = []
         for res in resources:
-            resource = deepcopy(res)
-            store = self.stores[resource.store]
-            data_reader = build_reader(FILE_READER, store)
+            # Get data reader for the resource
+            data_reader = build_reader(FILE_READER, self.stores[res.store])
+
+            # Build and setup plugin with a copy of the resource to avoid
+            # resource modification
             plugin = InferencePluginFrictionless()
-            plugin.setup(data_reader, resource, self.exec_args)
+            plugin.setup(data_reader, deepcopy(res), self.exec_args)
             plugins.append(plugin)
         return plugins

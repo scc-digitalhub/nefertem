@@ -112,13 +112,13 @@ def test_plugin_get_render_tuple():
     assert render_tuple[1] == filename_mock
 
 
-def test_plugin_get_lib_name():
+def test_plugin_get_framework_name():
     name = SamplePlugin.framework_name()
     assert isinstance(name, str)
     assert name == "SamplePlugin"
 
 
-def test_plugin_get_lib_version():
+def test_plugin_get_framework_version():
     version = SamplePlugin.framework_version()
     assert isinstance(version, str)
     assert version == "1.0"

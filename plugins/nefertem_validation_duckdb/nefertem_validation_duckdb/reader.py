@@ -37,34 +37,16 @@ class PandasDataFrameDuckDBReader(DataReader):
         except Exception as ex:
             raise StoreError(f"Unable to read data from query: {query}. Arguments: {str(ex.args)}")
 
-    @staticmethod
-    def return_head(df: pd.DataFrame) -> dict:
-        """
-        Return head(100) of DataFrame as dict.
-        """
-        return df.head(100).to_dict()
-
-    @staticmethod
-    def return_first_value(df: pd.DataFrame) -> Any:
-        """
-        Return first value of DataFrame.
-        """
-        return df.iloc[0, 0]
-
-    @staticmethod
-    def return_length(df: pd.DataFrame) -> int:
-        """
-        Return length of DataFrame.
-        """
-        return df.shape[0]
-
-    def fetch_local_data(self, src: str) -> pd.DataFrame:
+    def fetch_local_data(self, srcs: list[str]) -> pd.DataFrame:
         """
         Fetch resource from backend.
         """
-        path = self.store.fetch_file(src)
-        res = describe_resource(path)
-        return self._read_df_from_path(res)
+        dfs = []
+        for src in srcs:
+            path = self.store.fetch_file(src)
+            res = describe_resource(path)
+            dfs.append(self._read_df_from_path(res))
+        return pd.concat(dfs)
 
     def _read_df_from_path(self, resource: dict) -> pd.DataFrame:
         """

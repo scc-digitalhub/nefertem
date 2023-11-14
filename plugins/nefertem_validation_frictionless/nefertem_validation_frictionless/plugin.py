@@ -41,7 +41,20 @@ class ValidationPluginFrictionless(ValidationPlugin):
         exec_args: dict,
     ) -> None:
         """
-        Set plugin resource.
+        Setup plugin.
+
+        Parameters
+        ----------
+        data_reader : FileReader
+            Data reader.
+        resource : DataResource
+            Data resource.
+        constraint : ConstraintFrictionless | ConstraintFullFrictionless
+            Constraint to validate resource.
+        error_report : str
+            Error report modality.
+        exec_args : dict
+            Execution arguments for Resource.validate method.
         """
         self.data_reader = data_reader
         self.resource = resource
@@ -52,7 +65,12 @@ class ValidationPluginFrictionless(ValidationPlugin):
     @exec_decorator
     def validate(self) -> Report:
         """
-        Validate a Data Resource.
+        Get frictionless validation report.
+
+        Returns
+        -------
+        Report
+            Validation report.
         """
         data = self.data_reader.fetch_data(self.resource.path)
         schema = self._rebuild_constraints(str(data))
@@ -61,38 +79,64 @@ class ValidationPluginFrictionless(ValidationPlugin):
 
     def _rebuild_constraints(self, data_path: str) -> Schema:
         """
-        Rebuild constraints.
+        Rebuild constraints. Add constraints to a simplified schema or
+        return the full table schema.
+
+        Parameters
+        ----------
+        data_path : str
+            Data path.
+
+        Returns
+        -------
+        Schema
+            Schema with constraints.
         """
-        if self.constraint.type == "frictionless":
-            field_name = self.constraint.field
-            field_type = self.constraint.fieldType
-            val = self.constraint.value
-            con_type = self.constraint.constraint
-            weight = self.constraint.weight
+        # Return the full table schema
+        if self.constraint.type != "frictionless":
+            return Schema(self.constraint.table_schema)
 
-            schema = self._get_schema(data_path)
+        # Otherwise, add constraints to a simplified schema
 
-            for field in schema["fields"]:
-                if field["name"] == field_name:
-                    field["error"] = {"weight": weight}
-                    if con_type == "type":
-                        field["type"] = field_type
-                    elif con_type == "format":
-                        field["type"] = field_type
-                        field["format"] = val
-                    else:
-                        field["type"] = field_type
-                        field["constraints"] = {con_type: val}
-                    break
-            return Schema(schema)
+        # Get constraint parameters
+        field_name = self.constraint.field
+        field_type = self.constraint.field_type
+        value = self.constraint.value
+        const_type = self.constraint.constraint
+        weight = self.constraint.weight
 
-        # Otherwise return the full table schema
-        return Schema(self.constraint.table_schema)
+        # Get inferred schema from data
+        schema = self._get_schema(data_path)
+
+        # Reconstruction logic
+        for field in schema["fields"]:
+            if field["name"] == field_name:
+                field["error"] = {"weight": weight}
+                if const_type == "type":
+                    field["type"] = field_type
+                elif const_type == "format":
+                    field["type"] = field_type
+                    field["format"] = value
+                else:
+                    field["type"] = field_type
+                    field["constraints"] = {const_type: value}
+                break
+        return Schema(schema)
 
     @staticmethod
     def _get_schema(data_path: str) -> dict:
         """
         Infer simple schema of a resource if not present.
+
+        Parameters
+        ----------
+        data_path : str
+            Data path.
+
+        Returns
+        -------
+        dict
+            Schema.
         """
         try:
             schema = Schema.describe(path=data_path).to_dict()
@@ -103,9 +147,19 @@ class ValidationPluginFrictionless(ValidationPlugin):
             raise fex
 
     @exec_decorator
-    def render_nefertem(self, result: Result) -> NefertemReport:
+    def render_nefertem(self, result: Result) -> RenderTuple:
         """
-        Return a NefertemReport.
+        Return a NefertemReport ready to be persisted as metadata.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        RenderTuple
+            Rendered object.
         """
         exec_err = result.errors
         duration = result.duration
@@ -124,25 +178,36 @@ class ValidationPluginFrictionless(ValidationPlugin):
             self.logger.error(f"Execution error {str(exec_err)} for plugin {self.id}")
             valid = False
 
-        return NefertemReport(
-            self.framework_name(),
-            self.framework_version(),
-            duration,
-            constraint,
-            valid,
-            errors,
+        obj = NefertemReport(
+            **self.get_framework(),
+            duration=duration,
+            constraint=constraint,
+            valid=valid,
+            errors=errors,
         )
+        filename = f"nefertem_report_{self.id}.json"
+        return RenderTuple(obj, filename)
 
     @exec_decorator
-    def render_artifact(self, result: Result) -> list[tuple]:
+    def render_artifact(self, result: Result) -> list[RenderTuple]:
         """
         Return a rendered report ready to be persisted as artifact.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        list[RenderTuple]
+            Rendered object.
         """
         if result.artifact is None:
             obj = {"errors": result.errors}
         else:
             obj = result.artifact.to_dict()
-        filename = self._fn_report.format("frictionless.json")
+        filename = f"frictionless_report_{self.id}.json"
         return [RenderTuple(obj, filename)]
 
     @staticmethod

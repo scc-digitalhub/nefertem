@@ -13,8 +13,6 @@ class InferencePlugin(Plugin):
     Run plugin that executes inference over a Resource.
     """
 
-    _fn_schema = "schema_{}"
-
     def execute(self) -> dict:
         """
         Method that call specific execution.
@@ -24,7 +22,7 @@ class InferencePlugin(Plugin):
         dict
             Results of execution.
         """
-        plugin = f"Plugin: {self.lib_name} {self.id};"
+        plugin = f"Plugin: {self.framework_name()} {self.id};"
         self.logger.info(f"Execute inference - {plugin}")
         lib_result = self.infer()
         self.logger.info(f"Render report - {plugin}")

@@ -4,6 +4,7 @@ SQL checks module.
 import re
 from typing import Any
 
+import pandas as pd
 from frictionless import Detector, Resource
 
 
@@ -120,7 +121,7 @@ class ValidationReport:
 
     def __init__(
         self,
-        result: Any,
+        result: dict,
         valid: bool,
         error: list,
     ) -> None:
@@ -149,3 +150,24 @@ def describe_resource(pth: str) -> dict:
         Resource description.
     """
     return Resource.describe(source=pth, detector=Detector(buffer_size=20000, sample_size=1250)).to_dict()
+
+
+def return_head(df: pd.DataFrame) -> dict:
+    """
+    Return head(100) of DataFrame as dict.
+    """
+    return df.head(100).to_dict()
+
+
+def return_first_value(df: pd.DataFrame) -> Any:
+    """
+    Return first value of DataFrame.
+    """
+    return df.iloc[0, 0]
+
+
+def return_length(df: pd.DataFrame) -> int:
+    """
+    Return length of DataFrame.
+    """
+    return df.shape[0]

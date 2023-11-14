@@ -18,8 +18,8 @@ class NefertemReport(NefertemBaseReport):
 
     def __init__(
         self,
-        lib_name: str,
-        lib_version: str,
+        framework_name: str,
+        framework_version: str,
         duration: float,
         constraint: dict,
         valid: bool,
@@ -28,7 +28,7 @@ class NefertemReport(NefertemBaseReport):
         """
         Constructor.
         """
-        super().__init__(lib_name, lib_version, duration)
+        super().__init__(framework_name, framework_version, duration)
         self.constraint = constraint
         self.valid = valid
         self.errors = errors

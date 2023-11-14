@@ -42,7 +42,20 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
         exec_args: dict,
     ) -> None:
         """
-        Set plugin resource.
+        Setup plugin.
+
+        Parameters
+        ----------
+        data_reader : PandasDataFrameFileReader
+            Data reader.
+        resource : DataResource
+            Data resource to be profiled.
+        exec_args : dict
+            Execution arguments for ProfileReport.
+
+        Returns
+        -------
+        None
         """
         self.data_reader = data_reader
         self.resource = resource
@@ -52,15 +65,30 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
     def profile(self) -> ProfileReport:
         """
         Generate ydata_profiling profile.
+
+        Returns
+        -------
+        ProfileReport
+            ProfileReport object.
         """
         data = self.data_reader.fetch_data(self.resource.path)
         profile = ProfileReport(data, lazy=False, **self.exec_args)
         return ProfileReport().loads(profile.dumps())
 
     @exec_decorator
-    def render_nefertem(self, result: Result) -> NefertemProfile:
+    def render_nefertem(self, result: Result) -> RenderTuple:
         """
-        Return a NefertemProfile.
+        Return a NefertemProfile ready to be persisted as metadata.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        RenderTuple
+            Rendered object.
         """
         exec_err = result.errors
         duration = result.duration
@@ -88,30 +116,47 @@ class ProfilingPluginYdataProfiling(ProfilingPlugin):
             fields = {}
             stats = {}
 
-        return NefertemProfile(self.framework_name(), self.framework_version(), duration, stats, fields)
+        obj = NefertemProfile(
+            **self.get_framework(),
+            duration=duration,
+            stats=stats,
+            fields=fields,
+        )
+        filaname = f"nefertem_profile_{self.id}.json"
+        return RenderTuple(obj, filaname)
 
     @exec_decorator
-    def render_artifact(self, result: Result) -> list[tuple]:
+    def render_artifact(self, result: Result) -> list[RenderTuple]:
         """
         Return a rendered profile ready to be persisted as artifact.
+
+        Parameters
+        ----------
+        result : Result
+            Execution result.
+
+        Returns
+        -------
+        list[tuple]
+            List of RenderTuple.
         """
         artifacts = []
 
         if result.artifact is None:
             obj = {"errors": result.errors}
-            filename = self._fn_profile.format("ydata.json")
+            filename = f"ydata_profile_{self.id}.json"
             artifacts.append(RenderTuple(obj, filename))
         else:
             # HTML version
             string_html = result.artifact.to_html()
             strio_html = write_bytesio(string_html)
-            html_filename = self._fn_profile.format("ydata.html")
+            html_filename = f"ydata_profile_{self.id}.html"
             artifacts.append(RenderTuple(strio_html, html_filename))
 
             # JSON version
             string_json = result.artifact.to_json().replace("NaN", "null")
             strio_json = write_bytesio(string_json)
-            json_filename = self._fn_profile.format("ydata.json")
+            json_filename = f"ydata_profile_{self.id}.json"
             artifacts.append(RenderTuple(strio_json, json_filename))
 
         return artifacts

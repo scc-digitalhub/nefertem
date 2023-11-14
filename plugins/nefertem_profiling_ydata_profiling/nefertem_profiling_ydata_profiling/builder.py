@@ -22,19 +22,36 @@ class ProfilingBuilderYdataProfiling(ProfilingPluginBuilder):
     """
 
     def __init__(self, stores: dict[str, str], exec_args: dict) -> None:
+        """
+        Constructor.
+        """
         super().__init__(stores, exec_args)
+
+        # Register new reader in the reader registry
         reader_registry.register(DF_READER, "nefertem_profiling_ydata_profiling.reader", "PandasDataFrameFileReader")
 
     def build(self, resources: list[DataResource]) -> list[ProfilingPluginYdataProfiling]:
         """
-        Build a plugin.
+        Build a plugin for each resource.
+
+        Parameters
+        ----------
+        resources : list[DataResource]
+            List of resources.
+
+        Returns
+        -------
+        list[ProfilingPluginYdataProfiling]
+            List of plugins.
         """
         plugins = []
         for res in resources:
-            resource = deepcopy(res)
-            store = self.stores[resource.store]
-            data_reader = build_reader(DF_READER, store)
+            # Get data reader for the resource
+            data_reader = build_reader(DF_READER, self.stores[res.store])
+
+            # Build and setup plugin with a copy of the resource to avoid
+            # resource modification
             plugin = ProfilingPluginYdataProfiling()
-            plugin.setup(data_reader, resource, self.exec_args)
+            plugin.setup(data_reader, deepcopy(res), self.exec_args)
             plugins.append(plugin)
         return plugins

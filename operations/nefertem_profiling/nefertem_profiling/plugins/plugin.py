@@ -10,13 +10,11 @@ class ProfilingPlugin(Plugin):
     Run plugin that executes profiling over a Resource.
     """
 
-    _fn_profile = "profile_{}"
-
     def execute(self) -> dict:
         """
         Method that call specific execution.
         """
-        plugin = f"Plugin: {self.lib_name} {self.id};"
+        plugin = f"Plugin: {self.framework_name()} {self.id};"
         self.logger.info(f"Execute profiling - {plugin}")
         lib_result = self.profile()
         self.logger.info(f"Render report - {plugin}")

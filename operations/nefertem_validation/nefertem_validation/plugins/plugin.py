@@ -13,8 +13,6 @@ class ValidationPlugin(Plugin):
     Run plugin that executes validation over a Resource.
     """
 
-    _fn_report = "report_{}"
-
     def __init__(self) -> None:
         """
         Constructor.
@@ -32,7 +30,7 @@ class ValidationPlugin(Plugin):
         dict
             Results of execution.
         """
-        plugin = f"Plugin: {self.lib_name} {self.id};"
+        plugin = f"Plugin: {self.framework_name()} {self.id};"
         constraint = f"Constraint: {self.constraint.name};"
         resources = f"Resources: {self.constraint.resources};"
         self.logger.info(f"Execute validation - {plugin} {constraint} {resources}")

@@ -9,9 +9,9 @@ class NefertemBaseReport:
 
     Attributes
     ----------
-    lib_name : str
+    framework_name : str
         Execution library name.
-    lib_version : str
+    framework_version : str
         Execution library version.
     duration : float
         Time required by the execution process.
@@ -19,16 +19,16 @@ class NefertemBaseReport:
 
     def __init__(
         self,
-        lib_name: str,
-        lib_version: str,
+        framework_name: str,
+        framework_version: str,
         duration: float,
     ) -> None:
         """
         Constructor.
         """
         super().__init__()
-        self.lib_name = lib_name
-        self.lib_version = lib_version
+        self.framework_name = framework_name
+        self.framework_version = framework_version
         self.duration = duration
 
     def to_dict(self) -> dict:

@@ -52,8 +52,8 @@ class NefertemMetricReport(NefertemBaseReport):
 
     def __init__(
         self,
-        lib_name: str,
-        lib_version: str,
+        framework_name: str,
+        framework_version: str,
         duration: float,
         stats: dict,
         fields: dict,
@@ -63,7 +63,7 @@ class NefertemMetricReport(NefertemBaseReport):
         """
         Constructor.
         """
-        super().__init__(lib_name, lib_version, duration)
+        super().__init__(framework_name, framework_version, duration)
         self.stats = stats
         self.fields = fields
         self.metrics = metrics

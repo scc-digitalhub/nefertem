@@ -43,7 +43,7 @@ class MetricPluginEvidently(MetricPlugin):
         reference_resource: DataResource = None,
     ) -> None:
         """
-        Set plugin resource.
+        Setup plugin.
         """
         self.data_reader = data_reader
         self.reference_data_reader = reference_data_reader
@@ -117,7 +117,7 @@ class MetricPluginEvidently(MetricPlugin):
         )
 
     @exec_decorator
-    def render_artifact(self, result: Result) -> list[tuple]:
+    def render_artifact(self, result: Result) -> list[RenderTuple]:
         """
         Return a rendered profile ready to be persisted as artifact.
         """

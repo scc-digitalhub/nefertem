@@ -116,8 +116,8 @@ class RunValidation(Run):
         None
         """
         for obj in self.run_handler.get_item(ResultType.NEFERTEM.value):
-            metadata = Blob(*self._get_base_args(), obj.to_dict()).to_dict()
-            self._log_metadata(metadata, "nefertem_report.json")
+            metadata = Blob(*self._get_base_args(), obj.object.to_dict()).to_dict()
+            self._log_metadata(metadata, obj.filename)
 
     def persist_report(self) -> None:
         """
