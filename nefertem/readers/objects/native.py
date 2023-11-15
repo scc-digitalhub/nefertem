@@ -1,6 +1,8 @@
 """
 NativeReader module.
 """
+from __future__ import annotations
+
 from typing import Any
 
 from nefertem.readers.objects._base import DataReader

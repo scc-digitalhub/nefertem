@@ -14,20 +14,21 @@ authors = [
 license = { file = "LICENSE.txt" }
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
     "boto3<1.27",
     "pydantic~=1.10",
-    "pyarrow<11.0dev",
     "sqlalchemy~=1.4",
     "psutil>=5.9",
     "adbc-driver-manager==0.7.0",
     "polars",
 ]
 
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 
 [tool.setuptools.packages.find]
 exclude = ["docs*", "tests*", "plugins*", "operations*"]

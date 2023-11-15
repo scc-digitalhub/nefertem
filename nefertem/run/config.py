@@ -1,6 +1,8 @@
 """
 Run configuration objects module.
 """
+from __future__ import annotations
+
 from pydantic import BaseModel
 
 
@@ -12,7 +14,7 @@ class ExecConfig(BaseModel):
     framework: str
     """Library to use for performing an operation."""
 
-    exec_args: dict | None = {}
+    exec_args: dict = {}
     """Execution arguments to pass to plugins."""
 
 

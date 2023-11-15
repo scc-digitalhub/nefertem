@@ -1,6 +1,8 @@
 """
 Blob module.
 """
+from __future__ import annotations
+
 from nefertem.utils.commons import NEFERTEM_VERSION
 
 

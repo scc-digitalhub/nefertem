@@ -1,6 +1,8 @@
 """
 Plugin utils module.
 """
+from __future__ import annotations
+
 import time
 from collections import namedtuple
 from enum import Enum
@@ -38,10 +40,10 @@ class Result:
 
     def __init__(
         self,
-        status: str = ExecutionStatus.INIT.value,
-        duration: float = None,
-        errors: tuple = None,
-        artifact: Any = None,
+        status: str | None = ExecutionStatus.INIT.value,
+        duration: float | None = None,
+        errors: tuple | None = None,
+        artifact: Any | None = None,
     ) -> None:
         """
         Constructor.

@@ -1,6 +1,8 @@
 """
 Local metadata store module.
 """
+from __future__ import annotations
+
 import shutil
 from io import BytesIO, StringIO
 from pathlib import Path

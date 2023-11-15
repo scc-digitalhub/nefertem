@@ -1,6 +1,7 @@
 """
 Nefertem base report module.
 """
+from __future__ import annotations
 
 
 class NefertemBaseReport:

@@ -48,7 +48,10 @@ class TestLocalInputStore:
 
     @pytest.mark.parametrize(
         "src,fetch_mode,expected,not_implemented",
-        [(TEST_FILENAME, "file", TEST_FILENAME, False), (TEST_FILENAME, "native", TEST_FILENAME, False)],
+        [
+            (TEST_FILENAME, "file", TEST_FILENAME, False),
+            (TEST_FILENAME, "native", TEST_FILENAME, False),
+        ],
     )
     def test_get_and_register_artifact(self, store, src, fetch_mode, expected, not_implemented):
         if not_implemented:

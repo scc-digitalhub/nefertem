@@ -1,6 +1,8 @@
 """
 DataReader registry.
 """
+from __future__ import annotations
+
 from nefertem.utils.commons import FILE_READER, NATIVE_READER
 
 

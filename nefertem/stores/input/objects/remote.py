@@ -1,6 +1,8 @@
 """
 Implementation of REST artifact store.
 """
+from __future__ import annotations
+
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -14,13 +16,13 @@ class RemoteStoreConfig(StoreConfig):
     HTTP store configuration class.
     """
 
-    user: str | None = None
+    user: str = None
     """User name."""
 
-    password: str | None = None
+    password: str = None
     """Password."""
 
-    token: str | None = None
+    token: str = None
     """Bearer token."""
 
 

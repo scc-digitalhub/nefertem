@@ -1,6 +1,8 @@
 """
 Dummy artifact store module.
 """
+from __future__ import annotations
+
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 
 

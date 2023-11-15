@@ -1,6 +1,8 @@
 """
 Implementation of S3 artifact store.
 """
+from __future__ import annotations
+
 # pylint: disable=unused-import
 from pathlib import Path
 from typing import Type

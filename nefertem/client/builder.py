@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from nefertem.client.client import Client
 
 

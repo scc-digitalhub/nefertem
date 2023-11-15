@@ -1,6 +1,8 @@
 """
 Abstract class for artifact store.
 """
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import Any
@@ -30,7 +32,7 @@ class StoreParameters(BaseModel):
     store_type: str
     """Store type."""
 
-    config: dict | None = {}
+    config: dict = {}
     """Dictionary containing the configuration for the backend."""
 
 

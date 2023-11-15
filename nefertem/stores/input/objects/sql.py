@@ -1,6 +1,8 @@
 """
 Implementation of SQL artifact store.
 """
+from __future__ import annotations
+
 import re
 from pathlib import Path
 

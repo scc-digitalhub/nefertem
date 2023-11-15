@@ -1,6 +1,8 @@
 """
 Base abstract metadata store module.
 """
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
@@ -41,13 +43,13 @@ class OutputStore(metaclass=ABCMeta):
     ############################
 
     @abstractmethod
-    def log_metadata(self, obj: dict, filename: str, check_filename: bool = True) -> None:
+    def log_metadata(self, obj: dict, filename: str) -> None:
         """
         Method to log metadata.
         """
 
     @abstractmethod
-    def persist_artifact(self, obj: Any, filename: str, check_filename: bool = True) -> None:
+    def persist_artifact(self, obj: Any, filename: str) -> None:
         """
         Method to persist an artifact.
         """

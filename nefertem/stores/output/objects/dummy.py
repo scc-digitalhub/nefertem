@@ -1,6 +1,8 @@
 """
 Dummy metadata store module.
 """
+from __future__ import annotations
+
 from nefertem.stores.output.objects._base import OutputStore
 
 

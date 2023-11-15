@@ -1,6 +1,8 @@
 """
 FileReader module.
 """
+from __future__ import annotations
+
 from pathlib import Path
 
 from nefertem.readers.objects._base import DataReader
