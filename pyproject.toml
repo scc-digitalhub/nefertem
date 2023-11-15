@@ -20,7 +20,7 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "boto3<1.27",
+    "boto3>1.25, <=1.26",
     "pydantic~=1.10",
     "sqlalchemy~=1.4",
     "psutil>=5.9",
@@ -37,7 +37,7 @@ exclude = ["docs*", "tests*", "plugins*", "operations*"]
 dev = [
     "black",
     "pytest",
-    "moto==4.1.14"
+    "moto"
 ]
 docs = [
     "Sphinx==5.3.0",
