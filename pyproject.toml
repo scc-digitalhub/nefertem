@@ -18,10 +18,10 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "boto3~=1.28",
-    "pydantic>=2",
-    "requests==2.31.0",
-    "SQLAlchemy>=2",
+    "boto3<1.27",
+    "pydantic~=1.10",
+    "pyarrow<11.0dev",
+    "sqlalchemy~=1.4",
     "psutil>=5.9",
     "adbc-driver-manager==0.7.0",
     "polars",

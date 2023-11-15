@@ -18,13 +18,13 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "pydantic>=2",
+    "pydantic~=1.10",
 ]
 
 requires-python = ">=3.10"
 
 [project.urls]
-Homepage = "https://github.com/scc-digitalhub/nefertem-profile"
+Homepage = "https://github.com/scc-digitalhub/nefertem"
 
 [tool.flake8]
 max-line-length = 120

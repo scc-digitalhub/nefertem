@@ -18,7 +18,7 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "frictionless==5.16.0",
+    "frictionless==5.15.0",
 ]
 
 requires-python = ">=3.10"

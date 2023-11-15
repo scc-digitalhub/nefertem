@@ -109,7 +109,7 @@ class ValidationPluginSqlAlchemy(ValidationPlugin):
         """
         exec_err = result.errors
         duration = result.duration
-        constraint = self.constraint.model_dump()
+        constraint = self.constraint.dict()
         errors = {}
 
         if exec_err is None:

@@ -18,9 +18,9 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "frictionless==5.16.0",
-    "ydata-profiling==4.6.1",
-    "pydantic>=2",
+    "frictionless==5.15.0",
+    "ydata-profiling==4.6.0",
+    "pydantic~=1.10",
 ]
 
 requires-python = ">=3.10"
