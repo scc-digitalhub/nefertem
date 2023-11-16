@@ -1,40 +1,28 @@
 """
 Client module.
-Implementation of a Client object to interact with storages
-and create runs.
 """
-from typing import List, Optional, Union
+from __future__ import annotations
 
-from nefertem.client.run_builder import RunBuilder
-from nefertem.client.store_handler import StoreHandler
-from nefertem.utils.commons import (
-    DEFAULT_DIRECTORY,
-    DEFAULT_EXPERIMENT,
-    DEFAULT_PROJECT,
-)
+import typing
+
+from nefertem.run.builder import run_builder
+from nefertem.stores.builder import store_builder
+
+if typing.TYPE_CHECKING:
+    from nefertem.run.run import Run
 
 
 class Client:
     """
-    Client class.
-
-    The Client is a public interface that exposes methods to create
-    runs and allows the user to add artifact stores to the pool of runs stores.
-    The Client constructor build a StoreHandler to keep track of stores,
-    both metadata and artifact, and a RunBuilder to create runs.
-    All the parameters passed to the Client interface are passed to the
-    StoreHandler.
+    The Client is a public interface that exposes methods to create runs and allows
+    the user to add input stores to the pool of runs stores.
 
     Parameters
     ----------
-    metadata_store : Optional[StoreConfig], optional
-        StoreConfig containing configuration for the metadata store, by default None.
-    store : Optional[Union[StoreConfig, List[StoreConfig]]], optional
-        (List of) StoreConfig containing configuration for the artifact stores, by default None.
-    project : Optional[str], optional
-        The id of the project, required for the DigitalHub metadata store, by default "project".
-    tmp_dir : Optional[str], optional
-        Default local temporary folder where to store input data, by default "./ntruns/tmp".
+    path : str
+        Path where to store metadata and artifacts.
+    stores : list[dict]
+        List of dict containing configuration for the input stores.
 
     Methods
     -------
@@ -42,60 +30,82 @@ class Client:
         Add a new store to the client internal registry.
     create_run
         Create a new run.
-
     """
 
     def __init__(
         self,
-        metadata_store: Optional["StoreConfig"] = None,
-        store: Optional[Union["StoreConfig", List["StoreConfig"]]] = None,
-        project: Optional[str] = DEFAULT_PROJECT,
-        tmp_dir: Optional[str] = DEFAULT_DIRECTORY,
+        path: str | None = None,
+        stores: list[dict] | None = None,
     ) -> None:
-        self._store_handler = StoreHandler(metadata_store, store, project, tmp_dir)
-        self._run_builder = RunBuilder(self._store_handler)
+        self._tmp_dir = "./ntruns/tmp"
+        self._setup_stores(path, stores)
 
-    def add_store(self, store: "StoreConfig") -> None:
+    def _setup_stores(self, path: str | None = None, configs: list[dict] | None = None) -> None:
         """
-        Add a new store to the client internal registry.
+        Build stores according to configurations provided by user and register
+        them into the store registry.
 
         Parameters
         ----------
-        store: StoreConfig
-            Store configuration.
-
+        path : str
+            Path where to store metadata and artifacts.
+        configs : list[dict]
+            List of dict containing configuration for the input stores.
         """
-        self._store_handler.add_artifact_store(store)
+
+        # Build output store
+        store_builder.build_output_store(path)
+
+        # Build input stores
+        try:
+            for cfg in configs:
+                store_builder.build_input_store(self._tmp_dir, cfg)
+        except TypeError:
+            pass
+
+    def add_store(self, config: dict) -> None:
+        """
+        Add a new store to the store registry.
+
+        Parameters
+        ----------
+        config : dict
+            Dictionary containing the configuration of the store.
+
+        Returns
+        -------
+        None
+        """
+        store_builder.build_input_store(self._tmp_dir, config)
 
     def create_run(
         self,
-        resources: Union[List["DataResource"], "DataResource"],
-        run_config: "RunConfig",
-        experiment: Optional[str] = DEFAULT_EXPERIMENT,
-        run_id: Optional[str] = None,
-        overwrite: Optional[bool] = False,
-    ) -> "Run":
+        resources: list[dict],
+        run_config: dict,
+        experiment: str | None = None,
+        run_id: str | None = None,
+        overwrite: bool = False,
+    ) -> Run:
         """
         Create a new run.
 
         Parameters
         ----------
-        resources : Union[List[DataResource], DataResource]
-            (List of) DataResource object(s).
-        run_config : RunConfig
+        resources : list[dict]
+            List of DataResource objects.
+        run_config : dict
             RunConfig object.
-        experiment : Optional[str], optional
-            Name of the experiment. An experiment is a logical unit for ordering the runs execution, by default "experiment".
-        run_id : Optional[str], optional
-            Optional string parameter for user defined run id, by default None.
-        overwrite : Optional[bool], optional
-            If True, the run metadata/artifact can be overwritten by a run with the same id, by default False.
+        experiment : str
+            Name of the experiment. An experiment is a logical unit for ordering the runs execution,
+            by default "experiment".
+        run_id : str
+            Optional string parameter for user defined run id.
+        overwrite : bool
+            If True, the run metadata/artifact can be overwritten by a run with the same id.
 
         Returns
         -------
         Run
             Run object.
         """
-        return self._run_builder.create_run(
-            resources, run_config, experiment, run_id, overwrite
-        )
+        return run_builder.create_run(resources, run_config, self._tmp_dir, experiment, run_id, overwrite)

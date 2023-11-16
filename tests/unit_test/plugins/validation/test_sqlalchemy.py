@@ -1,32 +1,26 @@
 import pytest
 import sqlalchemy
 
-from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.sqlalchemy_validation import (
-    ValidationBuilderSqlAlchemy,
-    ValidationPluginSqlAlchemy,
-)
-from nefertem.utils.commons import (
-    LIBRARY_SQLALCHEMY,
-    OPERATION_VALIDATION,
-    PANDAS_DATAFRAME_SQL_READER,
-)
+from nefertem.plugins.utils import ValidationReport
+from nefertem.plugins.validation.sqlalchemy.builder import ValidationBuilderSqlAlchemy
+from nefertem.plugins.validation.sqlalchemy.plugin import ValidationPluginSqlAlchemy
+from nefertem.utils.commons import LIBRARY_SQLALCHEMY, PANDAS_DATAFRAME_SQL_READER, VALIDATE
 from tests.conftest import (
     CONST_SQLALCHEMY_01,
-    mock_c_sqlalc,
     mock_c_generic,
-    mock_s_generic,
-    mock_r_generic,
+    mock_c_sqlalc,
     mock_c_to_fail,
-    mock_s_to_fail,
+    mock_r_generic,
     mock_r_to_fail,
+    mock_s_generic,
+    mock_s_to_fail,
 )
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -54,13 +48,13 @@ class TestValidationPluginSqlAlchemy:
         # Correct execution
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_VALIDATION)
+        correct_render_nefertem(output, VALIDATE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_VALIDATION)
+        incorrect_render_nefertem(output, VALIDATE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
@@ -78,11 +72,11 @@ class TestValidationPluginSqlAlchemy:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == sqlalchemy.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == sqlalchemy.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == sqlalchemy.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == sqlalchemy.__version__
 
 
 class TestValidationBuilderSqlAlchemy:
@@ -117,17 +111,13 @@ class TestValidationBuilderSqlAlchemy:
         ],
     )
     # fmt: on
-    def test_filter_resources(
-        self, plugin_builder, store_list, const_list, res_list, len_list
-    ):
+    def test_filter_resources(self, plugin_builder, store_list, const_list, res_list, len_list):
         plugin_builder.stores = store_list
         assert len(plugin_builder._filter_resources(res_list, const_list)) == len_list
 
     def test_regroup_constraint_resources(self, plugin_builder):
         plugin_builder.stores = [mock_s_generic]
-        regroup = plugin_builder._regroup_constraint_resources(
-            [mock_c_generic], [mock_r_generic]
-        )
+        regroup = plugin_builder._regroup_constraint_resources([mock_c_generic], [mock_r_generic])
         assert regroup == [
             {
                 "constraint": mock_c_generic,

@@ -2,36 +2,21 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.client.store_handler import StoreHandler
-from nefertem.plugins.base_plugin import Plugin
-from nefertem.plugins.plugin_factory import builder_factory
-from nefertem.plugins.utils.plugin_utils import Result
-from nefertem.run.run import Run
-from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
-from nefertem.utils.commons import (
-    MT_NT_REPORT,
-    OPERATION_INFERENCE,
-    OPERATION_PROFILING,
-    OPERATION_VALIDATION,
-    RESULT_NEFERTEM,
-    RESULT_LIBRARY,
-    RESULT_RENDERED,
-    RESULT_WRAPPED,
-)
-from nefertem.utils.exceptions import RunError
+from nefertem.plugins.utils import ResultType
+from nefertem.run.handler import RunHandler
 
 
 class TestRun:
     def test_log_run(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), "report", True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
 
     def test_log_env(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), "report", True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
@@ -41,7 +26,7 @@ class TestRun:
 
     def test_log_metadata(self, handler, temp_data):
         pth = Path(temp_data, "report_0.json")
-        handler.log_metadata({"test": "test"}, str(pth.parent), MT_NT_REPORT, True)
+        handler.log_metadata({"test": "test"}, str(pth.parent), "report", True)
         assert pth.exists()
         with open(pth, "r") as f:
             assert f.read() == '{"test": "test"}'
@@ -68,7 +53,7 @@ class TestRun:
     def test_get_libraries(self, handler):
         pass
 
-    def test_infer_wrapper(self, handler):
+    def test_infer_framework(self, handler):
         pass
 
     def test_infer_nefertem(self, handler):
@@ -83,7 +68,7 @@ class TestRun:
     def test_persist_schema(self, handler):
         pass
 
-    def test_validate_wrapper(self, handler):
+    def test_validate_framework(self, handler):
         pass
 
     def test_validate_nefertem(self, handler):
@@ -98,7 +83,7 @@ class TestRun:
     def test_persist_report(self, handler):
         pass
 
-    def test_profile_wrapper(self, handler):
+    def test_profile_framework(self, handler):
         pass
 
     def test_profile_nefertem(self, handler):
@@ -120,18 +105,6 @@ class TestRun:
         assert Path(tmp_path, "test_csv_file.csv").exists()
 
 
-# RunHandlerRegistry
-@pytest.fixture()
-def registry():
-    return RunHandlerRegistry()
-
-
-# StoreHandler
-@pytest.fixture()
-def store_handler(local_md_store_cfg, local_store_cfg):
-    return StoreHandler(metadata_store=local_md_store_cfg, store=local_store_cfg)
-
-
 # RunHandler
 @pytest.fixture()
 def handler(run_empty, store_handler):
@@ -142,8 +115,8 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_WRAPPED: result_obj,
-        RESULT_NEFERTEM: result_obj,
-        RESULT_RENDERED: result_obj,
-        RESULT_LIBRARY: [{"test": "test"}],
+        ResultType.FRAMEWORK.value: result_obj,
+        ResultType.NEFERTEM.value: result_obj,
+        ResultType.RENDERED.value: result_obj,
+        ResultType.LIBRARY.value: [{"test": "test"}],
     }

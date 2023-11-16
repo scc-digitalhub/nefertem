@@ -2,73 +2,29 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.client.store_handler import StoreHandler
-from nefertem.plugins.base_plugin import Plugin
-from nefertem.plugins.plugin_factory import builder_factory
-from nefertem.plugins.utils.plugin_utils import Result
-from nefertem.run.run_handler import RunHandler, RunHandlerRegistry
-from nefertem.utils.commons import (
-    MT_NT_REPORT,
-    OPERATION_INFERENCE,
-    OPERATION_PROFILING,
-    OPERATION_VALIDATION,
-    RESULT_NEFERTEM,
-    RESULT_LIBRARY,
-    RESULT_RENDERED,
-    RESULT_WRAPPED,
-)
+from nefertem.plugins.factory import builder_factory
+from nefertem.plugins.plugin import Plugin
+from nefertem.plugins.utils import Result, ResultType
+from nefertem.run.handler import RunHandler
 from nefertem.utils.exceptions import RunError
 from tests.conftest import CONST_FRICT_01
 
-
-class TestRunHandlerRegistry:
-    def test_setup(self, registry):
-        res_dict_ = {
-            RESULT_WRAPPED: [],
-            RESULT_NEFERTEM: [],
-            RESULT_RENDERED: [],
-            RESULT_LIBRARY: [],
-        }
-        dict_ = {
-            OPERATION_PROFILING: res_dict_,
-            OPERATION_INFERENCE: res_dict_,
-            OPERATION_VALIDATION: res_dict_,
-        }
-        assert registry.registry == dict_
-
-    def test_register(self, registry):
-        registry.register(OPERATION_VALIDATION, RESULT_WRAPPED, ["test"])
-        assert registry.registry[OPERATION_VALIDATION][RESULT_WRAPPED] == ["test"]
-        registry.register(OPERATION_VALIDATION, RESULT_WRAPPED, "test2")
-        assert registry.registry[OPERATION_VALIDATION][RESULT_WRAPPED] == [
-            "test",
-            "test2",
-        ]
-        registry.register(OPERATION_VALIDATION, RESULT_NEFERTEM, "test3")
-        assert registry.registry[OPERATION_VALIDATION][RESULT_NEFERTEM] == ["test3"]
-
-    def test_get_object(self, registry):
-        print(registry.registry)
-        registry.register(OPERATION_VALIDATION, RESULT_WRAPPED, ["test"])
-        print(registry.registry)
-        x = registry.get_object(OPERATION_VALIDATION, RESULT_WRAPPED)
-        assert x == ["test"]
-        x = registry.get_object("test", RESULT_WRAPPED)
-        assert x == []
+INFER = "infer"
+VALIDATE = "validate"
+PROFILE = "profile"
+MT_NT_REPORT = "nefertem_report"
 
 
 class TestRunHandler:
     def test_create_plugins(self, run_empty, store_handler, handler, local_resource):
         cfg = [run_empty.inference, run_empty.validation, run_empty.profiling]
-        ops = [OPERATION_INFERENCE, OPERATION_VALIDATION, OPERATION_PROFILING]
+        ops = [INFER, VALIDATE, PROFILE]
         stores = store_handler.get_all_art_stores()
 
         for i, j in zip(cfg, ops):
             builders = builder_factory(i, j, stores)
-            if j == OPERATION_VALIDATION:
-                plugins = handler._create_plugins(
-                    builders, [local_resource], [CONST_FRICT_01], "full"
-                )
+            if j == VALIDATE:
+                plugins = handler._create_plugins(builders, [local_resource], [CONST_FRICT_01], "full")
             else:
                 plugins = handler._create_plugins(builders, [local_resource])
             assert isinstance(plugins, list)
@@ -82,14 +38,14 @@ class TestRunHandler:
             assert handler._parse_report_arg(i) is None
 
     def test_register_results(self, dict_result, handler):
-        res = handler._register_results(OPERATION_INFERENCE, dict_result)
+        res = handler._register_results(INFER, dict_result)
         assert res is None
         with pytest.raises(KeyError):
             handler._register_results("", dict_result)
 
     def test_destroy_builders(self, run_empty, store_handler, handler):
         cfg = [run_empty.inference, run_empty.validation, run_empty.profiling]
-        ops = [OPERATION_INFERENCE, OPERATION_VALIDATION, OPERATION_PROFILING]
+        ops = [INFER, VALIDATE, PROFILE]
         stores = store_handler.get_all_art_stores()
 
         for i, j in zip(cfg, ops):
@@ -97,67 +53,67 @@ class TestRunHandler:
             assert handler._destroy_builders(builders) is None
 
     def test_get_item(self, dict_result, handler):
-        op = OPERATION_INFERENCE
+        op = INFER
         res = handler._register_results(op, dict_result)
-        res = handler.get_item(op, RESULT_NEFERTEM)
+        res = handler.get_item(op, ResultType.NEFERTEM.value)
         assert isinstance(res[0], Result)
 
     def test_get_artifact_schema(self, dict_result, handler):
-        op = OPERATION_INFERENCE
+        op = INFER
         handler._register_results(op, dict_result)
         res = handler.get_artifact_schema()
         assert res[0] == "test"
 
     def test_get_artifact_report(self, dict_result, handler):
-        op = OPERATION_VALIDATION
+        op = VALIDATE
         handler._register_results(op, dict_result)
         res = handler.get_artifact_report()
         assert res[0] == "test"
 
     def test_get_artifact_profile(self, dict_result, handler):
-        op = OPERATION_PROFILING
+        op = PROFILE
         handler._register_results(op, dict_result)
         res = handler.get_artifact_profile()
         assert res[0] == "test"
 
     def test_get_nefertem_schema(self, dict_result, handler):
-        op = OPERATION_INFERENCE
+        op = INFER
         handler._register_results(op, dict_result)
         res = handler.get_nefertem_schema()
         assert res[0] == "test"
 
     def test_get_nefertem_report(self, dict_result, handler):
-        op = OPERATION_VALIDATION
+        op = VALIDATE
         handler._register_results(op, dict_result)
         res = handler.get_nefertem_report()
         assert res[0] == "test"
 
     def test_get_nefertem_profile(self, dict_result, handler):
-        op = OPERATION_PROFILING
+        op = PROFILE
         handler._register_results(op, dict_result)
         res = handler.get_nefertem_profile()
         assert res[0] == "test"
 
     def test_get_rendered_schema(self, dict_result, handler):
-        op = OPERATION_INFERENCE
+        op = INFER
         handler._register_results(op, dict_result)
         res = handler.get_rendered_schema()
         assert res[0] == "test"
 
     def test_get_rendered_report(self, dict_result, handler):
-        op = OPERATION_VALIDATION
+        op = VALIDATE
         handler._register_results(op, dict_result)
         res = handler.get_rendered_report()
         assert res[0] == "test"
 
     def test_get_rendered_profile(self, dict_result, handler):
-        op = OPERATION_PROFILING
+        op = PROFILE
         handler._register_results(op, dict_result)
         res = handler.get_rendered_profile()
         assert res[0] == "test"
 
     def test_get_libraries(self, dict_result, handler):
-        op = OPERATION_PROFILING
+        op = PROFILE
         handler._register_results(op, dict_result)
         res = handler.get_libraries()
         assert res[op] == [{"test": "test"}]
@@ -183,18 +139,6 @@ class TestRunHandler:
         assert Path(tmp_path, "test_csv_file.csv").exists()
 
 
-# RunHandlerRegistry
-@pytest.fixture()
-def registry():
-    return RunHandlerRegistry()
-
-
-# StoreHandler
-@pytest.fixture()
-def store_handler(local_md_store_cfg, local_store_cfg):
-    return StoreHandler(metadata_store=local_md_store_cfg, store=local_store_cfg)
-
-
 # RunHandler
 @pytest.fixture()
 def handler(run_empty, store_handler):
@@ -205,8 +149,8 @@ def handler(run_empty, store_handler):
 @pytest.fixture()
 def dict_result(result_obj):
     return {
-        RESULT_WRAPPED: result_obj,
-        RESULT_NEFERTEM: result_obj,
-        RESULT_RENDERED: result_obj,
-        RESULT_LIBRARY: [{"test": "test"}],
+        ResultType.FRAMEWORK.value: result_obj,
+        ResultType.NEFERTEM.value: result_obj,
+        ResultType.RENDERED.value: result_obj,
+        ResultType.LIBRARY.value: [{"test": "test"}],
     }

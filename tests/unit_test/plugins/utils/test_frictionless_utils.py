@@ -1,11 +1,8 @@
 import pytest
-from frictionless import Detector
 
-from nefertem.utils.config import ConstraintFrictionless
-from nefertem.plugins.utils.frictionless_utils import (
-    frictionless_schema_converter,
-    describe_resource,
-)
+from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
+from nefertem.plugins.validation.frictionless.utils import frictionless_schema_converter
+from nefertem.readers.utils import describe_resource
 
 
 def test_frictionless_schema_converter():
@@ -25,7 +22,7 @@ def test_frictionless_schema_converter():
             weight=5,
             type="frictionless",
             field="f1",
-            fieldType="integer",
+            field_type="integer",
             constraint="type",
             value="integer",
         ),
@@ -36,7 +33,7 @@ def test_frictionless_schema_converter():
             weight=5,
             type="frictionless",
             field="f1",
-            fieldType="integer",
+            field_type="integer",
             constraint="format",
             value="default",
         ),
@@ -47,7 +44,7 @@ def test_frictionless_schema_converter():
             weight=5,
             type="frictionless",
             field="f2",
-            fieldType="string",
+            field_type="string",
             constraint="type",
             value="string",
         ),
@@ -58,7 +55,7 @@ def test_frictionless_schema_converter():
             weight=5,
             type="frictionless",
             field="f2",
-            fieldType="string",
+            field_type="string",
             constraint="format",
             value="email",
         ),
@@ -69,7 +66,7 @@ def test_frictionless_schema_converter():
             weight=5,
             type="frictionless",
             field="f3",
-            fieldType="date",
+            field_type="date",
             constraint="type",
             value="date",
         ),
@@ -80,7 +77,7 @@ def test_frictionless_schema_converter():
             weight=5,
             type="frictionless",
             field="f3",
-            fieldType="date",
+            field_type="date",
             constraint="format",
             value="%d/%m/%y",
         ),

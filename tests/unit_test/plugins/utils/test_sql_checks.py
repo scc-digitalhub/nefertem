@@ -7,46 +7,37 @@ from nefertem.plugins.utils.sql_checks import (
     evaluate_validity,
 )
 
-from nefertem.utils.commons import (
-    CONSTRAINT_SQL_EMPTY,
-    CONSTRAINT_SQL_EXACT,
-    CONSTRAINT_SQL_MAXIMUM,
-    CONSTRAINT_SQL_MINIMUM,
-    CONSTRAINT_SQL_NON_EMPTY,
-    CONSTRAINT_SQL_RANGE,
-)
-
 
 def test_evaluate_validity():
-    assert evaluate_validity(0, CONSTRAINT_SQL_EMPTY, None) == (True, None)
-    assert evaluate_validity(5, CONSTRAINT_SQL_EMPTY, None) == (
+    assert evaluate_validity(0, "empty", None) == (True, None)
+    assert evaluate_validity(5, "empty", None) == (
         False,
         "Table is not empty.",
     )
-    assert evaluate_validity(7, CONSTRAINT_SQL_NON_EMPTY, None) == (True, None)
-    assert evaluate_validity(0, CONSTRAINT_SQL_NON_EMPTY, None) == (
+    assert evaluate_validity(7, "non-empty", None) == (True, None)
+    assert evaluate_validity(0, "non-empty", None) == (
         False,
         "Table is empty.",
     )
-    assert evaluate_validity(4, CONSTRAINT_SQL_EXACT, 4) == (True, None)
-    assert evaluate_validity(2.1, CONSTRAINT_SQL_EXACT, 2.0) == (
+    assert evaluate_validity(4, "exact", 4) == (True, None)
+    assert evaluate_validity(2.1, "exact", 2.0) == (
         False,
         "Expected value 2.0, instead got 2.1.",
     )
-    assert evaluate_validity(3, CONSTRAINT_SQL_MINIMUM, 2) == (True, None)
-    assert evaluate_validity(4.8, CONSTRAINT_SQL_MINIMUM, 4.9) == (
+    assert evaluate_validity(3, "minimum", 2) == (True, None)
+    assert evaluate_validity(4.8, "minimum", 4.9) == (
         False,
         "Minimum value 4.9, instead got 4.8.",
     )
-    assert evaluate_validity(-1, CONSTRAINT_SQL_MINIMUM, -3) == (True, None)
-    assert evaluate_validity(6, CONSTRAINT_SQL_MAXIMUM, 7) == (True, None)
-    assert evaluate_validity(9.9, CONSTRAINT_SQL_MAXIMUM, 10.1) == (True, None)
-    assert evaluate_validity(25, CONSTRAINT_SQL_MAXIMUM, 15) == (
+    assert evaluate_validity(-1, "minimum", -3) == (True, None)
+    assert evaluate_validity(6, "maximum", 7) == (True, None)
+    assert evaluate_validity(9.9, "maximum", 10.1) == (True, None)
+    assert evaluate_validity(25, "maximum", 15) == (
         False,
         "Maximum value 15, instead got 25.",
     )
-    assert evaluate_validity(5.6, CONSTRAINT_SQL_RANGE, "[4, 9]") == (True, None)
-    assert evaluate_validity(13, CONSTRAINT_SQL_RANGE, "[5, 12]") == (
+    assert evaluate_validity(5.6, "range", "[4, 9]") == (True, None)
+    assert evaluate_validity(13, "range", "[5, 12]") == (
         False,
         "Expected value between [5, 12].",
     )

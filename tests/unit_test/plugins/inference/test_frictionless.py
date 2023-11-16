@@ -2,23 +2,17 @@
 
 import frictionless
 import pytest
-from frictionless.schema import Schema
+from frictionless import Schema
 
-from nefertem.plugins.inference.frictionless_inference import (
-    InferenceBuilderFrictionless,
-    InferencePluginFrictionless,
-)
-from nefertem.utils.commons import (
-    LIBRARY_FRICTIONLESS,
-    OPERATION_INFERENCE,
-    BASE_FILE_READER,
-)
+from nefertem.plugins.inference.frictionless.builder import InferenceBuilderFrictionless
+from nefertem.plugins.inference.frictionless.plugin import InferencePluginFrictionless
+from nefertem.utils.commons import FILE_READER, INFER
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -46,19 +40,19 @@ class TestInferencePluginFrictionless:
         # Correct execution
         result = setted_plugin.infer()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_INFERENCE)
+        correct_render_nefertem(output, INFER)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.infer()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_INFERENCE)
+        incorrect_render_nefertem(output, INFER)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
         result = setted_plugin.infer()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_schema.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = setted_plugin._fn_schema.format("frictionless.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, dict)
         assert output.artifact[0].filename == filename
@@ -70,11 +64,11 @@ class TestInferencePluginFrictionless:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == frictionless.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == frictionless.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == frictionless.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == frictionless.__version__
 
 
 class TestInferenceBuilderFrictionless:
@@ -110,4 +104,4 @@ def resource(local_resource):
 
 @pytest.fixture
 def data_reader():
-    return BASE_FILE_READER
+    return FILE_READER

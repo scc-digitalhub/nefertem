@@ -1,6 +1,6 @@
 import pytest
 
-from nefertem.utils.commons import BASE_FILE_READER
+from nefertem.utils.commons import FILE_READER
 
 
 def test_fetch_data(reader, data_path_csv):
@@ -15,4 +15,4 @@ def store_cfg(local_store_cfg):
 
 @pytest.fixture
 def data_reader():
-    return BASE_FILE_READER
+    return FILE_READER

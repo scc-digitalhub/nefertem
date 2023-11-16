@@ -10,23 +10,16 @@ import duckdb
 import pytest
 from moto import mock_s3
 
-from nefertem.client.store_factory import StoreBuilder
-from nefertem.data_reader.utils import build_reader
-from nefertem.plugins.utils.plugin_utils import Result
-from nefertem.utils.commons import *
-from nefertem.utils.config import (
-    ConstraintDuckDB,
-    ConstraintFrictionless,
-    ConstraintFullFrictionless,
-    ConstraintGreatExpectations,
-    ConstraintSqlAlchemy,
-    ConstraintEvidently,
-    MetricEvidently,
-    EvidentlyElement,
-    DataResource,
-    RunConfig,
-    StoreConfig,
-)
+from nefertem.plugins.utils import Result
+from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
+from nefertem.plugins.validation.evidently.constraints import ConstraintEvidently, EvidentlyElement, MetricEvidently
+from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
+from nefertem.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy
+from nefertem.readers.builder import build_reader
+from nefertem.resources.data_resource import DataResource
+from nefertem.run.config import RunConfig
+from nefertem.stores.builder import StoreBuilder
+from nefertem.utils.commons import LIBRARY_DUCKDB, LIBRARY_EVIDENTLY, LIBRARY_GREAT_EXPECTATIONS, LIBRARY_SQLALCHEMY
 from nefertem.utils.utils import listify
 
 ##############################
@@ -81,9 +74,7 @@ def sqlitedb(temp_folder, data_path_csv):
     with open(data_path_csv, "r") as fin:
         dr = csv.DictReader(fin)
         to_db = [(i["col1"], i["col2"], i["col3"], i["col4"]) for i in dr]
-    cur.executemany(
-        "INSERT INTO test (col1, col2, col3, col4) VALUES (?, ?, ?, ?);", to_db
-    )
+    cur.executemany("INSERT INTO test (col1, col2, col3, col4) VALUES (?, ?, ?, ?);", to_db)
     con.commit()
     con.close()
     return f"sqlite:///{tmp}"
@@ -112,9 +103,7 @@ def s3(aws_credentials):
     with mock_s3():
         client = boto3.client("s3", region_name="us-east-1")
         client.create_bucket(Bucket=S3_BUCKET)
-        client.upload_file(
-            "tests/synthetic_data/test_csv_file.csv", S3_BUCKET, S3_FILENAME
-        )
+        client.upload_file("tests/synthetic_data/test_csv_file.csv", S3_BUCKET, S3_FILENAME)
         yield client
 
 
@@ -175,14 +164,14 @@ def run_empty():
 # ---------------
 
 
-@pytest.fixture(scope="session")
-def store_builder(temp_folder):
-    return StoreBuilder("test", temp_folder)
+@pytest.fixture
+def store_builder():
+    return StoreBuilder()
 
 
 @pytest.fixture
 def store(store_cfg, store_builder):
-    return store_builder.build(store_cfg)
+    return store_builder.build_input_store(store_cfg)
 
 
 # ---------------
@@ -193,63 +182,56 @@ def store(store_cfg, store_builder):
 # Local 1
 @pytest.fixture
 def local_store_cfg(temp_data):
-    return StoreConfig(
-        **{
-            "title": "Local Store",
-            "name": "local",
-            "type": "local",
-            "uri": temp_data,
-            "isDefault": True,
-        }
-    )
+    return {
+        "title": "Local Store",
+        "name": "local",
+        "type": "local",
+        "uri": temp_data,
+        "isDefault": True,
+    }
 
 
 # Local 2
 @pytest.fixture
-def local_store_cfg_2():
-    return StoreConfig(
-        **{
-            "title": "Local Store 2",
-            "name": "local_2",
-            "type": "local",
-            "uri": "./ntruns",
-            "isDefault": False,
-        }
-    )
+def local_store_cfg_2(temp_folder):
+    return {
+        "title": "Local Store 2",
+        "name": "local_2",
+        "type": "local",
+        "uri": str(temp_folder),
+        "isDefault": False,
+    }
 
 
 # SQL
 @pytest.fixture
 def sql_store_cfg(sqlitedb):
-    return StoreConfig(
-        **{
-            "title": "SQLite Store",
-            "name": "sql",
-            "type": "sql",
-            "uri": "sql://test",
-            "isDefault": True,
-            "config": {"connection_string": sqlitedb},
-        }
-    )
+    return {
+        "title": "SQLite Store",
+        "name": "sql",
+        "type": "sql",
+        "uri": "sql://test",
+        "isDefault": True,
+        "config": {"connection_string": sqlitedb},
+    }
 
 
 # S3
 @pytest.fixture
 def s3_store_cfg():
-    return StoreConfig(
-        **{
-            "title": "S3 Store",
-            "name": "s3",
-            "type": "s3",
-            "uri": "s3://test",
-            "isDefault": True,
-            "config": {
-                "aws_access_key_id": "test",
-                "aws_secret_access_key": "test",
-                "endpoint_url": "http://localhost:9000/",
-            },
-        }
-    )
+    return {
+        "title": "S3 Store",
+        "name": "s3",
+        "type": "s3",
+        "uri": "s3://test",
+        "isDefault": True,
+        "config": {
+            "aws_access_key_id": "test",
+            "aws_secret_access_key": "test",
+            "endpoint_url": "http://localhost:9000/",
+            "bucket_name": "test",
+        },
+    }
 
 
 # ----------------
@@ -259,15 +241,8 @@ def s3_store_cfg():
 
 # Local
 @pytest.fixture
-def local_md_store_cfg(temp_data):
-    return StoreConfig(
-        **{
-            "title": "Local Metadata Store",
-            "name": "local_md",
-            "type": "local",
-            "uri": temp_data,
-        }
-    )
+def local_md_store_cfg(tmp_path):
+    return tmp_path
 
 
 # ----------------
@@ -292,9 +267,7 @@ def local_resource(data_path_csv):
 
 @pytest.fixture
 def local_resource_no_temp():
-    return DataResource(
-        path="tests/synthetic_data/test_csv_file.csv", name="res_test_01", store="local"
-    )
+    return DataResource(path="tests/synthetic_data/test_csv_file.csv", name="res_test_01", store="local")
 
 
 @pytest.fixture
@@ -320,7 +293,7 @@ CONST_FRICT_01 = ConstraintFrictionless(
     name="test-const-frict-01",
     resources=["res_test_01"],
     field="col1",
-    fieldType="string",
+    field_type="string",
     constraint="maxLength",
     value=1,
     weight=5,
@@ -330,7 +303,7 @@ CONST_FRICT_02 = ConstraintFrictionless(
     name="test-const-frict-02",
     resources=["res_test_01"],
     field="col1",
-    fieldType="string",
+    field_type="string",
     constraint="minLength",
     value=5,
     weight=5,
@@ -339,7 +312,7 @@ CONST_FRICT_FULL_01 = ConstraintFullFrictionless(
     title="Test frictionless constraint",
     name="test-const-frict-01",
     resources=["res_test_01"],
-    tableSchema={
+    table_schema={
         "fields": [
             {"name": "col1", "type": "string"},
             {"name": "col2", "type": "number"},
@@ -347,14 +320,6 @@ CONST_FRICT_FULL_01 = ConstraintFullFrictionless(
             {"name": "col4", "type": "date"},
         ]
     },
-    weight=5,
-)
-CONST_GE_01 = ConstraintGreatExpectations(
-    name="const-ge-01",
-    title="Test GE constraint",
-    resources=["res_test_01"],
-    expectation="expect_column_value_lengths_to_be_between",
-    expectation_args={"column": "col1", "min_value": 1, "max_value": 1},
     weight=5,
 )
 CONST_SQLALCHEMY_01 = ConstraintSqlAlchemy(
@@ -433,6 +398,7 @@ def plugin_builder_non_val_args(resource):
     resources = listify(resource)
     return [resources]
 
+
 @pytest.fixture
 def plugin_builder_metric_val_args(resource, metric):
     resources = listify(resource)
@@ -477,8 +443,8 @@ def mock_object_factory(**kwargs):
 # Mock constraints
 # ----------------
 
-mock_c_frict = mock_object_factory(type=LIBRARY_FRICTIONLESS)
-mock_c_frict_full = mock_object_factory(type=CONSTRAINT_FRICTIONLESS_SCHEMA)
+mock_c_frict = mock_object_factory(type="frictionless")
+mock_c_frict_full = mock_object_factory(type="frictionless_full")
 mock_c_duckdb = mock_object_factory(type=LIBRARY_DUCKDB)
 mock_c_gex = mock_object_factory(type=LIBRARY_GREAT_EXPECTATIONS)
 mock_c_sqlalc = mock_object_factory(type=LIBRARY_SQLALCHEMY)

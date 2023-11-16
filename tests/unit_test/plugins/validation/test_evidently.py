@@ -1,27 +1,17 @@
 import evidently
-from evidently.test_suite import TestSuite
 import pytest
+from evidently.test_suite import TestSuite
 
-from nefertem.plugins.validation.evidently_validation import (
-    ValidationBuilderEvidently,
-    ValidationPluginEvidently,
-)
-from nefertem.utils.commons import (
-    LIBRARY_EVIDENTLY,
-    OPERATION_VALIDATION,
-    PANDAS_DATAFRAME_FILE_READER,
-)
-from tests.conftest import (
-    CONST_EVIDENTLY_01,
-    mock_c_evidently,
-    mock_c_generic,
-)
+from nefertem.plugins.validation.evidently.builder import ValidationBuilderEvidently
+from nefertem.plugins.validation.evidently.plugin import ValidationPluginEvidently
+from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER, VALIDATE
+from tests.conftest import CONST_EVIDENTLY_01, mock_c_evidently, mock_c_generic
 from tests.unit_test.plugins.utils_plugin_tests import (
-    correct_setup,
     correct_execute,
     correct_plugin_build,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -49,19 +39,19 @@ class TestValidationPluginEvidently:
         # Correct execution
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_VALIDATION)
+        correct_render_nefertem(output, VALIDATE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_VALIDATION)
+        incorrect_render_nefertem(output, VALIDATE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
         result = setted_plugin.validate()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_report.format(f"{LIBRARY_EVIDENTLY}.json")
+        filename = setted_plugin._fn_report.format("evidently.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, dict)
         assert output.artifact[0].filename == filename
@@ -73,11 +63,11 @@ class TestValidationPluginEvidently:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == evidently.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == evidently.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == evidently.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == evidently.__version__
 
 
 class TestValidationBuilderEvidently:

@@ -1,25 +1,42 @@
 """
 Common generic utils.
 """
+from __future__ import annotations
+
 import functools
 import operator
 from datetime import datetime
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any
 from uuid import uuid4
 
 
-def get_uiid(_id: Optional[str] = None) -> str:
+def build_uuid(uuid: str | None = None) -> str:
     """
-    Return an UUID if not provided.
+    Create a uuid if not given
+
+    Parameters
+    ----------
+    uuid : str
+        UUID. Optional.
+
+    Returns
+    -------
+    str
+        The uuid.
     """
-    if _id:
-        return _id
-    return uuid4().hex
+    if uuid is not None:
+        return uuid
+    return str(uuid4())
 
 
-def flatten_list(list_of_list: List[List[Any]]) -> List[Any]:
+def flatten_list(list_of_list: list[list[Any]]) -> list[Any]:
     """
     Flatten a list of list.
+
+    Parameters
+    ----------
+    list_of_list : list[list[Any]]
+        The list of list to be flattened.
     """
     try:
         return functools.reduce(operator.iconcat, list_of_list)
@@ -27,9 +44,19 @@ def flatten_list(list_of_list: List[List[Any]]) -> List[Any]:
         return []
 
 
-def listify(obj: Union[List, Tuple, Any]) -> List[Any]:
+def listify(obj: Any) -> list[Any]:
     """
-    Check if an object is a list or a tuple and return a list.
+    Convert an object to a list.
+
+    Parameters
+    ----------
+    obj : Any
+        The object to be converted.
+
+    Returns
+    -------
+    list[Any]
+        The list.
     """
     if not isinstance(obj, (list, tuple)):
         obj = [obj]
@@ -38,6 +65,11 @@ def listify(obj: Union[List, Tuple, Any]) -> List[Any]:
 
 def get_time() -> str:
     """
-    Return ISO 8601 time with timezone info.
+    Get current time with timezone info.
+
+    Returns
+    -------
+    str
+        ISO 8601 time with timezone info.
     """
     return datetime.now().astimezone().isoformat(timespec="milliseconds")

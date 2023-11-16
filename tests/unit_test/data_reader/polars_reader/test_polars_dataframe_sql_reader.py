@@ -1,8 +1,8 @@
 import polars as pl
 import pytest
 
-from nefertem.utils.exceptions import StoreError
 from nefertem.utils.commons import POLARS_DATAFRAME_SQL_READER
+from nefertem.utils.exceptions import StoreError
 
 
 class TestPolarsDataFrameSQLReader:

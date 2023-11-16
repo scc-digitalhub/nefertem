@@ -2,8 +2,8 @@ import pandas as pd
 import pytest
 from sqlalchemy.engine import Engine
 
-from nefertem.utils.exceptions import StoreError
 from nefertem.utils.commons import PANDAS_DATAFRAME_SQL_READER
+from nefertem.utils.exceptions import StoreError
 
 
 class TestPandasDataFrameSQLReader:

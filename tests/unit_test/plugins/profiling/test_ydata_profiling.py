@@ -1,24 +1,18 @@
 import io
 
-import ydata_profiling
 import pytest
+import ydata_profiling
 from ydata_profiling import ProfileReport
 
-from nefertem.plugins.profiling.ydata_profiling_profiling import (
-    ProfileBuilderYdataProfiling,
-    ProfilePluginYdataProfiling,
-)
-from nefertem.utils.commons import (
-    LIBRARY_YDATA_PROFILING,
-    OPERATION_PROFILING,
-    PANDAS_DATAFRAME_FILE_READER,
-)
+from nefertem.plugins.profiling.ydata_profiling.builder import ProfileBuilderYdataProfiling
+from nefertem.plugins.profiling.ydata_profiling.plugin import ProfilePluginYdataProfiling
+from nefertem.utils.commons import LIBRARY_YDATA_PROFILING, PANDAS_DATAFRAME_FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -46,13 +40,13 @@ class TestProfilePluginYdataProfiling:
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_PROFILING)
+        correct_render_nefertem(output, PROFILE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_PROFILING)
+        incorrect_render_nefertem(output, PROFILE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
@@ -74,11 +68,11 @@ class TestProfilePluginYdataProfiling:
         assert output.artifact[0].filename == filename1
         assert output.artifact[0].filename != filename2
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == ydata_profiling.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == ydata_profiling.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == ydata_profiling.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == ydata_profiling.__version__
 
 
 class TestProfileBuilderYdataProfiling:

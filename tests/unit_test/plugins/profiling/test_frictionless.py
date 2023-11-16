@@ -2,23 +2,17 @@ import io
 
 import frictionless
 import pytest
-from frictionless.resource import Resource
+from frictionless import Resource
 
-from nefertem.plugins.profiling.frictionless_profiling import (
-    ProfileBuilderFrictionless,
-    ProfilePluginFrictionless,
-)
-from nefertem.utils.commons import (
-    BASE_FILE_READER,
-    LIBRARY_FRICTIONLESS,
-    OPERATION_PROFILING,
-)
+from nefertem.plugins.profiling.frictionless.builder import ProfileBuilderFrictionless
+from nefertem.plugins.profiling.frictionless.plugin import ProfilePluginFrictionless
+from nefertem.utils.commons import FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -46,19 +40,19 @@ class TestProfilePluginFrictionless:
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_PROFILING)
+        correct_render_nefertem(output, PROFILE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_PROFILING)
+        incorrect_render_nefertem(output, PROFILE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
         result = setted_plugin.profile()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_profile.format(f"{LIBRARY_FRICTIONLESS}.json")
+        filename = setted_plugin._fn_profile.format("frictionless.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, io.BytesIO)
         assert output.artifact[0].filename == filename
@@ -70,11 +64,11 @@ class TestProfilePluginFrictionless:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == frictionless.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == frictionless.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == frictionless.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == frictionless.__version__
 
 
 class TestProfileBuilderFrictionless:
@@ -111,4 +105,4 @@ def resource(local_resource_no_temp):
 
 @pytest.fixture
 def data_reader():
-    return BASE_FILE_READER
+    return FILE_READER

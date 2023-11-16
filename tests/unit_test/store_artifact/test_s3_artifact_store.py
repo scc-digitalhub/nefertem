@@ -3,21 +3,14 @@ from pathlib import Path
 import pytest
 from botocore.exceptions import ClientError
 
-from nefertem.utils.commons import (
-    DATAREADER_BUFFER,
-    DATAREADER_FILE,
-    DATAREADER_NATIVE,
-)
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import build_key, get_name_from_uri
 from tests.conftest import S3_BUCKET, S3_FILENAME, TEST_FILENAME
 
 
-class TestS3ArtifactStore:
-    def test_persist_artifact(
-        self, store, temp_file, stringio, bytesio, dictionary, s3
-    ):
+class TestS3InputStore:
+    def test_persist_artifact(self, store, temp_file, stringio, bytesio, dictionary, s3):
         dst = "artifact/test/test/"
         src_name = "persist.txt"
         key = build_key(dst, src_name)
@@ -66,28 +59,22 @@ class TestS3ArtifactStore:
 
     def test_get_and_register_artifact(self, store):
         # File
-        res = store._get_and_register_artifact(S3_FILENAME, DATAREADER_FILE)
+        res = store._get_and_register_artifact(S3_FILENAME, "file")
         assert Path(res).is_file()
 
         # Native
-        res = store._get_and_register_artifact(S3_FILENAME, DATAREADER_NATIVE)
+        res = store._get_and_register_artifact(S3_FILENAME, "native")
         assert res.startswith(f"https://test.s3.amazonaws.com/{S3_FILENAME}?")
         assert "AWSAccessKeyId=" in res
         assert "Signature=" in res
         assert "Expires=" in res
-
-        # Buffer
-        with pytest.raises(NotImplementedError):
-            store._get_and_register_artifact(S3_FILENAME, DATAREADER_BUFFER)
 
     def test_check_access_to_storage(self, store, client):
         assert store._check_access_to_storage(client, S3_BUCKET) is None
         with pytest.raises(StoreError):
             store._check_access_to_storage(client, "non-existent-bucket")
 
-    @pytest.mark.parametrize(
-        "key", [("artifact/test/persist.txt"), ("/test/test/persist.txt")]
-    )
+    @pytest.mark.parametrize("key", [("artifact/test/persist.txt"), ("/test/test/persist.txt")])
     def test_get_presigned_url(self, store, client, key):
         url = store._get_presigned_url(client, S3_BUCKET, key)
         if key.startswith("/"):

@@ -19,9 +19,3 @@ class RunError(NefertemError):
     """
     Raised when incontered errors on Runs.
     """
-
-
-class ValidationError(NefertemError):
-    """
-    Raised when incontered errors on validation.
-    """

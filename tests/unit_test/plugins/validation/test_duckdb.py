@@ -4,31 +4,24 @@ from pathlib import Path
 import duckdb
 import pytest
 
-from nefertem.plugins.utils.plugin_utils import ValidationReport
-from nefertem.plugins.validation.duckdb_validation import (
-    ValidationBuilderDuckDB,
-    ValidationPluginDuckDB,
-)
-from nefertem.utils.commons import (
-    LIBRARY_DUCKDB,
-    OPERATION_VALIDATION,
-    PANDAS_DATAFRAME_DUCKDB_READER,
-    DEFAULT_DIRECTORY,
-)
+from nefertem.plugins.utils import ValidationReport
+from nefertem.plugins.validation.duckdb.builder import ValidationBuilderDuckDB
+from nefertem.plugins.validation.duckdb.plugin import ValidationPluginDuckDB
+from nefertem.utils.commons import DEFAULT_DIRECTORY, LIBRARY_DUCKDB, PANDAS_DATAFRAME_DUCKDB_READER, VALIDATE
 from tests.conftest import (
     CONST_DUCKDB_01,
     mock_c_duckdb,
     mock_c_generic,
-    mock_r_generic,
     mock_c_to_fail,
+    mock_r_generic,
     mock_r_to_fail,
 )
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
-    correct_setup,
     correct_render_artifact,
     correct_render_nefertem,
+    correct_setup,
     incorrect_execute,
     incorrect_render_artifact,
     incorrect_render_nefertem,
@@ -56,13 +49,13 @@ class TestValidationPluginDuckDB:
         # Correct execution
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_VALIDATION)
+        correct_render_nefertem(output, VALIDATE)
 
         # Error execution
         setted_plugin.data_reader = "error"
         result = setted_plugin.validate()
         output = setted_plugin.render_nefertem(result)
-        incorrect_render_nefertem(output, OPERATION_VALIDATION)
+        incorrect_render_nefertem(output, VALIDATE)
 
     def test_render_artifact_method(self, setted_plugin):
         # Correct execution
@@ -80,11 +73,11 @@ class TestValidationPluginDuckDB:
         incorrect_render_artifact(output)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == duckdb.__name__
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == duckdb.__name__
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == duckdb.__version__
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == duckdb.__version__
 
 
 class TestValidationBuilderDuckDB:

@@ -1,9 +1,4 @@
-import pytest
-
-from nefertem.store_artifact.sql_artifact_store import SQLArtifactStore
-
-
-class TestSQLArtifactStore:
+class TestSQLInputStore:
     def test_persist_artifact(self):
         ...
 

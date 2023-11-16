@@ -1,5 +1,6 @@
 import pytest
-from nefertem.plugins.plugin_factory import builder_factory
+
+from nefertem.plugins.factory import builder_factory
 
 
 class TestBuilderFactory:

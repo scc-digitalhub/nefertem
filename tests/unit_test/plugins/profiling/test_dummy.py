@@ -1,10 +1,7 @@
 import pytest
 
-from nefertem.plugins.profiling.dummy_profiling import (
-    ProfileBuilderDummy,
-    ProfilePluginDummy,
-)
-from nefertem.utils.commons import LIBRARY_DUMMY, OPERATION_PROFILING, BASE_FILE_READER
+from nefertem.plugins.profiling.dummy import ProfileBuilderDummy, ProfilePluginDummy
+from nefertem.utils.commons import DUMMY, FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,
@@ -22,21 +19,21 @@ class TestProfilePluginDummy:
     def test_render_nefertem(self, setted_plugin):
         result = setted_plugin.profile()
         output = setted_plugin.render_nefertem(result)
-        correct_render_nefertem(output, OPERATION_PROFILING)
+        correct_render_nefertem(output, PROFILE)
 
     def test_render_artifact_method(self, setted_plugin):
         result = setted_plugin.profile()
         output = setted_plugin.render_artifact(result)
-        filename = setted_plugin._fn_profile.format(f"{LIBRARY_DUMMY}.json")
+        filename = setted_plugin._fn_profile.format(f"{DUMMY}.json")
         correct_render_artifact(output)
         assert isinstance(output.artifact[0].object, dict)
         assert output.artifact[0].filename == filename
 
-    def test_get_lib_name(self, plugin):
-        assert plugin().get_lib_name() == LIBRARY_DUMMY
+    def test_get_framework_name(self, plugin):
+        assert plugin().get_framework_name() == DUMMY
 
-    def test_get_lib_version(self, plugin):
-        assert plugin().get_lib_version() == LIBRARY_DUMMY
+    def test_get_framework_version(self, plugin):
+        assert plugin().get_framework_version() == DUMMY
 
 
 class TestProfileBuilderDummy:
@@ -72,4 +69,4 @@ def resource(local_resource):
 
 @pytest.fixture
 def data_reader():
-    return BASE_FILE_READER
+    return FILE_READER

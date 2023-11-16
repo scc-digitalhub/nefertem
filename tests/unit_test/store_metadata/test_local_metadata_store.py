@@ -1,9 +1,4 @@
-import pytest
-
-from nefertem.store_metadata.local_metadata_store import LocalMetadataStore
-
-
-class TestLocalMetadataStore:
+class TestLocalOutputStore:
     def test_init_run(self):
         ...
 
@@ -16,5 +11,5 @@ class TestLocalMetadataStore:
     def test_build_source_destination(self):
         ...
 
-    def test_get_run_metadata_uri(self):
+    def test_get_run_path(self):
         ...

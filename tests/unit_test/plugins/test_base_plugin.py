@@ -1,11 +1,17 @@
-from typing import List
+from __future__ import annotations
+
+import typing
 from unittest.mock import Mock
 
 import pytest
 
-from nefertem.plugins.base_plugin import Plugin, PluginBuilder
-from nefertem.utils.config import DataResource
+from nefertem.plugins.builder import PluginBuilder
+from nefertem.plugins.plugin import Plugin
+from nefertem.resources.data_resource import DataResource
 from nefertem.utils.exceptions import StoreError
+
+if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils import Result
 
 
 class SamplePlugin(Plugin):
@@ -19,18 +25,18 @@ class SamplePlugin(Plugin):
     def execute(self) -> dict:
         return {"result": "success"}
 
-    def render_nefertem(self, obj: "Result") -> "Result":
+    def render_nefertem(self, obj: Result) -> Result:
         return obj  # dummy implementation for testing
 
-    def render_artifact(self, obj: "Result") -> "Result":
+    def render_artifact(self, obj: Result) -> Result:
         return obj  # dummy implementation for testing
 
     @staticmethod
-    def get_lib_name() -> str:
+    def framework_name() -> str:
         return "SamplePlugin"
 
     @staticmethod
-    def get_lib_version() -> str:
+    def framework_version() -> str:
         return "1.0"
 
 
@@ -39,7 +45,7 @@ class SampleBuilder(PluginBuilder):
     Sample concrete builder implementation for testing.
     """
 
-    def build(self, *args, **kwargs) -> List[Plugin]:
+    def build(self, *args, **kwargs) -> list[Plugin]:
         return [SamplePlugin()]
 
     def destroy(self) -> None:
@@ -75,7 +81,7 @@ def test_plugin_render_artifact():
 
 def test_plugin_get_library():
     plugin = SamplePlugin()
-    library_info = plugin.get_library()
+    library_info = plugin.get_framework()
     assert isinstance(library_info, dict)
     assert "libraryName" in library_info
     assert "libraryVersion" in library_info
@@ -99,21 +105,21 @@ def test_builder_destroy():
 def test_plugin_get_render_tuple():
     obj_mock = Mock()
     filename_mock = Mock()
-    render_tuple = Plugin.get_render_tuple(obj_mock, filename_mock)
+    render_tuple = Plugin._get_render_tuple(obj_mock, filename_mock)
     assert isinstance(render_tuple, tuple)
     assert len(render_tuple) == 2
     assert render_tuple[0] == obj_mock
     assert render_tuple[1] == filename_mock
 
 
-def test_plugin_get_lib_name():
-    name = SamplePlugin.get_lib_name()
+def test_plugin_get_framework_name():
+    name = SamplePlugin.framework_name()
     assert isinstance(name, str)
     assert name == "SamplePlugin"
 
 
-def test_plugin_get_lib_version():
-    version = SamplePlugin.get_lib_version()
+def test_plugin_get_framework_version():
+    version = SamplePlugin.framework_version()
     assert isinstance(version, str)
     assert version == "1.0"
 

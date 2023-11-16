@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from nefertem.client.run_builder import RunBuilder
 from nefertem.client.store_handler import StoreHandler
+from nefertem.run.builder import RunBuilder
 from nefertem.run.run import Run
 from nefertem.utils.exceptions import RunError
 
@@ -37,7 +37,5 @@ class TestRunBuilder:
 
 @pytest.fixture()
 def builder(local_md_store_cfg, local_store_cfg):
-    store_handler = StoreHandler(
-        metadata_store=local_md_store_cfg, store=local_store_cfg
-    )
+    store_handler = StoreHandler(metadata_store=local_md_store_cfg, store=local_store_cfg)
     return RunBuilder(store_handler)

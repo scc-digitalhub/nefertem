@@ -1,17 +1,10 @@
 import pytest
 
-from nefertem.utils.commons import (
-    DATAREADER_BUFFER,
-    DATAREADER_FILE,
-    DATAREADER_NATIVE,
-)
 from tests.conftest import TEST_FILENAME
 
 
-class TestLocalArtifactStore:
-    def test_persist_artifact(
-        self, store, temp_file, stringio, bytesio, dictionary, temp_folder
-    ):
+class TestLocalInputStore:
+    def test_persist_artifact(self, store, temp_file, stringio, bytesio, dictionary, temp_folder):
         src_name = "persist.txt"
         pth = temp_folder / src_name
 
@@ -56,14 +49,11 @@ class TestLocalArtifactStore:
     @pytest.mark.parametrize(
         "src,fetch_mode,expected,not_implemented",
         [
-            (TEST_FILENAME, DATAREADER_FILE, TEST_FILENAME, False),
-            (TEST_FILENAME, DATAREADER_NATIVE, TEST_FILENAME, False),
-            (TEST_FILENAME, DATAREADER_BUFFER, None, True),
+            (TEST_FILENAME, "file", TEST_FILENAME, False),
+            (TEST_FILENAME, "native", TEST_FILENAME, False),
         ],
     )
-    def test_get_and_register_artifact(
-        self, store, src, fetch_mode, expected, not_implemented
-    ):
+    def test_get_and_register_artifact(self, store, src, fetch_mode, expected, not_implemented):
         if not_implemented:
             with pytest.raises(NotImplementedError):
                 store._get_and_register_artifact(src, fetch_mode)
@@ -87,9 +77,9 @@ class TestLocalArtifactStore:
 
     def test_get_run_artifacts_uri(self, store, temp_folder):
         pth = str(temp_folder / "artifact" / "test" / "test")
-        assert store.get_run_artifacts_uri("test", "test") == pth
+        assert store.get_run_path("test", "test") == pth
         pth = str(temp_folder / "artifact" / "test1" / "test2")
-        assert store.get_run_artifacts_uri("test1", "test2") == pth
+        assert store.get_run_path("test1", "test2") == pth
 
 
 @pytest.fixture

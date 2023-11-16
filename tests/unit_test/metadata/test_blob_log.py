@@ -1,13 +1,13 @@
-from nefertem.metadata.blob_log import BlobLog
+from nefertem.metadata.blob import Blob
 
 
 class TestBlobLog:
     def test_to_dict(self):
-        log = BlobLog("test", "test", "test", {"test": "test"})
+        log = Blob("test", "test", "test", {"test": "test"})
         expected_data = {
-            "runId": "test",
-            "experimentName": "test",
-            "nefertemVersion": "test",
-            "test": "test",
+            "run_id": "test",
+            "experiment_name": "test",
+            "nefertem_version": "test",
+            "contents": {"test": "test"},
         }
         assert log.to_dict() == expected_data

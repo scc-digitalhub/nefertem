@@ -1,23 +1,10 @@
-from unittest.mock import MagicMock
+from nefertem_inference.metadata.report import NefertemSchema
+from nefertem_validation.metadata.report import NefertemReport
 
-from nefertem.plugins.base_plugin import Plugin
-from nefertem.plugins.utils.plugin_utils import RenderTuple, Result
-from nefertem.metadata.nefertem_reports import (
-    NefertemSchema,
-    NefertemProfile,
-    NefertemReport,
-)
-from nefertem.utils.commons import (
-    OPERATION_INFERENCE,
-    OPERATION_PROFILING,
-    OPERATION_VALIDATION,
-    LIBRARY_DUCKDB,
-    LIBRARY_FRICTIONLESS,
-    LIBRARY_GREAT_EXPECTATIONS,
-    LIBRARY_SQLALCHEMY,
-    CONSTRAINT_FRICTIONLESS_SCHEMA,
-)
-from tests.conftest import mock_object_factory
+from nefertem.metadata.report import NefertemProfile
+from nefertem.plugins.plugin import Plugin
+from nefertem.plugins.utils import RenderTuple, Result
+from nefertem.utils.commons import INFER, PROFILE, VALIDATE
 
 
 def correct_setup(plg):
@@ -50,16 +37,16 @@ def correct_execute(output):
 def correct_render_nefertem(output, op):
     correct_result(output)
     artifact = output.artifact
-    if op == OPERATION_INFERENCE:
+    if op == INFER:
         assert isinstance(artifact, NefertemSchema)
         assert isinstance(artifact.duration, float)
         assert isinstance(artifact.fields, list)
-    if op == OPERATION_PROFILING:
+    if op == PROFILE:
         assert isinstance(artifact, NefertemProfile)
         assert isinstance(artifact.duration, float)
         assert isinstance(artifact.stats, dict)
         assert isinstance(artifact.fields, dict)
-    if op == OPERATION_VALIDATION:
+    if op == VALIDATE:
         assert isinstance(artifact, NefertemReport)
         assert isinstance(artifact.duration, float)
         assert isinstance(artifact.constraint, dict)
@@ -83,16 +70,16 @@ def incorrect_execute(output):
 def incorrect_render_nefertem(output, op):
     assert isinstance(output, Result)
     artifact = output.artifact
-    if op == OPERATION_INFERENCE:
+    if op == INFER:
         assert isinstance(artifact, NefertemSchema)
         assert isinstance(artifact.duration, float)
         assert not artifact.fields
-    if op == OPERATION_PROFILING:
+    if op == PROFILE:
         assert isinstance(artifact, NefertemProfile)
         assert isinstance(artifact.duration, float)
         assert not artifact.stats
         assert not artifact.fields
-    if op == OPERATION_VALIDATION:
+    if op == VALIDATE:
         assert isinstance(artifact, NefertemReport)
         assert isinstance(artifact.duration, float)
         assert not artifact.valid
