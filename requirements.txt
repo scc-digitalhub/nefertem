@@ -12,8 +12,14 @@ botocore==1.29.165
     # via
     #   boto3
     #   s3transfer
+certifi==2023.7.22
+    # via requests
+charset-normalizer==3.3.2
+    # via requests
 greenlet==3.0.1
     # via sqlalchemy
+idna==3.4
+    # via requests
 jmespath==1.0.1
     # via
     #   boto3
@@ -26,6 +32,8 @@ pydantic==1.10.13
     # via nefertem (pyproject.toml)
 python-dateutil==2.8.2
     # via botocore
+requests==2.31.0
+    # via nefertem (pyproject.toml)
 s3transfer==0.6.2
     # via boto3
 six==1.16.0
@@ -35,4 +43,6 @@ sqlalchemy==1.4.50
 typing-extensions==4.8.0
     # via pydantic
 urllib3==1.26.18
-    # via botocore
+    # via
+    #   botocore
+    #   requests
