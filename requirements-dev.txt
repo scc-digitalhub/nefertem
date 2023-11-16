@@ -17,6 +17,8 @@ botocore==1.29.165
     #   boto3
     #   moto
     #   s3transfer
+bumpver==2023.1129
+    # via nefertem (pyproject.toml)
 certifi==2023.7.22
     # via requests
 cffi==1.16.0
@@ -24,7 +26,11 @@ cffi==1.16.0
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
-    # via black
+    # via
+    #   black
+    #   bumpver
+colorama==0.4.6
+    # via bumpver
 cryptography==41.0.5
     # via moto
 exceptiongroup==1.1.3
@@ -41,6 +47,10 @@ jmespath==1.0.1
     # via
     #   boto3
     #   botocore
+lexid==2021.1006
+    # via bumpver
+looseversion==1.3.0
+    # via bumpver
 markupsafe==2.1.3
     # via
     #   jinja2
@@ -78,6 +88,7 @@ pyyaml==6.0.1
 requests==2.31.0
     # via
     #   moto
+    #   nefertem (pyproject.toml)
     #   responses
 responses==0.24.1
     # via moto
@@ -87,6 +98,8 @@ six==1.16.0
     # via python-dateutil
 sqlalchemy==1.4.50
     # via nefertem (pyproject.toml)
+toml==0.10.2
+    # via bumpver
 tomli==2.0.1
     # via
     #   black
