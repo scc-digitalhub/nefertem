@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nefertem-inference"
 version = "2.0.0"
-description = "Python data validation library"
+description = "Python data inference library"
 readme = "README.md"
 authors = [
     { name = "Fondazione Bruno Kessler", email = "dslab@fbk.eu" },
@@ -18,9 +18,9 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-keywords = ["data", "validation", "quality"]
+keywords = ["data", "inference", "quality"]
 dependencies = [
-    "pydantic~=1.10",
+    "nefertem~=2.0",
 ]
 
 requires-python = ">=3.9"
@@ -36,3 +36,14 @@ line-length = 120
 
 [tool.ruff.extend-per-file-ignores]
 "__init__.py" = ["F401"]
+
+[tool.bumpver]
+current_version = "2.0.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message  = "Bump version {old_version} -> {new_version}"
+commit          = true
+tag             = true
+push            = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
