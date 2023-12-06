@@ -20,7 +20,9 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "boto3>1.25, <=1.26",
+    "boto3~=1.24.59",
+    "aiobotocore~=2.4.2",
+    "s3fs~=2023.1.0",
     "pydantic~=1.10",
     "sqlalchemy~=1.4",
     "psutil>=5.9",
