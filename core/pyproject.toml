@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nefertem"
-version = "2.0.1"
+version = "2.0.2"
 description = "Python data validation library"
 readme = "README.md"
 authors = [
@@ -63,7 +63,7 @@ line-length = 120
 "__init__.py" = ["F401"]
 
 [tool.bumpver]
-current_version = "2.0.1"
+current_version = "2.0.2"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} -> {new_version}"
 commit          = true
