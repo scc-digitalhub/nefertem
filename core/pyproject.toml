@@ -3,8 +3,8 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nefertem"
-version = "2.0.2"
+name = "nefertem-core"
+version = "2.0.3"
 description = "Python data validation library"
 readme = "README.md"
 authors = [
@@ -20,10 +20,10 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "boto3~=1.24.59",
-    "aiobotocore~=2.4.2",
-    "s3fs~=2023.1.0",
-    "pydantic~=1.10",
+    "boto3>=1.28.0, <1.29.0",
+    "aiobotocore>=2.5.0, <2.8",
+    "pydantic~=1.10, >=1.10.8",
+    "pandas>=1.2, <3",
     "sqlalchemy~=1.4",
     "psutil>=5.9",
     "requests~=2.31",
@@ -63,12 +63,12 @@ line-length = 120
 "__init__.py" = ["F401"]
 
 [tool.bumpver]
-current_version = "2.0.2"
+current_version = "2.0.3"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} -> {new_version}"
-commit          = true
-tag             = true
-push            = true
+commit          = false
+tag             = false
+push            = false
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']

@@ -16,6 +16,9 @@ class RemoteStoreConfig(StoreConfig):
     HTTP store configuration class.
     """
 
+    auth: str = None
+    """Authentication type."""
+
     user: str = None
     """User name."""
 

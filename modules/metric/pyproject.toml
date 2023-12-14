@@ -3,9 +3,9 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nefertem-profiling"
+name = "nefertem-metric"
 version = "2.0.0"
-description = "Python data profiling library"
+description = "Python data validation library"
 readme = "README.md"
 authors = [
     { name = "Fondazione Bruno Kessler", email = "dslab@fbk.eu" },
@@ -18,9 +18,9 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-keywords = ["data", "profiling", "quality"]
+keywords = ["data", "validation", "quality"]
 dependencies = [
-    "nefertem~=2.0",
+    "nefertem-core~=2.0",
 ]
 
 requires-python = ">=3.9"
@@ -41,8 +41,8 @@ line-length = 120
 current_version = "2.0.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} -> {new_version}"
-commit          = true
-tag             = true
+commit          = false
+tag             = false
 push            = false
 
 [tool.bumpver.file_patterns]

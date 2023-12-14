@@ -3,9 +3,9 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nefertem-validation-duckdb"
+name = "nefertem-inference"
 version = "2.0.1"
-description = "Python data validation library"
+description = "Python data inference library"
 readme = "README.md"
 authors = [
     { name = "Fondazione Bruno Kessler", email = "dslab@fbk.eu" },
@@ -18,12 +18,9 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-keywords = ["data", "validation", "quality"]
+keywords = ["data", "inference", "quality"]
 dependencies = [
-    "nefertem-validation~=2.0",
-    "duckdb==0.9.2",
-    "pandas>=1.2, <3",
-    "frictionless==5.15.0",
+    "nefertem-core~=2.0",
 ]
 
 requires-python = ">=3.9"

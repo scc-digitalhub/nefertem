@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nefertem-validation"
+name = "nefertem"
 version = "2.0.0"
 description = "Python data validation library"
 readme = "README.md"
@@ -20,10 +20,32 @@ classifiers = [
 ]
 keywords = ["data", "validation", "quality"]
 dependencies = [
-    "nefertem~=2.0",
+    "nefertem-core~=2.0",
 ]
 
 requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+exclude = ["docs*", "tests*", "plugins*", "operations*"]
+
+[project.optional-dependencies]
+all = [
+    "nefertem-inference~=2.0",
+    "nefertem-profiling~=2.0",
+    "nefertem-validation~=2.0",
+]
+dev = [
+    "black",
+    "pytest",
+    "moto",
+    "bumpver",
+]
+docs = [
+    "Sphinx==5.3.0",
+    "pydata-sphinx-theme==0.13.3",
+    "autodoc-pydantic==1.8.0",
+    "numpydoc==1.5.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/scc-digitalhub/nefertem"
@@ -41,8 +63,8 @@ line-length = 120
 current_version = "2.0.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} -> {new_version}"
-commit          = true
-tag             = true
+commit          = false
+tag             = false
 push            = false
 
 [tool.bumpver.file_patterns]
