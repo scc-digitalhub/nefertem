@@ -20,16 +20,6 @@ Out-of-the-box `nefertem` supports the following **data quality operation**:
 ## HOW TO
 
 - [Example](./docs/00-examples.md)
-
 - [Installation and requirements](./docs/01-installation.md)
-
-- [Client](./docs/02-client.md)
-- [Stores](./docs/03-stores.md)
-- [Authentication](./docs/04-authentication.md)
-- [Dataresource](./docs/04-dataresource.md)
-
-- [Modules](./docs/06-modules.md)
-- [Validation](./docs/07-validation.md)
-- [Inferece](./docs/08-inference.md)
-- [Profiling](./docs/09-profiling.md)
-- [Metrics](./docs/10-metrics.md)
+- [Configuration](./docs/02-configuration.md)
+- [Modules](./docs/03-modules.md)
