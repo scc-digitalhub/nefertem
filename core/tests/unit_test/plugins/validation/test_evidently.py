@@ -1,7 +1,6 @@
 import evidently
 import pytest
 from evidently.test_suite import TestSuite
-
 from nefertem.plugins.validation.evidently.builder import ValidationBuilderEvidently
 from nefertem.plugins.validation.evidently.plugin import ValidationPluginEvidently
 from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER, VALIDATE

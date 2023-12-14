@@ -5,11 +5,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from nefertem_validation.metadata.report import NefertemReport
-
 from nefertem.metadata.blob import Blob
 from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
+from nefertem_validation.metadata.report import NefertemReport
 
 
 class RunValidation(Run):

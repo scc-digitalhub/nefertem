@@ -6,6 +6,7 @@ from __future__ import annotations
 import typing
 
 import duckdb
+from nefertem.plugins.utils import RenderTuple, exec_decorator
 from nefertem_validation.metadata.report import NefertemReport
 from nefertem_validation.plugins.plugin import ValidationPlugin
 from nefertem_validation.plugins.utils import get_errors, parse_error_report, render_error_type
@@ -17,13 +18,10 @@ from nefertem_validation_duckdb.utils import (
     return_length,
 )
 
-from nefertem.plugins.utils import RenderTuple, exec_decorator
-
 if typing.TYPE_CHECKING:
+    from nefertem.plugins.utils import Result
     from nefertem_validation_duckdb.constraint import ConstraintDuckDB
     from nefertem_validation_duckdb.reader import PandasDataFrameDuckDBReader
-
-    from nefertem.plugins.utils import Result
 
 
 class ValidationPluginDuckDB(ValidationPlugin):

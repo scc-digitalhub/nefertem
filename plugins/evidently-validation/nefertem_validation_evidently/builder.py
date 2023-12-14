@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from nefertem_validation.plugins.builder import ValidationPluginBuilder
-from nefertem_validation_evidently.constraint import ConstraintEvidently
-from nefertem_validation_evidently.plugin import ValidationPluginEvidently
-
 from nefertem.readers.builder import build_reader
 from nefertem.resources.data_resource import DataResource
 from nefertem.utils.commons import FILE_READER
+from nefertem_validation.plugins.builder import ValidationPluginBuilder
+from nefertem_validation_evidently.constraint import ConstraintEvidently
+from nefertem_validation_evidently.plugin import ValidationPluginEvidently
 
 
 class ValidationBuilderEvidently(ValidationPluginBuilder):

@@ -5,11 +5,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from nefertem_profiling.metadata.report import NefertemProfile
-
 from nefertem.metadata.blob import Blob
 from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
+from nefertem_profiling.metadata.report import NefertemProfile
 
 
 class RunProfiling(Run):

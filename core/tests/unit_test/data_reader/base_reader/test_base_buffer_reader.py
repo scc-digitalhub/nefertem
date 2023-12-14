@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.utils.commons import BASE_BUFFER_READER
 
 

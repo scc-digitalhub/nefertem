@@ -4,7 +4,6 @@ import frictionless
 import pytest
 from frictionless import Report, Schema
 from frictionless.exception import FrictionlessException
-
 from nefertem.plugins.validation.frictionless.builder import ValidationBuilderFrictionless
 from nefertem.plugins.validation.frictionless.plugin import ValidationPluginFrictionless
 from nefertem.utils.commons import FILE_READER, VALIDATE

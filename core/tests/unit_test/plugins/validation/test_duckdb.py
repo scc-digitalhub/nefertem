@@ -3,7 +3,6 @@ from pathlib import Path
 
 import duckdb
 import pytest
-
 from nefertem.plugins.utils import ValidationReport
 from nefertem.plugins.validation.duckdb.builder import ValidationBuilderDuckDB
 from nefertem.plugins.validation.duckdb.plugin import ValidationPluginDuckDB

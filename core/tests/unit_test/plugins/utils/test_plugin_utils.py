@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.plugins.utils import Result, exec_decorator
 from nefertem.utils.commons import STATUS_ERROR, STATUS_FINISHED
 

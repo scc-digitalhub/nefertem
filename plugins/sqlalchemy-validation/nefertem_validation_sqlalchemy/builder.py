@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import typing
 
+from nefertem.readers import reader_registry
+from nefertem.readers.builder import build_reader
+from nefertem.utils.utils import flatten_list
 from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_sqlalchemy.constraint import ConstraintSqlAlchemy
 from nefertem_validation_sqlalchemy.plugin import ValidationPluginSqlAlchemy
 from operations.nefertem_validation.nefertem_validation.utils import ValidationError
-
-from nefertem.readers import reader_registry
-from nefertem.readers.builder import build_reader
-from nefertem.utils.utils import flatten_list
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource

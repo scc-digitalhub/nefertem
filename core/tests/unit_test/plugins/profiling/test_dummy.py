@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.plugins.profiling.dummy import ProfileBuilderDummy, ProfilePluginDummy
 from nefertem.utils.commons import DUMMY, FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (

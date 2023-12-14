@@ -7,7 +7,6 @@ import re
 from pathlib import Path
 
 import polars as pl
-
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
 

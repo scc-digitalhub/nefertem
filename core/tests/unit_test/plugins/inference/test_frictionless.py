@@ -3,7 +3,6 @@
 import frictionless
 import pytest
 from frictionless import Schema
-
 from nefertem.plugins.inference.frictionless.builder import InferenceBuilderFrictionless
 from nefertem.plugins.inference.frictionless.plugin import InferencePluginFrictionless
 from nefertem.utils.commons import FILE_READER, INFER

@@ -7,7 +7,6 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 import requests
-
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 
 

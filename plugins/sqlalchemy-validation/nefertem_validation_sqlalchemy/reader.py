@@ -4,11 +4,10 @@ PandasDataFrameReader module.
 from __future__ import annotations
 
 import pandas as pd
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
-
 from nefertem.readers.objects._base import DataReader
 from nefertem.utils.exceptions import StoreError
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 
 
 class PandasDataFrameSQLReader(DataReader):

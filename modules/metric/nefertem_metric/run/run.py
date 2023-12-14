@@ -5,11 +5,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from nefertem_metric.metadata.report import NefertemMetricReport
-
 from nefertem.metadata.blob import Blob
 from nefertem.plugins.utils import ResultType
 from nefertem.run.run import Run
+from nefertem_metric.metadata.report import NefertemMetricReport
 
 
 class RunMetric(Run):

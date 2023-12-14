@@ -1,6 +1,5 @@
 import pytest
 import sqlalchemy
-
 from nefertem.plugins.utils import ValidationReport
 from nefertem.plugins.validation.sqlalchemy.builder import ValidationBuilderSqlAlchemy
 from nefertem.plugins.validation.sqlalchemy.plugin import ValidationPluginSqlAlchemy

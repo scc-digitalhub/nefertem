@@ -3,7 +3,6 @@ import io
 import frictionless
 import pytest
 from frictionless import Resource
-
 from nefertem.plugins.profiling.frictionless.builder import ProfileBuilderFrictionless
 from nefertem.plugins.profiling.frictionless.plugin import ProfilePluginFrictionless
 from nefertem.utils.commons import FILE_READER, PROFILE

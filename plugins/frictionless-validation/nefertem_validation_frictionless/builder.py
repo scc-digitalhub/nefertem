@@ -3,12 +3,11 @@ from __future__ import annotations
 import typing
 from copy import deepcopy
 
+from nefertem.readers.builder import build_reader
+from nefertem.utils.commons import FILE_READER
 from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
 from nefertem_validation_frictionless.plugin import ValidationPluginFrictionless
-
-from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import FILE_READER
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource

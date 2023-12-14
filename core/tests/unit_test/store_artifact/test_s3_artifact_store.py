@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.file_utils import get_path
 from nefertem.utils.uri_utils import build_key, get_name_from_uri

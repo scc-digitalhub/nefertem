@@ -5,14 +5,13 @@ from __future__ import annotations
 
 import typing
 
-from pydantic import ValidationError
-
 from nefertem.stores.input.objects._base import StoreParameters
 from nefertem.stores.input.registry import input_store_registry
 from nefertem.stores.kinds import StoreKinds
 from nefertem.stores.output.registry import mdstore_registry
 from nefertem.utils.commons import DUMMY
 from nefertem.utils.exceptions import StoreError
+from pydantic import ValidationError
 
 if typing.TYPE_CHECKING:
     from nefertem.stores.input.objects._base import InputStore, StoreConfig

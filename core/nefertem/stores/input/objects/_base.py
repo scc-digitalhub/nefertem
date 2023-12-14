@@ -7,10 +7,9 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import Any
 
-from pydantic import BaseModel
-
 from nefertem.utils.logger import LOGGER
 from nefertem.utils.utils import build_uuid
+from pydantic import BaseModel
 
 
 class StoreConfig(BaseModel):

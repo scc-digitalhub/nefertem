@@ -4,7 +4,6 @@ import typing
 from unittest.mock import Mock
 
 import pytest
-
 from nefertem.plugins.builder import PluginBuilder
 from nefertem.plugins.plugin import Plugin
 from nefertem.resources.data_resource import DataResource

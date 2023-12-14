@@ -4,14 +4,13 @@ import importlib
 
 import evidently
 from evidently.test_suite import TestSuite
+from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
+from nefertem.readers.objects.file import FileReader
+from nefertem.resources.data_resource import DataResource
 from nefertem_validation.metadata.report import NefertemReport
 from nefertem_validation.plugins.plugin import ValidationPlugin
 from nefertem_validation.plugins.utils import get_errors, parse_error_report
 from nefertem_validation_evidently.constraint import ConstraintEvidently
-
-from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
-from nefertem.readers.objects.file import FileReader
-from nefertem.resources.data_resource import DataResource
 
 
 class ValidationPluginEvidently(ValidationPlugin):

@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless
 from nefertem.plugins.validation.frictionless.utils import frictionless_schema_converter
 from nefertem.readers.utils import describe_resource

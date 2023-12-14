@@ -10,7 +10,6 @@ from typing import Type
 import boto3
 import botocore.client
 from botocore.exceptions import ClientError
-
 from nefertem.stores.input.objects._base import InputStore, StoreConfig
 from nefertem.utils.exceptions import StoreError
 

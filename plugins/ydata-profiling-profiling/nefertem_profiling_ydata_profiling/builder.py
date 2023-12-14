@@ -3,11 +3,10 @@ from __future__ import annotations
 import typing
 from copy import deepcopy
 
-from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
-from nefertem_profiling_ydata_profiling.plugin import ProfilingPluginYdataProfiling
-
 from nefertem.readers.builder import build_reader
 from nefertem.readers.registry import reader_registry
+from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
+from nefertem_profiling_ydata_profiling.plugin import ProfilingPluginYdataProfiling
 
 if typing.TYPE_CHECKING:
     from nefertem.resources.data_resource import DataResource

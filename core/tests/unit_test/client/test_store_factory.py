@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from nefertem.stores.builder import store_builder
 from nefertem.stores.input.objects._base import InputStore, StoreParameters
 from nefertem.stores.output.objects._base import OutputStore

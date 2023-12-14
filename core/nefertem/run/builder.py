@@ -6,8 +6,6 @@ from __future__ import annotations
 import importlib
 import typing
 
-from pydantic import ValidationError
-
 from nefertem.resources.data_resource import DataResource
 from nefertem.run.config import RunConfig
 from nefertem.run.handler import RunHandler
@@ -15,6 +13,7 @@ from nefertem.run.run_info import RunInfo
 from nefertem.stores.builder import get_output_store
 from nefertem.utils.exceptions import RunError
 from nefertem.utils.utils import build_uuid
+from pydantic import ValidationError
 
 if typing.TYPE_CHECKING:
     from nefertem.run.run import Run

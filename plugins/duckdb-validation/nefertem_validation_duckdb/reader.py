@@ -5,11 +5,10 @@ from __future__ import annotations
 
 import duckdb
 import pandas as pd
-from nefertem_validation_duckdb.utils import describe_resource
-
 from nefertem.readers.objects._base import DataReader
 from nefertem.utils.exceptions import StoreError
 from nefertem.utils.utils import listify
+from nefertem_validation_duckdb.utils import describe_resource
 
 
 class PandasDataFrameDuckDBReader(DataReader):

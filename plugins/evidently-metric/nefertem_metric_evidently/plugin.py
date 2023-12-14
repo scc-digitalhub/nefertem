@@ -6,17 +6,15 @@ from typing import Any
 
 import evidently
 from evidently.report import Report
+from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
+from nefertem.utils.io_utils import write_bytesio
 from nefertem_metric.metadata.report import NefertemMetricReport, ProfileMetric
 from nefertem_metric.plugins.plugin import MetricPlugin
 
-from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
-from nefertem.utils.io_utils import write_bytesio
-
 if typing.TYPE_CHECKING:
-    from nefertem_metric_evidently.metrics import MetricEvidently
-
     from nefertem.readers.objects.file import FileReader
     from nefertem.resources.data_resource import DataResource
+    from nefertem_metric_evidently.metrics import MetricEvidently
 
 
 class MetricPluginEvidently(MetricPlugin):

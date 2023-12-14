@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.metadata.env import Env
 
 

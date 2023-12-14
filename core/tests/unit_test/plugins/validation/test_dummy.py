@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.plugins.validation.dummy import ValidationBuilderDummy, ValidationPluginDummy
 from nefertem.utils.commons import DUMMY, FILE_READER, VALIDATE
 from tests.unit_test.plugins.utils_plugin_tests import (

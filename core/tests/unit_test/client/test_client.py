@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.client.client import Client
 from nefertem.run.run import Run
 from nefertem.utils.exceptions import StoreError

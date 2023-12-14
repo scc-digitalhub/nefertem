@@ -7,11 +7,10 @@ import typing
 
 import frictionless
 from frictionless import Schema
+from nefertem.plugins.utils import RenderTuple, exec_decorator
 from nefertem_inference.metadata.report import NefertemSchema
 from nefertem_inference.plugins.plugin import InferencePlugin
 from nefertem_inference.plugins.utils import get_fields
-
-from nefertem.plugins.utils import RenderTuple, exec_decorator
 
 if typing.TYPE_CHECKING:
     from nefertem.plugins.utils import Result

@@ -9,7 +9,6 @@ import boto3
 import duckdb
 import pytest
 from moto import mock_s3
-
 from nefertem.plugins.utils import Result
 from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
 from nefertem.plugins.validation.evidently.constraints import ConstraintEvidently, EvidentlyElement, MetricEvidently

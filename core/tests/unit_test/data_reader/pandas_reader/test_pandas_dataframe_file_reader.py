@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-
 from nefertem.utils.commons import PANDAS_DATAFRAME_FILE_READER
 
 

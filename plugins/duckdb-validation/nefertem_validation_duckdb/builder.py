@@ -5,19 +5,17 @@ from copy import deepcopy
 from pathlib import Path
 
 import duckdb
+from nefertem.readers import reader_registry
+from nefertem.readers.builder import build_reader
+from nefertem.utils.utils import build_uuid, flatten_list, listify
 from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_duckdb.constraint import ConstraintDuckDB
 from nefertem_validation_duckdb.plugin import ValidationPluginDuckDB
 
-from nefertem.readers import reader_registry
-from nefertem.readers.builder import build_reader
-from nefertem.utils.utils import build_uuid, flatten_list, listify
-
 if typing.TYPE_CHECKING:
-    from nefertem_validation_duckdb.reader import PandasDataFrameDuckDBReader
-
     from nefertem.resources.data_resource import DataResource
     from nefertem.stores.input.objects._base import InputStore
+    from nefertem_validation_duckdb.reader import PandasDataFrameDuckDBReader
 
 
 PANDAS_READER = "pandas_df_duckdb_reader"

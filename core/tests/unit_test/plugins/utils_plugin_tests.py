@@ -1,10 +1,9 @@
-from nefertem_inference.metadata.report import NefertemSchema
-from nefertem_validation.metadata.report import NefertemReport
-
 from nefertem.metadata.report import NefertemProfile
 from nefertem.plugins.plugin import Plugin
 from nefertem.plugins.utils import RenderTuple, Result
 from nefertem.utils.commons import INFER, PROFILE, VALIDATE
+from nefertem_inference.metadata.report import NefertemSchema
+from nefertem_validation.metadata.report import NefertemReport
 
 
 def correct_setup(plg):

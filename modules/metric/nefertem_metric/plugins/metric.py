@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
-
 from nefertem.utils.utils import build_uuid
+from pydantic import BaseModel, Field
 
 
 class Metric(BaseModel):

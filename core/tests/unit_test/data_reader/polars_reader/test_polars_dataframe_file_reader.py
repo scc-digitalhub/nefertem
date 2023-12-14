@@ -1,6 +1,5 @@
 import polars as pl
 import pytest
-
 from nefertem.utils.commons import POLARS_DATAFRAME_FILE_READER
 
 

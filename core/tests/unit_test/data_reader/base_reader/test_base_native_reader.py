@@ -1,5 +1,4 @@
 import pytest
-
 from nefertem.utils.commons import NATIVE_READER
 
 

@@ -5,9 +5,8 @@ from __future__ import annotations
 
 from typing import Union
 
-from pydantic import BaseModel, Field
-
 from nefertem.utils.utils import build_uuid
+from pydantic import BaseModel, Field
 
 
 class DataResource(BaseModel):

@@ -1,5 +1,4 @@
 import pytest
-
 from tests.conftest import TEST_FILENAME
 
 

@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from nefertem.plugins.factory import builder_factory
 from nefertem.plugins.plugin import Plugin
 from nefertem.plugins.utils import Result, ResultType
