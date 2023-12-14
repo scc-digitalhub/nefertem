@@ -18,15 +18,15 @@ A basic `DataResource` must have a name, a path to the input data and a refernce
 Optionally, you can add a `table_schema` to describe the data structure, a `package` name to group the resources, a `title` and a `description` to enrich the metadata.
 
 ```python
-   resource = {
-      "name": "res-name",
-      "path": "path-to-data",
-      "store": "store-name",
-      "table_schema": "path to a data schema or an embedded schema",
-      "package": "name of the package to which the resource belongs",
-      "title": "human readable name",
-      "description": "description of the resource"
-   }
+resource = {
+    "name": "res-name",
+    "path": "path-to-data",
+    "store": "store-name",
+    "table_schema": "path to a data schema or an embedded schema",
+    "package": "name of the package to which the resource belongs",
+    "title": "human readable name",
+    "description": "description of the resource"
+}
 ```
 
 At runtime, if a run try to fetch a `DataResource` from a `Store` that is not passed to the `Client` constructor, the program will raise a `StoreError`.
@@ -40,10 +40,7 @@ A store is an object that `nefertem` uses to interact with resources, artifacts 
 The outputh store is configured by specifying an `outputh_path`:
 
 ```python
-
-   import nefertem
-
-   output_path = "./nt_runs"
+output_path = "./nt_runs"
 ```
 
 The output path **MUST** be a local path. `nefertem` uses this path to store output artifacts and metadata.
@@ -59,10 +56,7 @@ Input stores are configured using a `dict` object structured this way:
 For example:
 
 ```python
-
-   import nefertem
-
-   store = {"name": "local", "store_type": "local"}
+store = {"name": "local", "store_type": "local"}
 ```
 
 `nefertem` supports the following store types:
@@ -82,12 +76,12 @@ The configuration is a `dict` object specific for the following backend storages
 The *s3* store requires *endpoint_url*, *aws_access_key_id* and *aws_secret_access_key*. It requires also a *bucket_name* to get the data from.
 
 ```python
-   store_cfg = {
-       "endpoint_url": "http://host:port/",
-       "aws_access_key_id": "acc_key",
-       "aws_secret_access_key": "sec_key",
-       "bucket_name": "bucket_name"
-   }
+store_cfg = {
+    "endpoint_url": "http://host:port/",
+    "aws_access_key_id": "acc_key",
+    "aws_secret_access_key": "sec_key",
+    "bucket_name": "bucket_name"
+}
 ```
 
 #### Remote
@@ -97,22 +91,20 @@ There are two types of authentication for the *remote* store, basic and oauth.
 The *basic* authentication requires a *username* and a *password*.
 
 ```python
-
-   store_cfg = {
-       "auth": "basic",
-       "user": "username",
-       "password": "password"
-   }
+store_cfg = {
+    "auth": "basic",
+    "user": "username",
+    "password": "password"
+}
 ```
 
 The *oauth* requires a token provided by user.
 
 ```python
-
-   store_cfg = {
-       "auth": "oauth",
-       "token": "token"
-   }
+store_cfg = {
+    "auth": "oauth",
+    "token": "token"
+}
 ```
 
 #### SQL
@@ -120,15 +112,14 @@ The *oauth* requires a token provided by user.
 An SQL store requires a set of credentials to connect to the database and the specific driver to use.
 
 ```python
-
-   store_cfg = {
-       "driver": "driver", # e.g. mysql, postgresql, etc.
-       "host": "host",
-       "port": "port",
-       "user": "user",
-       "password": "password",
-       "database": "database"
-   }
+store_cfg = {
+    "driver": "driver", # e.g. postgresql+psycopg2
+    "host": "host",
+    "port": "port",
+    "user": "user",
+    "password": "password",
+    "database": "database"
+}
 ```
 
 ## Client
@@ -137,13 +128,12 @@ A `Client` is an high level interface that allows an user to interact with backe
 You can create a `Client` this way:
 
 ```python
+import nefertem
 
-   import nefertem
+output_path = "./nefertem_run"
+store = {"name": "local", "store_type": "local"}
 
-   output_path = "./nefertem_run"
-   store = {"name": "local", "store_type": "local"}
-
-   client = nefertem.create_client(output_path=output_path, store=[store])
+client = nefertem.create_client(output_path=output_path, store=[store])
 ```
 
 ### Client parameters
@@ -156,15 +146,15 @@ You can create a `Client` this way:
 A run configuration is a `dict` object that contains the operations to be executed and the frameworks to be used. It is passed to the `Client` when a run is created.
 
 ```python
-   run_config = {
-        "operation": "type-of-operation",
-        "exec_config": [{
-               "framework": "framework-to-use",
-               "exec_args": { "framework-specific-config": "value" },
-               "parallel": False, # optional, default False
-               "num_workers": 1 # optional, default 1
-            }]
-   }
+run_config = {
+    "operation": "type-of-operation",
+    "exec_config": [{
+        "framework": "framework-to-use",
+        "exec_args": { "framework-specific-config": "value" },
+        "parallel": False, # optional, default False
+        "num_workers": 1 # optional, default 1
+    }]
+}
 ```
 
 The `operation` key is used to specify the type of operation to be executed. The `exec_config` key is used to specify a variety of things:
