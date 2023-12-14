@@ -4,10 +4,10 @@ To execute a `nefertem` you need to perform some configuration steps. You need t
 
 Roughly speaking, you need to define:
 
-- data resources to be used in the run.
-- stores configuration where the resources are saved.
-- client that handles the I/O storages and the creation of runs.
-- run configuration that contains the operations to be executed.
+- **data resources** to be used in the run.
+- **stores** configuration where the resources are saved.
+- **client** that handles the I/O storages and the creation of runs.
+- **run configuration** that contains the operations to be executed.
 - according to the operations, you may need to configure the frameworks and other stuff.
 
 ## Data resources
@@ -161,7 +161,7 @@ A run configuration is a `dict` object that contains the operations to be execut
         "exec_config": [{
                "framework": "framework-to-use",
                "exec_args": { "framework-specific-config": "value" },
-               "parallel": False # optional, default False
+               "parallel": False, # optional, default False
                "num_workers": 1 # optional, default 1
             }]
    }
@@ -176,4 +176,6 @@ The `operation` key is used to specify the type of operation to be executed. The
 
 The `exec_config` key can be repeated to execute multiple operations in a single run, for example by using different frameworks.
 
-In the next sections we will see how to configure the `exec_args` for each operation and framework.
+## Run
+
+In the [next sections](./03-modules.md) we will examine in details how to configure the `run` for each operation and framework and what kind of methods are available to execute the operations.

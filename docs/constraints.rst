@@ -1,51 +1,45 @@
 
-Constraints
-===========
+### Constraints
+
 
 A `Constraint` is a rule that resource must fit to be considered valid.
 You can define as many `Constraint` as you want, and *nefertem* will pass them to the desired framework of validation.
 
 `Constraints` share the following parameters
 
-* *name*, identifier for the constraint
-* *title*, optional, human readable version of the identifier
-* *resources*, targeted LIST of resources
-* *weight*, optional, importance of an eventual error
+- *name*, identifier for the constraint
+- *title*, optional, human readable version of the identifier
+- *resources*, targeted LIST of resources
+- *weight*, optional, importance of an eventual error
 
-Constraint types
-----------------
+### Constraint types
 
-* `Frictionless`_
-* `Frictionless schema`_
-* `DuckDB`_
-* `SQLAlchemy`_
-* `Great Expectations`_
-* `Evidently`_
+- `Frictionless`_
+- `Frictionless schema`_
+- `DuckDB`_
+- `SQLAlchemy`_
+- `Evidently`_
 
-
-
-Frictionless
-------------
+#### Frictionless
 
 The parameters to define a `ConstraintFrictionless` are the following:
 
+- *field*, specified targeted field
+- *fieldType*, specified targeted field type
+- *constraint*, frictionless constraint
 
-* *field*, specified targeted field
-* *fieldType*, specified targeted field type
-* *constraint*, frictionless constraint
+  - *format*
+  - *type*
+  - *required*
+  - *unique*
+  - *minLength*
+  - *maxLength*
+  - *minimum*
+  - *maximum*
+  - *pattern*
+  - *enum*
 
-  * *format*
-  * *type*
-  * *required*
-  * *unique*
-  * *minLength*
-  * *maxLength*
-  * *minimum*
-  * *maximum*
-  * *pattern*
-  * *enum*
-
-* *value*, value expeted
+- *value*, value expeted
 
 Example:
 
@@ -76,14 +70,15 @@ Example:
                                              constraint="maxLength",
                                              value=11,
                                              weight=5)
+```
 
-Frictionless schema
+#### Frictionless schema
 -------------------
 
 The parameters to define a `ConstraintFullFrictionless` are the following:
 
 
-* *schema*, a dictionary (or a frictionless `Schema`), formatted as `frictionless Schema`.
+- *schema*, a dictionary (or a frictionless `Schema`), formatted as `frictionless Schema`.
 
 Example:
 
@@ -118,43 +113,43 @@ Example:
                                                  tableSchema=SCHEMA_01,
                                                  weight=5)
 
-DuckDB
+#### DuckDB
 ------
 
 The parameters to define a `ConstraintDuckDB` are the following:
 
 
-* *query*, an SQL query that will be executed on the resources
+- *query*, an SQL query that will be executed on the resources
 
   * Please note that the query require some precautions
 
     * When you select from a resource, the resource must be written lowercase
     * The name of the resource where you select from must be in the list of resources passed to the constraint
 
-* *expect*, expected tipology of result
+- *expect*, expected tipology of result
 
-  * *empty* (only for *check = rows*)
-  * *non-empty* (only for *check = rows*)
-  * *exact*
-  * *range*
-  * *minimum*
-  * *maximum*
+  - *empty* (only for *check = rows*)
+  - *non-empty* (only for *check = rows*)
+  - *exact*
+  - *range*
+  - *minimum*
+  - *maximum*
 
-* *value*, value expected
+- *value*, value expected
 
   * Please note that when *expect* is equals to *range*, this parameter accepts a string formatted as follows
 
-    * "(num1, num2)" upper exclusive, lower exclusive
-    * "(num1, num2]" upper exclusive, lower inclusive
-    * "[num1, num2)" upper inclusive, lower exclusive
-    * "[num1, num2]" upper inclusive, lower inclusive
+    - "(num1, num2)" upper exclusive, lower exclusive
+    - "(num1, num2]" upper exclusive, lower inclusive
+    - "[num1, num2)" upper inclusive, lower exclusive
+    - "[num1, num2]" upper inclusive, lower inclusive
 
-  * *minimum* and *maximum* are inclusive
+  - *minimum* and *maximum* are inclusive
 
-* *check*, tipology of result to evaluate
+- *check*, tipology of result to evaluate
 
-  * *rows* check number of rows
-  * *value* check a single value, e.g. a *select count(\*)*. If a query result in more than one column, the evaluator will take into account only the first column in the first row
+  - *rows* check number of rows
+  - *value* check a single value, e.g. a *select count(\*)*. If a query result in more than one column, the evaluator will take into account only the first column in the first row
 
 ```python
 
@@ -260,38 +255,38 @@ The parameters to define a `ConstraintDuckDB` are the following:
                                        check="value",
                                        value="[10.87,15.63)",
                                        weight=5)
+```
 
-SQLAlchemy
+#### SQLAlchemy
 ----------
 
 The parameters to define a `ConstraintSqlAlchemy` are the following:
 
+- *query*, an SQL query that will be executed on the database
+- *expect*, expected tipology of result
 
-* *query*, an SQL query that will be executed on the database
-* *expect*, expected tipology of result
+  - *empty* (only for *check = rows*)
+  - *non-empty* (only for *check = rows*)
+  - *exact*
+  - *range*
+  - *minimum*
+  - *maximum*
 
-  * *empty* (only for *check = rows*)
-  * *non-empty* (only for *check = rows*)
-  * *exact*
-  * *range*
-  * *minimum*
-  * *maximum*
-
-* *value*, value expected
+- *value*, value expected
 
   * Please note that when *expect* is equals to *range*, this parameter accepts a string formatted as follows
 
-    * "(num1, num2)" upper exclusive, lower exclusive
-    * "(num1, num2]" upper exclusive, lower inclusive
-    * "[num1, num2)" upper inclusive, lower exclusive
-    * "[num1, num2]" upper inclusive, lower inclusive
+    - "(num1, num2)" upper exclusive, lower exclusive
+    - "(num1, num2]" upper exclusive, lower inclusive
+    - "[num1, num2)" upper inclusive, lower exclusive
+    - "[num1, num2]" upper inclusive, lower inclusive
 
-  * *minimum* and *maximum* are inclusive
+  - *minimum* and *maximum* are inclusive
 
-* *check*, tipology of result to evaluate
+- *check*, tipology of result to evaluate
 
-  * *rows* check number of rows
-  * *value* check a single value, e.g. a *select count(\*)*. If a query result in more than one column, the evaluator will take into account only the first column in the first row
+  - *rows* check number of rows
+  - *value* check a single value, e.g. a *select count(\*)*. If a query result in more than one column, the evaluator will take into account only the first column in the first row
 
 ```python
 
@@ -322,51 +317,15 @@ The parameters to define a `ConstraintSqlAlchemy` are the following:
                                        expect="empty",
                                        check="rows",
                                        weight=5)
+```
 
-Great Expectations
-------------------
-
-The parameters to define a `ConstraintGreatExpectations` are the following:
-
-* *expectation*, expectation to apply on a resource
-* *expectation_args*, arguments for the expectation
-
-Note that for the moment the execution plugins require the presence of a user initialized `Data context`.
-
-```python
-
-   import nefertem as nt
-
-   # Artifact Store
-   STORE_LOCAL_01 = nt.StoreConfig(name="local",
-                                   type="local",
-                                   uri="./ntruns",
-                                   isDefault=True)
-
-   # Data Resource
-   RES_LOCAL_01 = nt.DataResource(path="path-to-data",
-                                  name="example_resource",
-                                  store="local")
-
-   # EXAMPLE CONSTRAINTS
-
-   # Expecting maximum column value to be between 10 and 50
-   CONSTRAINT_01 = nt.ConstraintGreatExpectations(title="Example great expectations constraint",
-                                                  name="example-const",
-                                                  resources=["example_resource"],
-                                                  expectation="expect_column_max_to_be_between",
-                                                  expectation_args={"min_value": 10, "max_value": 50, "column": "target-column"},
-                                                  weight=5)
-
-
-Evidently
-------------------
+#### Evidently
 
 The parameters to define a `ConstraintEvidently` are the following:
 
-* *resource*, name of the resource to validate.
-* *reference_resource*, name of the resource to use as a reference dataset for comparison-based tests (e.g., drift detection).
-* *tests*, list of test specifications to apply. Each test is defined with the test name (*type* parameter) and the dictionary of optional
+- *resource*, name of the resource to validate.
+- *reference_resource*, name of the resource to use as a reference dataset for comparison-based tests (e.g., drift detection).
+- *tests*, list of test specifications to apply. Each test is defined with the test name (*type* parameter) and the dictionary of optional
   test parameters to consider (*values*).
 
 Note that for the moment the execution plugins require the presence of a user-initialized `Data context`.
@@ -403,3 +362,4 @@ Note that for the moment the execution plugins require the presence of a user-in
                                                     values={"columns": ["col1", "col2", "col3"]},
                                                   )],
                                                   weight=5)
+```
