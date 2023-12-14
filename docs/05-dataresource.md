@@ -2,9 +2,9 @@
 Data Resource
 =============
 
-A ``DataResource`` is a representation of a pyhisical or virtual tabular resource. It is defined with a ``dict`` object.
+A `DataResource` is a representation of a pyhisical or virtual tabular resource. It is defined with a `dict` object.
 
-A basic ``DataResource`` must have a name, a path to the input data and a refernce to the store where it can be retrieved.
+A basic `DataResource` must have a name, a path to the input data and a refernce to the store where it can be retrieved.
 
 ```python
 
@@ -17,7 +17,7 @@ A basic ``DataResource`` must have a name, a path to the input data and a refern
       "store": "store-name"
    }
 
-At runtime, if a run try to fetch a ``DataResource`` from a ``Store`` that is not passed to the ``Client`` constructor, the program will raise a ``StoreError``.
+At runtime, if a run try to fetch a `DataResource` from a `Store` that is not passed to the `Client` constructor, the program will raise a `StoreError`.
 
 The other parameters are optional, but it's recommended to add them to enrich your data description.
 

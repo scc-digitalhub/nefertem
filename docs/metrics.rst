@@ -2,12 +2,12 @@
 Metrics
 ===========
 
-A ``Metric`` is a container for the profile evaluation rules to be reported on the resource.
-You can define as many ``Metric`` as you want, and *nefertem* will pass them to the desired framework of profiling.
+A `Metric` is a container for the profile evaluation rules to be reported on the resource.
+You can define as many `Metric` as you want, and *nefertem* will pass them to the desired framework of profiling.
 By default, some frameworks have built in metrics to be evaluated and the specification is not required.
 When the frameworks requires explicit evaluation input, this model allows for specifying that.
 
-``Metrics`` share the following parameters
+`Metrics` share the following parameters
 
 * *name*, identifier for the metric
 * *title*, optional, human readable version of the identifier
@@ -21,14 +21,14 @@ Metric types
 Evidently
 ------------------
 
-The parameters to define a ``MetricEvidently`` are the following:
+The parameters to define a `MetricEvidently` are the following:
 
 * *resource*, name of the resource to validate.
 * *reference_resource*, name of the resource to use as a reference dataset for comparison-based reports (e.g., drift detection).
 * *metrics*, list of metric specifications to apply. Each test is defined with the report name (*type* parameter) and the dictionary of optional
   metric parameters to consider (*values*).
 
-Note that for the moment the execution plugins require the presence of a user-initialized ``Data context``.
+Note that for the moment the execution plugins require the presence of a user-initialized `Data context`.
 
 ```python
 

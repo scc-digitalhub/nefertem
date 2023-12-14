@@ -1,5 +1,4 @@
-Overview
-========
+# Overview
 
 Nefertem is a framework for monitoring and managing data validation and profiling processes.
 

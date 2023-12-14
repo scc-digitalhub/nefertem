@@ -1,8 +1,8 @@
 
 # Authentication
 
-``nefertem`` allows passing credentials to backend storages through the **input store** configuration.
-The configuration is a ``dict`` object specific for the following backend storages:
+`nefertem` allows passing credentials to backend storages through the **input store** configuration.
+The configuration is a `dict` object specific for the following backend storages:
 
 * **s3**
 * **remote**

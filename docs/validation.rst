@@ -2,7 +2,7 @@
 Validation
 ==========
 
-The validation is the process where a framework validate one or more ``DataResource`` in accordance to a given ``Constraint``.
+The validation is the process where a framework validate one or more `DataResource` in accordance to a given `Constraint`.
 
 
 Run methods
@@ -25,17 +25,17 @@ Run methods
 Execution methods
 ^^^^^^^^^^^^^^^^^
 
-Execution method tells plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of ``Constraint`` to validate.
+Execution method tells plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of `Constraint` to validate.
 
-* ``run.validate()``, execute both framework validation and nefertem report parsing
-* ``run.validate_wrapper()``, execute only framework validation, return a specific framework artifact
-* ``run.validate_nefertem()``, execute both framework validation and nefertem report parsing, return a ``NefertemReport``
+* `run.validate()`, execute both framework validation and nefertem report parsing
+* `run.validate_wrapper()`, execute only framework validation, return a specific framework artifact
+* `run.validate_nefertem()`, execute both framework validation and nefertem report parsing, return a `NefertemReport`
 
 Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``run.log_report()``, log ``NefertemReport`` into the ``MetadataStore``
-* ``run.validate()``, persist artifact into the default ``ArtifactStore``
+* `run.log_report()`, log `NefertemReport` into the `MetadataStore`
+* `run.validate()`, persist artifact into the default `ArtifactStore`
 
 
 Supported libraries
@@ -82,7 +82,7 @@ DuckDB
 SQLAlchemy
 ^^^^^^^^^^
 
-The ``sqlalchemy`` validator executes query defined in a *constraints* on the database side. To execute a validation without execution errors, there MUST be at least one user defined ``SQLArtifactStore`` passed to a ``Client`` and a ``DataResource`` associated with that store.
+The `sqlalchemy` validator executes query defined in a *constraints* on the database side. To execute a validation without execution errors, there MUST be at least one user defined `SQLArtifactStore` passed to a `Client` and a `DataResource` associated with that store.
 
 ```python
 
@@ -98,7 +98,7 @@ The ``sqlalchemy`` validator executes query defined in a *constraints* on the da
 Great Expectations
 ^^^^^^^^^^^^^^^^^^
 
-The ``great_expectations`` validator executes an expectation specified in a *constraint* on a ``DataResource``.
+The `great_expectations` validator executes an expectation specified in a *constraint* on a `DataResource`.
 
 ```python
 
@@ -113,7 +113,7 @@ The ``great_expectations`` validator executes an expectation specified in a *con
 Evidently
 ^^^^^^^^^^^^^^^^^^
 
-The ``evidently`` validator executes a test suite specified in a *constraint* on a ``DataResource``.
+The `evidently` validator executes a test suite specified in a *constraint* on a `DataResource`.
 
 ```python
 

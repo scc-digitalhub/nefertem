@@ -5,27 +5,27 @@ Metadata
 *Nefertem* can produce various metadata to describe both the various execution process and the input data. The metadata produced are:
 
 
-* ``Run metadata``
+* `Run metadata`
 
   * Describe the run general execution, like execution time, libraries used, etc..
 
-* ``Env metadata``
+* `Env metadata`
 
   * Describe the run enviroment execution, like system platform, hardware specification, etc..
 
-* ``Nefertem Report``
+* `Nefertem Report`
 
   * A concise and anonymized version of the report created by a validation framework.
 
-* ``Nefertem Schema``
+* `Nefertem Schema`
 
   * A simple representation of the input data schema, describing columns names and types.
 
-* ``Nefertem Profile``
+* `Nefertem Profile`
 
   * A reduced and anonymized version of the report produced by a profiling framework.
 
-* ``Artifact metadata``
+* `Artifact metadata`
 
   * A series of metadata that associate the artifacts persisted by the user with a run and indicate their location.
 

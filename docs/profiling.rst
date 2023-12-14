@@ -2,9 +2,9 @@
 Profiling
 =========
 
-The profiling is the process where a framework try to profile a ``DataResource``
-optionally in accordance to a given ``Metric`` model specification. If
-``Metric`` model is not specified, the profiling evaluates built-in set of properties
+The profiling is the process where a framework try to profile a `DataResource`
+optionally in accordance to a given `Metric` model specification. If
+`Metric` model is not specified, the profiling evaluates built-in set of properties
 and metrics.
 
 
@@ -28,17 +28,17 @@ Run methods
 Execution methods
 ^^^^^^^^^^^^^^^^^
 
-Execution method tells plugings to execute profiling over a resource. All this methods accept specific framework arguments as argument and optionally a list of ``Metric`` models to evaluate.
+Execution method tells plugings to execute profiling over a resource. All this methods accept specific framework arguments as argument and optionally a list of `Metric` models to evaluate.
 
-* ``run.profile()``, execute both framework profiling and nefertem profile parsing
-* ``run.profile_wrapper()``, execute only framework profiling, return a specific framework artifact
-* ``run.profile_nefertem()``, execute both framework profiling and nefertem profile parsing, return a ``NefertemProfile``. ``NefertemProfile`` object contains *metrics* list with results of the the evaluated metrics and *field_metrics* dictionary containing the list of metric results for each field (if applicable).
+* `run.profile()`, execute both framework profiling and nefertem profile parsing
+* `run.profile_wrapper()`, execute only framework profiling, return a specific framework artifact
+* `run.profile_nefertem()`, execute both framework profiling and nefertem profile parsing, return a `NefertemProfile`. `NefertemProfile` object contains *metrics* list with results of the the evaluated metrics and *field_metrics* dictionary containing the list of metric results for each field (if applicable).
 
 Data and metadata persistence
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``run.log_profile()``, log ``NefertemProfile`` into the ``MetadataStore``
-* ``run.profile()``, persist artifact into the default ``ArtifactStore``
+* `run.log_profile()`, log `NefertemProfile` into the `MetadataStore`
+* `run.profile()`, persist artifact into the default `ArtifactStore`
 
 Supported libraries
 -------------------
@@ -83,7 +83,7 @@ Pandas Profiling
 Great Expectation
 -----------------
 
-The ``great_expectations`` profiler executes a profiling operation on a specified ``DataResource``
+The `great_expectations` profiler executes a profiling operation on a specified `DataResource`
 using validator profling model.
 
 ```python
@@ -99,7 +99,7 @@ using validator profling model.
 Evidently
 ^^^^^^^^^^^^^^^^^^
 
-The ``evidently`` profiler executes a report evaluation given a specified *metric* model on a ``DataResource``.
+The `evidently` profiler executes a report evaluation given a specified *metric* model on a `DataResource`.
 
 ```python
 

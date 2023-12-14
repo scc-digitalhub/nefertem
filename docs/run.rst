@@ -2,8 +2,8 @@
 Run
 ===
 
-A ``Run`` is an orchestrator that executes data operations in a defined organizational context called ``experiment``.
-The ``Run`` object is created by a ``Client`` and can perform various tasks:
+A `Run` is an orchestrator that executes data operations in a defined organizational context called `experiment`.
+The `Run` object is created by a `Client` and can perform various tasks:
 
 * Log descriptive metadata
 * Persist artifacts
@@ -13,9 +13,9 @@ The ``Run`` object is created by a ``Client`` and can perform various tasks:
 Run initialization
 ------------------
 
-The ``Run`` wraps some methods exposed by other validation frameworks through the creation of plugins.
+The `Run` wraps some methods exposed by other validation frameworks through the creation of plugins.
 *Nefertem* can support different operational framework and libraries.
-To create a ``Run``, we need to instantiate a ``Client``, define ``Stores`` and ``DataResources`` and provide a ``RunConfig``.
+To create a `Run`, we need to instantiate a `Client`, define `Stores` and `DataResources` and provide a `RunConfig`.
 
 ```python
 
@@ -47,16 +47,16 @@ To create a ``Run``, we need to instantiate a ``Client``, define ``Stores`` and 
    client = nt.Client(metadata_store=METADATA_STORE,
                       store=STORE_LOCAL_01) # Could be also a list like [STORE_LOCAL_01]
 
-The run can be initialized with the ``create_run`` method exposed by the ``Client`` API. The parameters required are:
+The run can be initialized with the `create_run` method exposed by the `Client` API. The parameters required are:
 
-* A single ``DataResource`` object or a list of them.
-* A ``RunConfig`` object that contains the configuration for the framework used in the validation/profiling/inference processes.
+* A single `DataResource` object or a list of them.
+* A `RunConfig` object that contains the configuration for the framework used in the validation/profiling/inference processes.
 
-The method ``create_run`` accepts also other three keywords arguments:
+The method `create_run` accepts also other three keywords arguments:
 
-* ``experiment_name``, a name for the experiment the run belongs to
-* ``run_id``, specify the ID of the run
-* ``overwrite``, if there is already a run with the specified ID, enable the overwriting of all metadata tied to that run
+* `experiment_name`, a name for the experiment the run belongs to
+* `run_id`, specify the ID of the run
+* `overwrite`, if there is already a run with the specified ID, enable the overwriting of all metadata tied to that run
 
 ```python
 
@@ -67,11 +67,11 @@ The method ``create_run`` accepts also other three keywords arguments:
 RunConfig
 ---------
 
-The ``RunConfig`` is a *pydantic* object to that defines which operations the ``Run`` will perform. The ``RunConfig`` accepts three parameters:
+The `RunConfig` is a *pydantic* object to that defines which operations the `Run` will perform. The `RunConfig` accepts three parameters:
 
-* ``inference``
-* ``validation``
-* ``profiling``
+* `inference`
+* `validation`
+* `profiling`
 
 Each one of these parameters configure which library will be used to perform the required operation. The library configuration is done like this:
 
@@ -87,17 +87,17 @@ Each one of these parameters configure which library will be used to perform the
            inference=[inference_config]
    )
 
-In this example we configure an *inference* operation using a ``dict``. The arguments are the following:
+In this example we configure an *inference* operation using a `dict`. The arguments are the following:
 
 
-* ``library``, mandatory, defines the framework used in the operation
-* ``execArgs``, optional, arguments passed to the operation performed by the framework
-* ``fetchMode``, optional, format used to store/fetch artifacts from ``ArtifactStore``
+* `library`, mandatory, defines the framework used in the operation
+* `execArgs`, optional, arguments passed to the operation performed by the framework
+* `fetchMode`, optional, format used to store/fetch artifacts from `ArtifactStore`
 
 Run execution
 -------------
 
-You can now use the ``Run`` as context manager ...
+You can now use the `Run` as context manager ...
 
 ```python
 
@@ -114,8 +114,8 @@ You can now use the ``Run`` as context manager ...
 
    run.some_method()
 
-Note that if the ``Run`` is used outside the context manager, some metadata will not be produced, i.e. run duration.
-The ``Run`` exposes a variety of methods. In general, these methods cover four needs:
+Note that if the `Run` is used outside the context manager, some metadata will not be produced, i.e. run duration.
+The `Run` exposes a variety of methods. In general, these methods cover four needs:
 
 
 * Execute a specific operation over some resources

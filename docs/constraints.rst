@@ -2,10 +2,10 @@
 Constraints
 ===========
 
-A ``Constraint`` is a rule that resource must fit to be considered valid.
-You can define as many ``Constraint`` as you want, and *nefertem* will pass them to the desired framework of validation.
+A `Constraint` is a rule that resource must fit to be considered valid.
+You can define as many `Constraint` as you want, and *nefertem* will pass them to the desired framework of validation.
 
-``Constraints`` share the following parameters
+`Constraints` share the following parameters
 
 * *name*, identifier for the constraint
 * *title*, optional, human readable version of the identifier
@@ -27,7 +27,7 @@ Constraint types
 Frictionless
 ------------
 
-The parameters to define a ``ConstraintFrictionless`` are the following:
+The parameters to define a `ConstraintFrictionless` are the following:
 
 
 * *field*, specified targeted field
@@ -80,10 +80,10 @@ Example:
 Frictionless schema
 -------------------
 
-The parameters to define a ``ConstraintFullFrictionless`` are the following:
+The parameters to define a `ConstraintFullFrictionless` are the following:
 
 
-* *schema*, a dictionary (or a frictionless ``Schema``), formatted as ``frictionless Schema``.
+* *schema*, a dictionary (or a frictionless `Schema`), formatted as `frictionless Schema`.
 
 Example:
 
@@ -121,7 +121,7 @@ Example:
 DuckDB
 ------
 
-The parameters to define a ``ConstraintDuckDB`` are the following:
+The parameters to define a `ConstraintDuckDB` are the following:
 
 
 * *query*, an SQL query that will be executed on the resources
@@ -264,7 +264,7 @@ The parameters to define a ``ConstraintDuckDB`` are the following:
 SQLAlchemy
 ----------
 
-The parameters to define a ``ConstraintSqlAlchemy`` are the following:
+The parameters to define a `ConstraintSqlAlchemy` are the following:
 
 
 * *query*, an SQL query that will be executed on the database
@@ -326,12 +326,12 @@ The parameters to define a ``ConstraintSqlAlchemy`` are the following:
 Great Expectations
 ------------------
 
-The parameters to define a ``ConstraintGreatExpectations`` are the following:
+The parameters to define a `ConstraintGreatExpectations` are the following:
 
 * *expectation*, expectation to apply on a resource
 * *expectation_args*, arguments for the expectation
 
-Note that for the moment the execution plugins require the presence of a user initialized ``Data context``.
+Note that for the moment the execution plugins require the presence of a user initialized `Data context`.
 
 ```python
 
@@ -362,14 +362,14 @@ Note that for the moment the execution plugins require the presence of a user in
 Evidently
 ------------------
 
-The parameters to define a ``ConstraintEvidently`` are the following:
+The parameters to define a `ConstraintEvidently` are the following:
 
 * *resource*, name of the resource to validate.
 * *reference_resource*, name of the resource to use as a reference dataset for comparison-based tests (e.g., drift detection).
 * *tests*, list of test specifications to apply. Each test is defined with the test name (*type* parameter) and the dictionary of optional
   test parameters to consider (*values*).
 
-Note that for the moment the execution plugins require the presence of a user-initialized ``Data context``.
+Note that for the moment the execution plugins require the presence of a user-initialized `Data context`.
 
 ```python
 

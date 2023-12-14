@@ -53,10 +53,10 @@ class RunHandler:
         resources, you can pass them as arguments or keyword arguments.
 
         E.g.:
-        ```
+        ``
         run_handler.run(resources)
         run_handler.run(resources=resources)
-        ```
+        ``
 
         Parameters
         ----------
