@@ -17,9 +17,34 @@ Out-of-the-box `nefertem` supports the following **data quality operation**:
 - Profiling
 - Metrics
 
-## HOW TO
+## Example
 
-- [Example](./docs/00-examples.md)
+```python
+import nefertem
+
+# Set configurations
+output_path = "./nefertem_run"
+store = {"name": "local", "store_type": "local"}
+data_resource = {
+    "name": "resource_name",
+    "path": "path/to/resource",
+    "schema": "path/to/schema"
+}
+run_config = {
+    "operation": "inference",
+    "exec_config": [{"framework": "frictionless"}]
+}
+
+# Create a client and run
+client = nefertem.create_client(output_path=output_path, store=[store])
+with client.create_run([data_resource], run_config) as nt_run:
+    nt_run.infer()
+    nt_run.log_schema()
+    nt_run.persist_schema()
+```
+
+## Documentation
+
 - [Installation and requirements](./docs/01-installation.md)
 - [Configuration](./docs/02-configuration.md)
 - [Modules](./docs/03-modules.md)
