@@ -28,7 +28,7 @@ store = {"name": "local", "store_type": "local"}
 data_resource = {
     "name": "resource_name",
     "path": "path/to/resource",
-    "schema": "path/to/schema"
+    "store": "local",
 }
 run_config = {
     "operation": "inference",
