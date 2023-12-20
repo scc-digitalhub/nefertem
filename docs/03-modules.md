@@ -50,10 +50,10 @@ Execution method tell plugings to execute inference over a resource. All this me
 
 ```python
 run_config = {
-    "library": "frictionless",
-    # execArgs accepted are the ones passed to the method Schema.describe().
+    "framework": "frictionless",
+    # exec_args accepted are the ones passed to the method Schema.describe().
     # Note that arguments `path` and `name` are already taken.
-    "execArgs": {}
+    "exec_args": {}
 }
 ```
 
@@ -95,9 +95,9 @@ Execution method tells plugings to execute profiling over a resource. All this m
 
 ```python
 run_config = {
-    "library": "frictionless",
-    # execArgs accepted are the ones passed to the constructor of Resource().
-    "execArgs": {}
+    "framework": "frictionless",
+    # exec_args accepted are the ones passed to the constructor of Resource().
+    "exec_args": {}
 }
 ```
 
@@ -105,9 +105,9 @@ run_config = {
 
 ```python
 run_config = {
-    "library": "ydata_profiling",
-    # execArgs accepted are the ones passed to the method ProfileReport(). E.g.:
-    "execArgs": {"minimal": True}
+    "framework": "ydata_profiling",
+    # exec_args accepted are the ones passed to the method ProfileReport(). E.g.:
+    "exec_args": {"minimal": True}
 }
 ```
 
@@ -117,9 +117,9 @@ The `evidently` profiler executes a report evaluation given a specified *metric*
 
 ```python
 run_config = {
-    "library": "evidently",
+    "framework": "evidently",
     # There are no suitable execution arguments for the evidently validator
-    "execArgs": {}
+    "exec_args": {}
 
 }
 ```
@@ -161,9 +161,9 @@ Execution method tells plugings to execute validation over a resource. All this 
 
 ```python
 run_config = {
-    "library": "frictionless",
-    # execArgs accepted are the ones passed to the method validate()
-    "execArgs": {}
+    "framework": "frictionless",
+    # exec_args accepted are the ones passed to the method validate()
+    "exec_args": {}
 }
 ```
 
@@ -171,9 +171,9 @@ run_config = {
 
 ```python
 run_config = {
-    "library": "duckdb",
+    "framework": "duckdb",
     # There are no suitable execution arguments for the duckdb validator
-    "execArgs": {}
+    "exec_args": {}
 }
 ```
 
@@ -183,9 +183,9 @@ The `sqlalchemy` validator executes query defined in a *constraints* on the data
 
 ```python
 run_config = {
-    "library": "sqlalchemy",
+    "framework": "sqlalchemy",
     # There are no suitable execution arguments for the duckdb validator
-    "execArgs": {}
+    "exec_args": {}
 }
 ```
 
@@ -195,9 +195,9 @@ The `evidently` validator executes a test suite specified in a *constraint* on a
 
 ```python
 run_config = {
-    "library": "evidently",
+    "framework": "evidently",
     # There are no suitable execution arguments for the evidently validator
-    "execArgs": {}
+    "exec_args": {}
 }
 ```
 
