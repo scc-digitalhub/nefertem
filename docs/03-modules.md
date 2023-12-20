@@ -1,4 +1,4 @@
-# Modules
+# Nefertem modularity and run configuration
 
 `nefertem` is an extensible framework that allows to add new functionalities through the use of plugins.
 
@@ -9,6 +9,8 @@ There are two types of plugins:
 
 The **operations** extend the functionalities of the `run` object, and includes new methods to execute and new metadata to log. They also define the a specific **plugin** category related to them. These **plugins** are the ones that actually execute the operations.
 
+## Modules
+
 Out-of-the-box, `nefertem` provides the following operations:
 
 - `inference`
@@ -16,11 +18,11 @@ Out-of-the-box, `nefertem` provides the following operations:
 - `validation`
 - `metrics`
 
-## Inference
+### Inference
 
 The inference is the process where a framework try to infer the data schema of a `DataResource`.
 
-### Run methods
+#### Run methods
 
 ```python
 with run:
@@ -29,7 +31,7 @@ with run:
     run.persist_schema()
 ```
 
-### Execution methods
+#### Execution methods
 
 Execution method tell plugings to execute inference over a resource. All this methods accept specific framework arguments as argument.
 
@@ -37,34 +39,34 @@ Execution method tell plugings to execute inference over a resource. All this me
 - `run.infer_wrapper()`, execute only framework inference, return a specific framework artifact
 - `run.infer_nefertem()`, execute both framework inference and nefertem schema parsing, return a `NefertemSchema`
 
-### Data and metadata persistence
+#### Data and metadata persistence
 
 - `run.log_schema()`, log `NefertemSchema` locally
 - `run.persist_schema()`, persist artifact locally
 
-### Supported libraries
+#### Supported libraries
 
 - `Frictionless`
 
-#### Frictionless
+##### Frictionless
 
 ```python
-run_config = {
+exec_config = {
     "framework": "frictionless",
-    # exec_args accepted are the ones passed to the method Schema.describe().
-    # Note that arguments `path` and `name` are already taken.
+    ## exec_args accepted are the ones passed to the method Schema.describe().
+    ## Note that arguments `path` and `name` are already taken.
     "exec_args": {}
 }
 ```
 
-## Profiling
+### Profiling
 
 The profiling is the process where a framework try to profile a `DataResource`
 optionally in accordance to a given `Metric` model specification. If
 `Metric` model is not specified, the profiling evaluates built-in set of properties
 and metrics.
 
-### Run methods
+#### Run methods
 
 ```python
 with run:
@@ -73,7 +75,7 @@ with run:
     run.persist_profile()
 ```
 
-### Execution methods
+#### Execution methods
 
 Execution method tells plugings to execute profiling over a resource. All this methods accept specific framework arguments as argument and optionally a list of `Metric` models to evaluate.
 
@@ -81,54 +83,54 @@ Execution method tells plugings to execute profiling over a resource. All this m
 - `run.profile_wrapper()`, execute only framework profiling, return a specific framework artifact
 - `run.profile_nefertem()`, execute both framework profiling and nefertem profile parsing, return a `NefertemProfile`.
 
-### Data and metadata persistence
+#### Data and metadata persistence
 
 - `run.log_profile()`, log `NefertemProfile` locally
 - `run.persist_profile()`, persist artifact locally
 
-### Supported libraries
+#### Supported libraries
 
 - `Frictionless`
 - `Ydata_Profiling`
 
-#### Frictionless
+##### Frictionless
 
 ```python
-run_config = {
+exec_config = {
     "framework": "frictionless",
-    # exec_args accepted are the ones passed to the constructor of Resource().
+    ## exec_args accepted are the ones passed to the constructor of Resource().
     "exec_args": {}
 }
 ```
 
-### Ydata_Profiling
+#### Ydata_Profiling
 
 ```python
-run_config = {
+exec_config = {
     "framework": "ydata_profiling",
-    # exec_args accepted are the ones passed to the method ProfileReport(). E.g.:
+    ## exec_args accepted are the ones passed to the method ProfileReport(). E.g.:
     "exec_args": {"minimal": True}
 }
 ```
 
-#### Evidently
+##### Evidently
 
 The `evidently` profiler executes a report evaluation given a specified *metric* model on a `DataResource`.
 
 ```python
-run_config = {
+exec_config = {
     "framework": "evidently",
-    # There are no suitable execution arguments for the evidently validator
+    ## There are no suitable execution arguments for the evidently validator
     "exec_args": {}
 
 }
 ```
 
-## Validation
+### Validation
 
 The validation is the process where a framework validate one or more `DataResource` in accordance to a given `Constraint`.
 
-### Run methods
+#### Run methods
 
 ```python
 with run:
@@ -137,7 +139,7 @@ with run:
     run.persist_report()
 ```
 
-### Execution methods
+#### Execution methods
 
 Execution method tells plugings to execute validation over a resource. All this methods accept specific framework arguments as argument and a list of `Constraint` to validate.
 
@@ -145,63 +147,63 @@ Execution method tells plugings to execute validation over a resource. All this 
 - `run.validate_wrapper()`, execute only framework validation, return a specific framework artifact
 - `run.validate_nefertem()`, execute both framework validation and nefertem report parsing, return a `NefertemReport`
 
-### Data and metadata persistence
+#### Data and metadata persistence
 
 - `run.log_report()`, log `NefertemReport` locally
 - `run.persist_report()`, persist artifact locally
 
-### Supported libraries
+#### Supported libraries
 
 - `Frictionless`
 - `DuckDB`
 - `SQLAlchemy`
 - `Evidently`
 
-#### Frictionless
+##### Frictionless
 
 ```python
-run_config = {
+exec_config = {
     "framework": "frictionless",
-    # exec_args accepted are the ones passed to the method validate()
+    ## exec_args accepted are the ones passed to the method validate()
     "exec_args": {}
 }
 ```
 
-#### DuckDB
+##### DuckDB
 
 ```python
-run_config = {
+exec_config = {
     "framework": "duckdb",
-    # There are no suitable execution arguments for the duckdb validator
+    ## There are no suitable execution arguments for the duckdb validator
     "exec_args": {}
 }
 ```
 
-#### SQLAlchemy
+##### SQLAlchemy
 
 The `sqlalchemy` validator executes query defined in a *constraints* on the database side. To execute a validation without execution errors, there MUST be at least one user defined `SQLArtifactStore` passed to a `Client` and a `DataResource` associated with that store.
 
 ```python
-run_config = {
+exec_config = {
     "framework": "sqlalchemy",
-    # There are no suitable execution arguments for the duckdb validator
+    ## There are no suitable execution arguments for the duckdb validator
     "exec_args": {}
 }
 ```
 
-#### Evidently
+##### Evidently
 
 The `evidently` validator executes a test suite specified in a *constraint* on a `DataResource`.
 
 ```python
-run_config = {
+exec_config = {
     "framework": "evidently",
-    # There are no suitable execution arguments for the evidently validator
+    ## There are no suitable execution arguments for the evidently validator
     "exec_args": {}
 }
 ```
 
-### Constraints
+#### Constraints
 
 A `Constraint` is a rule that resource must fit to be considered valid.
 You can define as many `Constraint` as you want, and `nefertem` will pass them to the desired framework of validation.
@@ -214,7 +216,7 @@ You can define as many `Constraint` as you want, and `nefertem` will pass them t
 - *resources*, targeted LIST of resources
 - *weight*, optional, importance of an eventual error
 
-### Constraint types
+#### Constraint types
 
 - `Frictionless`
 - `Frictionless schema`
@@ -222,7 +224,7 @@ You can define as many `Constraint` as you want, and `nefertem` will pass them t
 - `SQLAlchemy`
 - `Evidently`
 
-#### Frictionless
+##### Frictionless
 
 The parameters to define a `ConstraintFrictionless` are the following:
 
@@ -246,18 +248,18 @@ The parameters to define a `ConstraintFrictionless` are the following:
 Example:
 
 ```python
-# Input store configuration
+## Input store configuration
 store_local_01 = {"name": "local", "type": "local"}
 
-# Data Resource
+## Data Resource
 res_local_01 = {
     "path": "path-to-data",
     "name": "example-resource",
     "store": "local"
 }
 
-# Example constraint. We expect that the values of the
-# specified field have a maximum length of 11 characters.
+## Example constraint. We expect that the values of the
+## specified field have a maximum length of 11 characters.
 constraint_01 = {
     "type": "frictionless",
     "title": "Example frictionless constraint",
@@ -270,7 +272,7 @@ constraint_01 = {
 }
 ```
 
-#### Frictionless schema
+##### Frictionless schema
 
 The parameters to define a `ConstraintFullFrictionless` are the following:
 
@@ -279,10 +281,10 @@ The parameters to define a `ConstraintFullFrictionless` are the following:
 Example:
 
 ```python
-# Input store configuration
+## Input store configuration
 store_local_01 = {"name": "local", "type": "local"}
 
-# Data Resource
+## Data Resource
 res_local_01 = {
     "path": "path-to-data",
     "name": "example-resource",
@@ -297,7 +299,7 @@ schema_01 = {
     ]
 }
 
-# Example constraint. We will pass to a validator a full frictionless schema.
+## Example constraint. We will pass to a validator a full frictionless schema.
 constraint_01 = {
     "type": "frictionless_full",
     "title": "Example frictionless_schema constraint",
@@ -307,7 +309,7 @@ constraint_01 = {
 }
 ```
 
-#### DuckDB
+##### DuckDB
 
 The parameters to define a `ConstraintDuckDB` are the following:
 
@@ -340,19 +342,19 @@ The parameters to define a `ConstraintDuckDB` are the following:
   - *value* check a single value, e.g. a *select count(\*)*. If a query result in more than one column, the evaluator will take into account only the first column in the first row
 
 ```python
-# Input store configuration
+## Input store configuration
 store_local_01 = {"name": "local", "type": "local"}
 
-# Data Resource
+## Data Resource
 res_local_01 = {
     "path": "path-to-data",
     "name": "example-resource",
     "store": "local"
 }
 
-# Empty/non-empty table. The evaluation is allowed when check is "rows"
+## Empty/non-empty table. The evaluation is allowed when check is "rows"
 
-# Expecting empty table as result of the validation query
+## Expecting empty table as result of the validation query
 constraint_01 = {
     "type": "duckdb",
     "name": "example-const",
@@ -362,7 +364,7 @@ constraint_01 = {
     "check": "rows",
 }
 
-# Expecting non-empty table as result of the validation query
+## Expecting non-empty table as result of the validation query
 constraint_02 = {
     "type": "duckdb",
     "name": "example-const",
@@ -372,9 +374,9 @@ constraint_02 = {
     "check": "rows",
 }
 
-# Exact value
+## Exact value
 
-# Expecting a table with 10 rows
+## Expecting a table with 10 rows
 constraint_03 = {
     "type": "duckdb",
     "name": "example-const",
@@ -385,7 +387,7 @@ constraint_03 = {
     "value": 10,
 }
 
-# Expecting a table with 10 as result of the count
+## Expecting a table with 10 as result of the count
 constraint_04 = {
     "type": "duckdb",
     "name": "example-const",
@@ -396,9 +398,9 @@ constraint_04 = {
     "value": 10,
 }
 
-# Minimum/maximum (both check are inclusive of the value)
+## Minimum/maximum (both check are inclusive of the value)
 
-# Expecting a table with number of rows >= 10
+## Expecting a table with number of rows >= 10
 constraint_05 = {
     "type": "duckdb",
     "name": "example-const",
@@ -409,7 +411,7 @@ constraint_05 = {
     "value": 10,
 }
 
-# Expecting a table with result of count <= 10
+## Expecting a table with result of count <= 10
 constraint_06 = {
     "type": "duckdb",
     "name": "example-const",
@@ -420,9 +422,9 @@ constraint_06 = {
     "value": 10,
 }
 
-# Range (value expect a string of parentheses and number)
+## Range (value expect a string of parentheses and number)
 
-# Expecting a table with number of rows > 10 and <= 15
+## Expecting a table with number of rows > 10 and <= 15
 constraint_07 = {
     "type": "duckdb",
     "name": "example-const",
@@ -433,7 +435,7 @@ constraint_07 = {
     "value": "(10,15]",
 }
 
-# Expecting a table with resulting value >= 10.87 and < 15.63
+## Expecting a table with resulting value >= 10.87 and < 15.63
 constraint_08 = {
     "type": "duckdb",
     "name": "example-const",
@@ -445,7 +447,7 @@ constraint_08 = {
 }
 ```
 
-#### SQLAlchemy
+##### SQLAlchemy
 
 The parameters to define a `ConstraintSqlAlchemy` are the following:
 
@@ -474,7 +476,7 @@ The parameters to define a `ConstraintSqlAlchemy` are the following:
   - *value* check a single value, e.g. a *select count(\*)*. If a query result in more than one column, the evaluator will take into account only the first column in the first row
 
 ```python
-# Input store configuration
+## Input store configuration
 config_sql_01 = {
     "driver": "postgresql+psycopg2",
     "host": "host",
@@ -489,18 +491,18 @@ store_sql_01 = {
     "config": config_sql_01
 }
 
-# Data Resource
+## Data Resource
 res_sql_01 = {
     "path": f"sql://database/table",
     "name": "example_resource",
     "store": "postgres"
 }
 
-# EXAMPLE CONSTRAINTS
+## EXAMPLE CONSTRAINTS
 
-# The sqlalchemy constraints are basically the same as duckdb ones
+## The sqlalchemy constraints are basically the same as duckdb ones
 
-# Expecting empty table as result of the validation query
+## Expecting empty table as result of the validation query
 constraint_01 = {
     "type": "sqlalchemy",
     "name": "example-const",
@@ -511,7 +513,7 @@ constraint_01 = {
 }
 ```
 
-#### Evidently
+##### Evidently
 
 The parameters to define a `ConstraintEvidently` are the following:
 
@@ -523,26 +525,26 @@ The parameters to define a `ConstraintEvidently` are the following:
 Note that for the moment the execution plugins require the presence of a user-initialized `Data context`.
 
 ```python
-# Input store configuration
+## Input store configuration
 store_local_01 = {"name": "local", "type": "local"}
 
-# Data Resource
+## Data Resource
 res_local_01 = {
     "path": "path-to-data",
     "name": "example-resource",
     "store": "local"
 }
 
-# Data Resource reference
+## Data Resource reference
 res_local_02 = {
     "path": "path-to-ref-data",
     "name": "reference-resource",
     "store": "local"
 }
 
-# EXAMPLE CONSTRAINTS
+## EXAMPLE CONSTRAINTS
 
-# Expecting maximum column value to be between 10 and 50
+## Expecting maximum column value to be between 10 and 50
 constraint_01 = {
     "type": "evidently",
     "name": "const-evidently-01",
@@ -555,6 +557,6 @@ constraint_01 = {
 }
 ```
 
-## Metrics
+### Metrics
 
 TODO

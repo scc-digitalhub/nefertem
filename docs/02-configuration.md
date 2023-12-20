@@ -141,31 +141,59 @@ client = nefertem.create_client(output_path=output_path, store=[store])
 - `output_path`: a string path where the `Client` will store the runs and all the output files (metadata, reports, etc.).
 - `store`: a list of dictionary store configurstions.
 
-## Run configuration
+## Run
 
-A run configuration is a `dict` object that contains the operations to be executed and the frameworks to be used. It is passed to the `Client` when a run is created.
+The `run` object is the main object of `nefertem`. It is the object that allows to execute operations and to log metadata and artifacts.
+
+The `run` object is initialized with a `Client` through the method `client.create_run()`. This method accepts the following arguments:
+
+- **resources**, a list of `DataResource` to execute the operations on.
+- **run_config**, a dictionary that contains the configuration of the execution of the operations. The configuration is specific to the operation and to the framework used to execute it. See the [next documentation section](./03-modules.md) for more details.
+- **experiment**, optional, a string to identify the experiment.
+- **run_id**, optional, a string to identify the run.
+- **overwrite**, optional, a boolean to overwrite the run if it already exists.
+
+A run can be created this way:
 
 ```python
+import nefertem
+
+import nefertem
+
+output_path = "./nefertem_run"
+store = {"name": "local", "store_type": "local"}
+
+client = nefertem.create_client(output_path=output_path, store=[store])
+
 run_config = {
     "operation": "type-of-operation",
     "exec_config": [{
         "framework": "framework-to-use",
-        "exec_args": { "framework-specific-config": "value" },
-        "parallel": False, # optional, default False
-        "num_workers": 1 # optional, default 1
-    }]
+        "exec_args": { "framework-specific-config": "value" }, # Specific for the framework to use
+    }],
+    "parallel": False, # optional, default False
+    "num_workers": 1 # optional, default 1
 }
+
+run = client.create_run(
+    resources=[resource],
+    run_config=run_config,
+    experiment="experiment-name",
+    run_id="run-id",
+    overwrite=True
+)
 ```
 
-The `operation` key is used to specify the type of operation to be executed. The `exec_config` key is used to specify a variety of things:
+## Execution
 
-- `framework`: the framework to be used to execute the operation.
-- `exec_args`: a `dict` object that contains key arguments to be passed to the framework.
-- `parallel`: a boolean value that indicates if the operation must be executed in parallel. Default is `False`.
-- `num_workers`: an integer value that indicates the number of workers to be used to execute the operation. Default is `1`.
+Once you have created a `run` object, you can execute it as context manager:
 
-The `exec_config` key can be repeated to execute multiple operations in a single run, for example by using different frameworks.
+```python
+with run as r:
+    # Here you can execute operations
+    # specified in the run configuration
+```
 
-## Run
+You can execute one type of operation at a time. For example, if you have a run configuration with two operations, one for inference and one for profiling, you need to create two runs, one for each operation.
 
-In the [next sections](./03-modules.md) we will examine in details how to configure the `run` for each operation and framework and what kind of methods are available to execute the operations.
+In the [next section](./03-modules.md) you can find the documentation of the operations and the frameworks supported by `nefertem`.
