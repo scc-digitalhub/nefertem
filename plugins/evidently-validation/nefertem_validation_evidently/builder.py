@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from nefertem.readers.builder import build_reader
-from nefertem.resources.data_resource import DataResource
-from nefertem.utils.commons import FILE_READER
+from nefertem_core.readers.builder import build_reader
+from nefertem_core.resources.data_resource import DataResource
+from nefertem_core.utils.commons import FILE_READER
 from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_evidently.constraint import ConstraintEvidently
 from nefertem_validation_evidently.plugin import ValidationPluginEvidently

@@ -1,7 +1,15 @@
 from pathlib import Path
 
 import pytest
-from nefertem.utils.file_utils import check_dir, check_path, clean_all, copy_file, get_absolute_path, get_path, make_dir
+from nefertem_core.utils.file_utils import (
+    check_dir,
+    check_path,
+    clean_all,
+    copy_file,
+    get_absolute_path,
+    get_path,
+    make_dir,
+)
 
 
 def make_temp_file(tmp: str) -> str:

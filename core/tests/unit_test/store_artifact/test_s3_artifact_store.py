@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 from botocore.exceptions import ClientError
-from nefertem.utils.exceptions import StoreError
-from nefertem.utils.file_utils import get_path
-from nefertem.utils.uri_utils import build_key, get_name_from_uri
+from nefertem_core.utils.exceptions import StoreError
+from nefertem_core.utils.file_utils import get_path
+from nefertem_core.utils.uri_utils import build_key, get_name_from_uri
 from tests.conftest import S3_BUCKET, S3_FILENAME, TEST_FILENAME
 
 

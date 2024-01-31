@@ -3,9 +3,9 @@
 import frictionless
 import pytest
 from frictionless import Schema
-from nefertem.plugins.inference.frictionless.builder import InferenceBuilderFrictionless
-from nefertem.plugins.inference.frictionless.plugin import InferencePluginFrictionless
-from nefertem.utils.commons import FILE_READER, INFER
+from nefertem_core.plugins.inference.frictionless.builder import InferenceBuilderFrictionless
+from nefertem_core.plugins.inference.frictionless.plugin import InferencePluginFrictionless
+from nefertem_core.utils.commons import FILE_READER, INFER
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,

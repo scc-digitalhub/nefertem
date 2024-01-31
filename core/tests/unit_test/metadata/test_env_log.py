@@ -1,5 +1,5 @@
 import pytest
-from nefertem.metadata.env import Env
+from nefertem_core.metadata.env import Env
 
 
 @pytest.fixture()

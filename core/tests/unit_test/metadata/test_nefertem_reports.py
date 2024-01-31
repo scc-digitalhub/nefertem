@@ -1,4 +1,4 @@
-from nefertem.metadata.report import NefertemProfile
+from nefertem_core.metadata.report import NefertemProfile
 from nefertem_inference.metadata.report import NefertemSchema
 from nefertem_validation.metadata.report import NefertemReport
 

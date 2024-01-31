@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing
 from abc import abstractmethod
 
-from nefertem.plugins.builder import PluginBuilder
+from nefertem_core.plugins.builder import PluginBuilder
 
 if typing.TYPE_CHECKING:
     from nefertem_validation.plugins.constraint import Constraint

@@ -1,7 +1,7 @@
-from nefertem.metadata.report import NefertemProfile
-from nefertem.plugins.plugin import Plugin
-from nefertem.plugins.utils import RenderTuple, Result
-from nefertem.utils.commons import INFER, PROFILE, VALIDATE
+from nefertem_core.metadata.report import NefertemProfile
+from nefertem_core.plugins.plugin import Plugin
+from nefertem_core.plugins.utils import RenderTuple, Result
+from nefertem_core.utils.commons import INFER, PROFILE, VALIDATE
 from nefertem_inference.metadata.report import NefertemSchema
 from nefertem_validation.metadata.report import NefertemReport
 

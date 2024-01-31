@@ -5,14 +5,14 @@ import typing
 import frictionless
 from frictionless import Report, Resource, Schema
 from frictionless.exception import FrictionlessException
-from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
+from nefertem_core.plugins.utils import RenderTuple, Result, exec_decorator
 from nefertem_validation.metadata.report import NefertemReport
 from nefertem_validation.plugins.plugin import ValidationPlugin
 from nefertem_validation.plugins.utils import get_errors, parse_error_report, render_error_type
 
 if typing.TYPE_CHECKING:
-    from nefertem.readers.objects.file import FileReader
-    from nefertem.resources.data_resource import DataResource
+    from nefertem_core.readers.objects.file import FileReader
+    from nefertem_core.resources.data_resource import DataResource
     from nefertem_validation_frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
 
 

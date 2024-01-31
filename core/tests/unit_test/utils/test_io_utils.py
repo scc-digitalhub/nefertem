@@ -2,7 +2,7 @@ import json
 from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
 
-from nefertem.utils.io_utils import (
+from nefertem_core.utils.io_utils import (
     BytesIOWrapper,
     wrap_bytes,
     wrap_string,

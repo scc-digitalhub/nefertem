@@ -4,13 +4,13 @@ import typing
 from unittest.mock import Mock
 
 import pytest
-from nefertem.plugins.builder import PluginBuilder
-from nefertem.plugins.plugin import Plugin
-from nefertem.resources.data_resource import DataResource
-from nefertem.utils.exceptions import StoreError
+from nefertem_core.plugins.builder import PluginBuilder
+from nefertem_core.plugins.plugin import Plugin
+from nefertem_core.resources.data_resource import DataResource
+from nefertem_core.utils.exceptions import StoreError
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils import Result
+    from nefertem_core.plugins.utils import Result
 
 
 class SamplePlugin(Plugin):

@@ -4,9 +4,9 @@ import importlib
 
 import evidently
 from evidently.test_suite import TestSuite
-from nefertem.plugins.utils import RenderTuple, Result, exec_decorator
-from nefertem.readers.objects.file import FileReader
-from nefertem.resources.data_resource import DataResource
+from nefertem_core.plugins.utils import RenderTuple, Result, exec_decorator
+from nefertem_core.readers.objects.file import FileReader
+from nefertem_core.resources.data_resource import DataResource
 from nefertem_validation.metadata.report import NefertemReport
 from nefertem_validation.plugins.plugin import ValidationPlugin
 from nefertem_validation.plugins.utils import get_errors, parse_error_report

@@ -1,5 +1,5 @@
 import pytest
-from nefertem.stores.output.objects.dummy import DummyOutputStore
+from nefertem_core.stores.output.objects.dummy import DummyOutputStore
 
 
 class TestDummyOutputStore:

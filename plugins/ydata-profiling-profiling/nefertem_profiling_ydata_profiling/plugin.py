@@ -7,16 +7,16 @@ import json
 import typing
 
 import ydata_profiling
-from nefertem.plugins.utils import RenderTuple, exec_decorator
-from nefertem.utils.io_utils import write_bytesio
+from nefertem_core.plugins.utils import RenderTuple, exec_decorator
+from nefertem_core.utils.io_utils import write_bytesio
 from nefertem_profiling.metadata.report import NefertemProfile
 from nefertem_profiling.plugins.plugin import ProfilingPlugin
 from nefertem_profiling_ydata_profiling.utils import PROFILE_COLUMNS, PROFILE_FIELDS
 from ydata_profiling import ProfileReport
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils import Result
-    from nefertem.resources.data_resource import DataResource
+    from nefertem_core.plugins.utils import Result
+    from nefertem_core.resources.data_resource import DataResource
     from nefertem_profiling_ydata_profiling.reader import PandasDataFrameFileReader
 
 

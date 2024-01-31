@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import pytest
-from nefertem.plugins.utils import ResultType
-from nefertem.run.handler import RunHandler
+from nefertem_core.plugins.utils import ResultType
+from nefertem_core.run.handler import RunHandler
 
 
 class TestRun:

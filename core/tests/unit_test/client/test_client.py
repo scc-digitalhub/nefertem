@@ -1,7 +1,7 @@
 import pytest
-from nefertem.client.client import Client
-from nefertem.run.run import Run
-from nefertem.utils.exceptions import StoreError
+from nefertem_core.client.client import Client
+from nefertem_core.run.run import Run
+from nefertem_core.utils.exceptions import StoreError
 
 
 class TestClient:

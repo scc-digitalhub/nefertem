@@ -1,5 +1,5 @@
 import pytest
-from nefertem.utils.commons import FILE_READER
+from nefertem_core.utils.commons import FILE_READER
 
 
 def test_fetch_data(reader, data_path_csv):

@@ -1,5 +1,5 @@
-from nefertem.plugins.profiling.base import Profiling
-from nefertem.plugins.utils import Result, ResultType, exec_decorator
+from nefertem_core.plugins.profiling.base import Profiling
+from nefertem_core.plugins.utils import Result, ResultType, exec_decorator
 
 
 class SamplePlugin(Profiling):

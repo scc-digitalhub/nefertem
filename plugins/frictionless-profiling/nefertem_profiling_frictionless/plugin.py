@@ -7,15 +7,15 @@ import typing
 
 import frictionless
 from frictionless import Resource
-from nefertem.plugins.utils import RenderTuple, exec_decorator
-from nefertem.utils.io_utils import write_bytesio
+from nefertem_core.plugins.utils import RenderTuple, exec_decorator
+from nefertem_core.utils.io_utils import write_bytesio
 from nefertem_profiling.metadata.report import NefertemProfile
 from nefertem_profiling.plugins.plugin import ProfilingPlugin
 
 if typing.TYPE_CHECKING:
-    from nefertem.plugins.utils import Result
-    from nefertem.readers.objects.file import FileReader
-    from nefertem.resources.data_resource import DataResource
+    from nefertem_core.plugins.utils import Result
+    from nefertem_core.readers.objects.file import FileReader
+    from nefertem_core.resources.data_resource import DataResource
 
 
 class ProfilingPluginFrictionless(ProfilingPlugin):

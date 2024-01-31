@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from nefertem.utils.exceptions import NefertemError
+from nefertem_core.utils.exceptions import NefertemError
 
 
 class ValidationError(NefertemError):

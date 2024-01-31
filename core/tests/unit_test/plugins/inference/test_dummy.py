@@ -1,6 +1,6 @@
 import pytest
-from nefertem.plugins.inference.dummy import InferenceBuilderDummy, InferencePluginDummy
-from nefertem.utils.commons import DUMMY, FILE_READER, INFER
+from nefertem_core.plugins.inference.dummy import InferenceBuilderDummy, InferencePluginDummy
+from nefertem_core.utils.commons import DUMMY, FILE_READER, INFER
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,

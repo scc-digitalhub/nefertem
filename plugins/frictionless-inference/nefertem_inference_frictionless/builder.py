@@ -6,13 +6,13 @@ from __future__ import annotations
 import typing
 from copy import deepcopy
 
-from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import FILE_READER
+from nefertem_core.readers.builder import build_reader
+from nefertem_core.utils.commons import FILE_READER
 from nefertem_inference.plugins.builder import InferencePluginBuilder
 from nefertem_inference_frictionless.plugin import InferencePluginFrictionless
 
 if typing.TYPE_CHECKING:
-    from nefertem.resources.data_resource import DataResource
+    from nefertem_core.resources.data_resource import DataResource
 
 
 class InferenceBuilderFrictionless(InferencePluginBuilder):

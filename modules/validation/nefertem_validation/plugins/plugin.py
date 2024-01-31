@@ -6,8 +6,8 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Any
 
-from nefertem.plugins.plugin import Plugin
-from nefertem.plugins.utils import ResultType
+from nefertem_core.plugins.plugin import Plugin
+from nefertem_core.plugins.utils import ResultType
 
 
 class ValidationPlugin(Plugin):

@@ -4,9 +4,9 @@ import frictionless
 import pytest
 from frictionless import Report, Schema
 from frictionless.exception import FrictionlessException
-from nefertem.plugins.validation.frictionless.builder import ValidationBuilderFrictionless
-from nefertem.plugins.validation.frictionless.plugin import ValidationPluginFrictionless
-from nefertem.utils.commons import FILE_READER, VALIDATE
+from nefertem_core.plugins.validation.frictionless.builder import ValidationBuilderFrictionless
+from nefertem_core.plugins.validation.frictionless.plugin import ValidationPluginFrictionless
+from nefertem_core.utils.commons import FILE_READER, VALIDATE
 from tests.conftest import CONST_FRICT_01, CONST_FRICT_FULL_01, mock_c_frict, mock_c_frict_full, mock_c_generic
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,

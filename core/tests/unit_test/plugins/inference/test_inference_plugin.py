@@ -1,5 +1,5 @@
-from nefertem.plugins.inference.base import Inference
-from nefertem.plugins.utils import Result, ResultType, exec_decorator
+from nefertem_core.plugins.inference.base import Inference
+from nefertem_core.plugins.utils import Result, ResultType, exec_decorator
 
 
 class SamplePlugin(Inference):

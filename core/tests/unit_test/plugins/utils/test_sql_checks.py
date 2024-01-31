@@ -1,4 +1,4 @@
-from nefertem.plugins.utils.sql_checks import (
+from nefertem_core.plugins.utils.sql_checks import (
     evaluate_empty,
     evaluate_exact,
     evaluate_max,

@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from nefertem.metadata.blob import Blob
-from nefertem.plugins.utils import ResultType
-from nefertem.run.run import Run
+from nefertem_core.metadata.blob import Blob
+from nefertem_core.plugins.utils import ResultType
+from nefertem_core.run.run import Run
 from nefertem_inference.metadata.report import NefertemSchema
 
 

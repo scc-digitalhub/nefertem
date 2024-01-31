@@ -1,4 +1,4 @@
-from nefertem.run.run_info import RunInfo
+from nefertem_core.run.run_info import RunInfo
 
 
 def test_to_dict(run_empty, local_resource):

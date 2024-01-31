@@ -3,13 +3,13 @@ from __future__ import annotations
 import typing
 from copy import deepcopy
 
-from nefertem.readers.builder import build_reader
-from nefertem.readers.registry import reader_registry
+from nefertem_core.readers.builder import build_reader
+from nefertem_core.readers.registry import reader_registry
 from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 from nefertem_profiling_ydata_profiling.plugin import ProfilingPluginYdataProfiling
 
 if typing.TYPE_CHECKING:
-    from nefertem.resources.data_resource import DataResource
+    from nefertem_core.resources.data_resource import DataResource
 
 
 DF_READER = "pandas_df_reader"

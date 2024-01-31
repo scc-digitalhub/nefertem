@@ -1,4 +1,4 @@
-from nefertem.metadata.blob import Blob
+from nefertem_core.metadata.blob import Blob
 
 
 class TestBlobLog:

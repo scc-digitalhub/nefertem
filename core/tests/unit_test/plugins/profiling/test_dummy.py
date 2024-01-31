@@ -1,6 +1,6 @@
 import pytest
-from nefertem.plugins.profiling.dummy import ProfileBuilderDummy, ProfilePluginDummy
-from nefertem.utils.commons import DUMMY, FILE_READER, PROFILE
+from nefertem_core.plugins.profiling.dummy import ProfileBuilderDummy, ProfilePluginDummy
+from nefertem_core.utils.commons import DUMMY, FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,

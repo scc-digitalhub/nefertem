@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.readers import reader_registry
-from nefertem.readers.builder import build_reader
-from nefertem.utils.utils import flatten_list
+from nefertem_core.readers.builder import build_reader
+from nefertem_core.readers.registry import reader_registry
+from nefertem_core.utils.utils import flatten_list
 from nefertem_validation.plugins.builder import ValidationPluginBuilder
 from nefertem_validation_sqlalchemy.constraint import ConstraintSqlAlchemy
 from nefertem_validation_sqlalchemy.plugin import ValidationPluginSqlAlchemy
 from operations.nefertem_validation.nefertem_validation.utils import ValidationError
 
 if typing.TYPE_CHECKING:
-    from nefertem.resources.data_resource import DataResource
-    from nefertem.stores.input.objects._base import InputStore
+    from nefertem_core.resources.data_resource import DataResource
+    from nefertem_core.stores.input.objects._base import InputStore
 
 
 PANDAS_READER = "pandas_df_sql_reader"

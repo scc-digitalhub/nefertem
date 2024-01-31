@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from nefertem.metadata.report import NefertemBaseReport
+from nefertem_core.metadata.report import NefertemBaseReport
 
 
 class NefertemSchema(NefertemBaseReport):

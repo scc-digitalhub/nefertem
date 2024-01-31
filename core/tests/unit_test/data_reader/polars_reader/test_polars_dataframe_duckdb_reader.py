@@ -1,7 +1,7 @@
 import polars as pl
 import pytest
-from nefertem.utils.commons import POLARS_DATAFRAME_DUCKDB_READER
-from nefertem.utils.exceptions import StoreError
+from nefertem_core.utils.commons import POLARS_DATAFRAME_DUCKDB_READER
+from nefertem_core.utils.exceptions import StoreError
 
 
 def test_fetch_data(reader, tmpduckdb):

@@ -1,11 +1,11 @@
 from pathlib import Path
 
 import pytest
-from nefertem.plugins.factory import builder_factory
-from nefertem.plugins.plugin import Plugin
-from nefertem.plugins.utils import Result, ResultType
-from nefertem.run.handler import RunHandler
-from nefertem.utils.exceptions import RunError
+from nefertem_core.plugins.factory import builder_factory
+from nefertem_core.plugins.plugin import Plugin
+from nefertem_core.plugins.utils import Result, ResultType
+from nefertem_core.run.handler import RunHandler
+from nefertem_core.utils.exceptions import RunError
 from tests.conftest import CONST_FRICT_01
 
 INFER = "infer"

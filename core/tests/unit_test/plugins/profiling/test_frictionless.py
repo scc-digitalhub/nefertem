@@ -3,9 +3,9 @@ import io
 import frictionless
 import pytest
 from frictionless import Resource
-from nefertem.plugins.profiling.frictionless.builder import ProfileBuilderFrictionless
-from nefertem.plugins.profiling.frictionless.plugin import ProfilePluginFrictionless
-from nefertem.utils.commons import FILE_READER, PROFILE
+from nefertem_core.plugins.profiling.frictionless.builder import ProfileBuilderFrictionless
+from nefertem_core.plugins.profiling.frictionless.plugin import ProfilePluginFrictionless
+from nefertem_core.utils.commons import FILE_READER, PROFILE
 from tests.unit_test.plugins.utils_plugin_tests import (
     correct_execute,
     correct_plugin_build,

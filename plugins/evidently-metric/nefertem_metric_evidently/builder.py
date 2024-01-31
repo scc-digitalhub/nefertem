@@ -5,14 +5,14 @@ from __future__ import annotations
 
 import typing
 
-from nefertem.readers.builder import build_reader
-from nefertem.utils.commons import FILE_READER
+from nefertem_core.readers.builder import build_reader
+from nefertem_core.utils.commons import FILE_READER
 from nefertem_metric_evidently.metrics import MetricEvidently
 from nefertem_metric_evidently.plugin import ProfilingPluginEvidently
 from nefertem_profiling.plugins.builder import ProfilingPluginBuilder
 
 if typing.TYPE_CHECKING:
-    from nefertem.resources.data_resource import DataResource
+    from nefertem_core.resources.data_resource import DataResource
 
 
 class MetricBuilderEvidently(ProfilingPluginBuilder):

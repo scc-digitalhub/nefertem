@@ -2,15 +2,15 @@
 
 # import pytest
 
-# from nefertem.client.store_handler import (
+# from nefertem_core.client.store_handler import (
 #     StoreHandler,
 # )
-# from nefertem.stores.artifact.objects.base import InputStore
-# from nefertem.stores.artifact.objects.dummy import DummyInputStore
-# from nefertem.stores.metadata.objects.base import OutputStore
-# from nefertem.stores.metadata.objects.dummy import DummyOutputStore
-# from nefertem.utils.commons import DUMMY
-# from nefertem.utils.exceptions import StoreError
+# from nefertem_core.stores.artifact.objects.base import InputStore
+# from nefertem_core.stores.artifact.objects.dummy import DummyInputStore
+# from nefertem_core.stores.metadata.objects.base import OutputStore
+# from nefertem_core.stores.metadata.objects.dummy import DummyOutputStore
+# from nefertem_core.utils.commons import DUMMY
+# from nefertem_core.utils.exceptions import StoreError
 
 
 # class TestStoreHandler:

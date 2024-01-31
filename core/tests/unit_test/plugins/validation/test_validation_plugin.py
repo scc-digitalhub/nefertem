@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from nefertem.plugins.utils import Result, ResultType, exec_decorator
+from nefertem_core.plugins.utils import Result, ResultType, exec_decorator
 
 
 class SamplePlugin:

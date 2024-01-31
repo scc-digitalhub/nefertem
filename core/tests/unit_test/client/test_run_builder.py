@@ -1,10 +1,10 @@
 from pathlib import Path
 
 import pytest
-from nefertem.client.store_handler import StoreHandler
-from nefertem.run.builder import RunBuilder
-from nefertem.run.run import Run
-from nefertem.utils.exceptions import RunError
+from nefertem_core.client.store_handler import StoreHandler
+from nefertem_core.run.builder import RunBuilder
+from nefertem_core.run.run import Run
+from nefertem_core.utils.exceptions import RunError
 
 
 class TestRunBuilder:

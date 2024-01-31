@@ -4,8 +4,8 @@ PandasDataFrameReader module.
 from __future__ import annotations
 
 import pandas as pd
-from nefertem.readers.objects._base import DataReader
-from nefertem.utils.utils import listify
+from nefertem_core.readers.objects._base import DataReader
+from nefertem_core.utils.utils import listify
 from nefertem_profiling_ydata_profiling.utils import describe_resource
 
 

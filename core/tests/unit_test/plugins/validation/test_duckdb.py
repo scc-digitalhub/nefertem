@@ -3,10 +3,10 @@ from pathlib import Path
 
 import duckdb
 import pytest
-from nefertem.plugins.utils import ValidationReport
-from nefertem.plugins.validation.duckdb.builder import ValidationBuilderDuckDB
-from nefertem.plugins.validation.duckdb.plugin import ValidationPluginDuckDB
-from nefertem.utils.commons import DEFAULT_DIRECTORY, LIBRARY_DUCKDB, PANDAS_DATAFRAME_DUCKDB_READER, VALIDATE
+from nefertem_core.plugins.utils import ValidationReport
+from nefertem_core.plugins.validation.duckdb.builder import ValidationBuilderDuckDB
+from nefertem_core.plugins.validation.duckdb.plugin import ValidationPluginDuckDB
+from nefertem_core.utils.commons import DEFAULT_DIRECTORY, LIBRARY_DUCKDB, PANDAS_DATAFRAME_DUCKDB_READER, VALIDATE
 from tests.conftest import (
     CONST_DUCKDB_01,
     mock_c_duckdb,

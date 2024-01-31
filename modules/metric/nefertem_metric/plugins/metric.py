@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from nefertem.utils.utils import build_uuid
+from nefertem_core.utils.utils import build_uuid
 from pydantic import BaseModel, Field
 
 

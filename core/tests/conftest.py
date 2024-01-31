@@ -9,17 +9,26 @@ import boto3
 import duckdb
 import pytest
 from moto import mock_s3
-from nefertem.plugins.utils import Result
-from nefertem.plugins.validation.duckdb.constraints import ConstraintDuckDB
-from nefertem.plugins.validation.evidently.constraints import ConstraintEvidently, EvidentlyElement, MetricEvidently
-from nefertem.plugins.validation.frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
-from nefertem.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy
-from nefertem.readers.builder import build_reader
-from nefertem.resources.data_resource import DataResource
-from nefertem.run.config import RunConfig
-from nefertem.stores.builder import StoreBuilder
-from nefertem.utils.commons import LIBRARY_DUCKDB, LIBRARY_EVIDENTLY, LIBRARY_GREAT_EXPECTATIONS, LIBRARY_SQLALCHEMY
-from nefertem.utils.utils import listify
+from nefertem_core.plugins.utils import Result
+from nefertem_core.plugins.validation.duckdb.constraints import ConstraintDuckDB
+from nefertem_core.plugins.validation.evidently.constraints import (
+    ConstraintEvidently,
+    EvidentlyElement,
+    MetricEvidently,
+)
+from nefertem_core.plugins.validation.frictionless.constraints import ConstraintFrictionless, ConstraintFullFrictionless
+from nefertem_core.plugins.validation.sqlalchemy.constraints import ConstraintSqlAlchemy
+from nefertem_core.readers.builder import build_reader
+from nefertem_core.resources.data_resource import DataResource
+from nefertem_core.run.config import RunConfig
+from nefertem_core.stores.builder import StoreBuilder
+from nefertem_core.utils.commons import (
+    LIBRARY_DUCKDB,
+    LIBRARY_EVIDENTLY,
+    LIBRARY_GREAT_EXPECTATIONS,
+    LIBRARY_SQLALCHEMY,
+)
+from nefertem_core.utils.utils import listify
 
 ##############################
 # VARIABLES

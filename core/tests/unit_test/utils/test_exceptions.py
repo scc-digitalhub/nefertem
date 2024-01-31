@@ -1,5 +1,5 @@
 import pytest
-from nefertem.utils.exceptions import NefertemError, RunError, StoreError
+from nefertem_core.utils.exceptions import NefertemError, RunError, StoreError
 from operations.nefertem_validation.nefertem_validation.utils import ValidationError
 
 

@@ -1,6 +1,6 @@
 from urllib.parse import ParseResult
 
-from nefertem.utils.uri_utils import (
+from nefertem_core.utils.uri_utils import (
     build_key,
     check_url,
     get_name_from_uri,

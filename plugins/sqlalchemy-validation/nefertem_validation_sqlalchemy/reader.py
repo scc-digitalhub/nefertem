@@ -4,8 +4,8 @@ PandasDataFrameReader module.
 from __future__ import annotations
 
 import pandas as pd
-from nefertem.readers.objects._base import DataReader
-from nefertem.utils.exceptions import StoreError
+from nefertem_core.readers.objects._base import DataReader
+from nefertem_core.utils.exceptions import StoreError
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
