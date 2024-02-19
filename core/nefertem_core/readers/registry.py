@@ -28,5 +28,5 @@ class ReaderRegistry(dict):
 
 
 reader_registry = ReaderRegistry()
-reader_registry.register(FILE_READER, "nefertem.readers.objects.file", "FileReader")
-reader_registry.register(NATIVE_READER, "nefertem.readers.objects.native", "NativeReader")
+reader_registry.register(FILE_READER, "nefertem_core.readers.objects.file", "FileReader")
+reader_registry.register(NATIVE_READER, "nefertem_core.readers.objects.native", "NativeReader")
